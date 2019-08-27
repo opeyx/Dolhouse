@@ -225,9 +225,8 @@ namespace Dolhouse.JMP
                         value = ((br.ReadS32() & fields[i].Bitmask) >> fields[i].Shift);
                         break;
                     case JFieldType.STRING:
-                        // Read the data as a string.
-                        value = null; // TODO: Fix this.
-                        br.Skip(32); // <- Added since there is no string-reading functionality yet.
+                        // Read the data as a 32-byte long string.
+                        value = br.ReadStr32();
                         break;
                     case JFieldType.FLOAT:
                         // Read the data as a float32.
