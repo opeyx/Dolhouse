@@ -227,6 +227,7 @@ namespace Dolhouse.JMP
                     case JFieldType.STRING:
                         // Read the data as a string.
                         value = null; // TODO: Fix this.
+                        br.Skip(32); // <- Added since there is no string-reading functionality yet.
                         break;
                     case JFieldType.FLOAT:
                         // Read the data as a float32.
