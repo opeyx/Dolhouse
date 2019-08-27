@@ -213,16 +213,109 @@ namespace Dolhouse.Binary
         #endregion
 
 
+        #region Char
+
+        /// <summary>
+        /// Read a char.
+        /// </summary>
+        /// <returns>The read char.</returns>
+        public char ReadChar()
+        {
+            return (char)Read();
+        }
+
+        /// <summary>
+        /// Reads a specified number of chars.
+        /// </summary>
+        /// <param name="count">The number of chars to read.</param>
+        /// <returns>Array of chars read.</returns>
+        public char[] ReadChars(int count)
+        {
+            return Encoding.GetChars(Read(count));
+        }
+
+        #endregion
+
+
         #region String (WORK IN PROGRESS)
 
-        // TODO - Add string functionality.
+        /// <summary>
+        /// Read string from stream. (Null-Terminated)
+        /// </summary>
+        /// <returns>Null-Terminated string.</returns>
+        public string ReadStr()
+        {
+            return ReadStrNT();
+        }
+
+        /// <summary>
+        /// Read string of specific length.
+        /// </summary>
+        /// <param name="count">The string length to read.</param>
+        /// <returns>String that was read.</returns>
+        public string ReadStr(int count)
+        {
+            return Encoding.GetString(Read(count));
+        }
+
+        /// <summary>
+        /// Read 32 byte long string from stream. (Return first part only)
+        /// </summary>
+        /// <returns>First Null-Terminated part of string.</returns>
+        public string ReadStr32()
+        {
+            List<char> chars = new List<char>();
+            int pos = 0;
+            while (Peek() != 0)
+            {
+                chars.Add((char)Read());
+                pos++;
+            }
+            Skip(32 - pos);
+            return new string(chars.ToArray());
+        }
+
+        /// <summary>
+        /// Read string from stream. (Null-Terminated)
+        /// </summary>
+        /// <returns>Null-Terminated string.</returns>
+        public string ReadStrNT()
+        {
+            List<char> chars = new List<char>();
+            while (Peek() != 0)
+            {
+                chars.Add((char)Read());
+            }
+            return new string(chars.ToArray());
+        }
 
         #endregion
 
 
         #region Peek (WORK IN PROGRESS)
 
-        // TODO - Add peek functionality.
+        /// <summary>
+        /// Peek at next byte.
+        /// </summary>
+        /// <returns>The byte peek'ed at.</returns>
+        private byte Peek()
+        {
+            byte value = Read();
+            Sail(-1);
+            return value;
+        }
+
+        /// /// <summary>
+        /// Peek at specified number of bytes.
+        /// </summary>
+        /// <param name="count">The number of chars to peek at.</param>
+        /// <returns>Array of chars peeked at.</returns>
+        private byte[] Peek(int count)
+        {
+            byte[] data = Read(count);
+            Sail(-count);
+            return data;
+        }
 
         #endregion
 
