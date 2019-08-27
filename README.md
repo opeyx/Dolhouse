@@ -11,11 +11,11 @@ To start using *Dolhouse*, you simply include the dll file in your project and y
 ------
 
 ## Progress
-As stated earlier, *Dolhouse* is still in it's **very early stages of development**. So most of the work now revolves around creating a solid foundation to build the rest of the library upon. But since you're curious, have a look below:
+As stated earlier, *Dolhouse* is still in it's **very early stages of development**. So most of the work now revolves around creating a solid foundation to build the rest of the library upon. But if you're curious, have a look below:
 - Binary Reader (90%, Almost complete)
-- Binary Writer (10%, Started)
+- Binary Writer (90%, Almost complete)
 - JMP Reading (90%, Almost complete)
-- JMP Writing (0%, Not started)
+- JMP Writing (90%, Almost complete)
 
 The percentages above are **estimates**, more features will be added above once implemented.
 
