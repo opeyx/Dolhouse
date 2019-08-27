@@ -83,6 +83,15 @@ namespace Dolhouse.Binary
             Writer.Write(value);
         }
 
+        /// <summary>
+        /// Retrieve Binary Writer's Basestream.
+        /// </summary>
+        /// <returns>The writer's basestream.</returns>
+        public Stream GetStream()
+        {
+            return Writer.BaseStream;
+        }
+
         #endregion
 
 
@@ -199,12 +208,60 @@ namespace Dolhouse.Binary
         #endregion
 
 
-        #region String (WORK IN PROGRESS)
+        #region Char
 
-        // TODO - Add string functionality.
+        /// <summary>
+        /// Write char.
+        /// </summary>
+        /// <param name="value">The char to write.</param>
+        public void WriteChar(char value)
+        {
+            Writer.Write(value);
+        }
+
+        /// <summary>
+        /// Write array of chars.
+        /// </summary>
+        /// <param name="value">The chars to write.</param>
+        public void WriteChars(char[] value)
+        {
+            Write(Encoding.GetBytes(value));
+        }
 
         #endregion
-        
+
+
+        #region String (WORK IN PROGRESS)
+
+        /// <summary>
+        /// Write string.
+        /// </summary>
+        /// <param name="value">The string to write.</param>
+        public void WriteStr(string value)
+        {
+            byte[] data = Encoding.GetBytes(value);
+            Array.Reverse(data);
+            Write(data);
+        }
+
+        /// <summary>
+        /// Write string + pad it to 32 bytes.
+        /// TODO: Fix write; it currently uses two write operations.
+        /// </summary>
+        /// <param name="value">The string to write.</param>
+        public void WriteStr32(string value)
+        {
+            byte[] data = Encoding.GetBytes(value);
+            if (data.Length > 32)
+                throw new FormatException();
+            byte[] padding = new byte[32 - data.Length];
+            Array.Reverse(data);
+            Write(data);
+            Write(padding);
+        }
+
+        #endregion
+
 
         #region Padding
 
