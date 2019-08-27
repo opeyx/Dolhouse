@@ -1,7 +1,9 @@
 ﻿using Dolhouse.Binary;
+using Dolhouse.Properties;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Dolhouse.JMP
 {
@@ -160,7 +162,7 @@ namespace Dolhouse.JMP
             Offset = br.ReadU16();
             Shift = br.ReadS8();
             Type = (JFieldType)br.ReadU8();
-            Name = "?";
+            Name = JMPUtils.HashToName(Hash);
         }
 
 
@@ -258,6 +260,7 @@ namespace Dolhouse.JMP
         /// <param name="bw">Binary Writer to use.</param>
         public void Write(DhBinaryWriter bw, List<JField> fields)
         {
+
             // Save the current position.
             long currentPosition = bw.Position();
 
@@ -267,6 +270,7 @@ namespace Dolhouse.JMP
             // Loop through each value in the entry.
             for (int i = 0; i < fields.Count; i++)
             {
+
                 // Seek from the current position to value's offset in the entry.
                 bw.Sail(fields[i].Offset);
 
@@ -331,5 +335,100 @@ namespace Dolhouse.JMP
         INTEGER,
         STRING,
         FLOAT
+    }
+
+
+    /// <summary>
+    /// JMP Utilities
+    /// </summary>
+    public static class JMPUtils
+    {
+
+        /// <summary>
+        /// Properties
+        /// </summary>
+        private static Dictionary<uint, string> FieldDictionary = FieldHashes();
+
+        /// <summary>
+        /// Attempt to find field name from the field hash.
+        /// </summary>
+        /// <param name="hash">Hash for the field you want the name for.</param>
+        /// <returns>The name for this field.</returns>
+        public static string HashToName(uint hash)
+        {
+            if (FieldDictionary.TryGetValue(hash, out string fieldName))
+            {
+                return fieldName;
+            }
+            else
+            {
+                return hash.ToString();
+            }
+        }
+
+
+        /// <summary>
+        /// Generates a dictionary from the internal names.txt file.
+        /// </summary>
+        /// <returns>A dictionary of the field hash and name.</returns>
+        private static Dictionary<uint, string> FieldHashes()
+        {
+            string[] lines = Resources.names.Split(
+                new[] { "\r\n", "\r", "\n" },
+                StringSplitOptions.None
+            );
+
+            Dictionary<uint, string> fieldHashes = new Dictionary<uint, string>();
+            List<string> fieldNames = lines.Distinct().ToList();
+            for (int i = 0; i < fieldNames.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(fieldNames[i]) || fieldNames[i].StartsWith("#"))
+                {
+                    continue;
+                }
+                fieldHashes.Add(Calculate(fieldNames[i]), fieldNames[i]);
+            }
+            return fieldHashes;
+        }
+
+
+        /// <summary>
+        /// Calculate hash from string. Full credits for this snippet goes to arookas:
+        /// https://github.com/arookas/jmpman/blob/master/jmpman/hash.cs
+        /// </summary>
+        /// <param name="data">String to calculate hash from.</param>
+        /// <returns>Calculated string hash.</returns>
+        private static uint Calculate(string data)
+        {
+            if (data == null)
+            {
+                throw new ArgumentNullException("data");
+            }
+            return Calculate(System.Text.Encoding.ASCII.GetBytes(data));
+        }
+
+        /// <summary>
+        /// Calculate hash from bytes. Full credits for this snippet goes to arookas:
+        /// https://github.com/arookas/jmpman/blob/master/jmpman/hash.cs
+        /// </summary>
+        /// <param name="data">Byte array to calculate hash from.</param>
+        /// <returns>Calculated bytes hash.</returns>
+        private static uint Calculate(byte[] data)
+        {
+            if (data == null)
+            {
+                throw new ArgumentNullException("data");
+            }
+            var hash = 0u;
+            for (var i = 0; i < data.Length; ++i)
+            {
+                hash <<= 8;
+                hash += data[i];
+                var r6 = unchecked((uint)((4993ul * hash) >> 32));
+                var r0 = unchecked((byte)((((hash - r6) / 2) + r6) >> 24));
+                hash -= r0 * 33554393u;
+            }
+            return hash;
+        }
     }
 }
