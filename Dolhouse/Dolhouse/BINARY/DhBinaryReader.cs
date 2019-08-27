@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Dolhouse.Binary
 {
+
     /// <summary>
     /// Custom Binary Reader
     /// </summary>
@@ -16,7 +17,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// The underlying BinaryReader.
         /// </summary>
-        private readonly BinaryReader Reader;
+        private BinaryReader Reader;
         
         /// <summary>
         /// The endian to use.
@@ -212,13 +213,20 @@ namespace Dolhouse.Binary
         #endregion
 
 
+        #region String (WORK IN PROGRESS)
+
+        // TODO - Add string functionality.
+
+        #endregion
+
+
         #region Peek (WORK IN PROGRESS)
 
         // TODO - Add peek functionality.
 
         #endregion
-        
-        
+
+
         #region Skip
 
         /// <summary>
@@ -272,7 +280,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Jumps to a offset relative to the beginning of the file.
         /// </summary>
-        /// <param name="offset">The offset you wish to go to - relative to the beginning of the file.</param>
+        /// <param name="offset">The offset you wish to seek to - relative to the beginning of the file.</param>
         public void Goto(long offset)
         {
             Reader.BaseStream.Seek(offset, SeekOrigin.Begin);
@@ -281,7 +289,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Jumps to a offset relative to the current position in the file.
         /// </summary>
-        /// <param name="offset">The offset you wish to go to - relative to the current position in the file.</param>
+        /// <param name="offset">The offset you wish to seek to - relative to the current position in the file.</param>
         public void Sail(long offset)
         {
             Reader.BaseStream.Seek(offset, SeekOrigin.Current);
@@ -290,7 +298,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Jumps to a offset relative to the end of the file.
         /// </summary>
-        /// <param name="offset">The offset you wish to go to - relative to the end of the file.</param>
+        /// <param name="offset">The offset you wish to seek to - relative to the end of the file.</param>
         public void Back(long offset)
         {
             Reader.BaseStream.Seek(offset, SeekOrigin.End);
