@@ -5,6 +5,7 @@ using System.IO;
 
 namespace Dolhouse.JMP
 {
+
     /// <summary>
     /// (J)System (M)ap (P)roperties
     /// </summary>
@@ -34,6 +35,7 @@ namespace Dolhouse.JMP
         public List<JEntry> Entries { get; set; }
 
         #endregion
+
 
         /// <summary>
         /// Reads JMP from a data stream.
@@ -97,6 +99,7 @@ namespace Dolhouse.JMP
             // Write JMP's Entries
             for (int i = 0; i < Entries.Count; i++)
             {
+                bw.Goto(EntryOffset + (i * EntrySize));
                 Entries[i].Write(bw, Fields);
             }
 
@@ -144,6 +147,7 @@ namespace Dolhouse.JMP
         public JFieldType Type { get; set; }
 
         #endregion
+
 
         /// <summary>
         /// Read a single field from JMP.
@@ -194,6 +198,7 @@ namespace Dolhouse.JMP
         /// </summary>
         public object[] Values { get; set; }
 
+
         /// <summary>
         /// Read a single entry from JMP.
         /// </summary>
@@ -230,7 +235,7 @@ namespace Dolhouse.JMP
                         break;
                     case JFieldType.FLOAT:
                         // Read the data as a float32.
-                        value = (float)(Math.Round(br.ReadF32(), 6));
+                        value = br.ReadF32();
                         break;
                     default:
                         // Something went horribly wrong.
@@ -247,6 +252,8 @@ namespace Dolhouse.JMP
 
         /// <summary>
         /// Write a single entry to stream.
+        /// Credits for the 'packing' snippet goes to arookas:
+        /// https://github.com/arookas/jmpman/blob/master/jmpman/jmp.cs
         /// </summary>
         /// <param name="bw">Binary Writer to use.</param>
         public void Write(DhBinaryWriter bw, List<JField> fields)
@@ -254,8 +261,11 @@ namespace Dolhouse.JMP
             // Save the current position.
             long currentPosition = bw.Position();
 
+            // Define a buffer to hold packed int values.
+            Dictionary<ushort, uint> buffer = new Dictionary<ushort, uint>(fields.Count);
+
             // Loop through each value in the entry.
-            for (int i = 0; i < Values.Length; i++)
+            for (int i = 0; i < fields.Count; i++)
             {
                 // Seek from the current position to value's offset in the entry.
                 bw.Sail(fields[i].Offset);
@@ -264,20 +274,47 @@ namespace Dolhouse.JMP
                 switch (fields[i].Type)
                 {
                     case JFieldType.INTEGER:
-                        // Write the value as a integer.
-                        bw.WriteS32(int.Parse(Values[i].ToString()));
+                        // Write the value as a integer. TODO: Add pack values.
+                        int value = int.Parse(Values[i].ToString());
+
+                        // Check if current field has a bitmask.
+                        if(fields[i].Bitmask == 0xFFFFFFFF)
+                        {
+                            // Value is not packed, write data directly.
+                            bw.WriteS32((value));
+                        }
+                        else
+                        {
+                            // Value is packed, data will be added to the buffer.
+                            if (!buffer.ContainsKey(fields[i].Offset))
+                            {
+                                // Since no key exists yet, create one.
+                                buffer[fields[i].Offset] = 0u;
+                            }
+                            // Add the packet int value to the buffer.
+                            buffer[fields[i].Offset] |= ((uint)(value << fields[i].Shift) & fields[i].Bitmask);
+                        }
                         break;
                     case JFieldType.STRING:
                         // Write the value as a string.
-                        bw.WritePadding(32); // TODO: Fix this.
+                        bw.WriteStr32(Values[i].ToString());
                         break;
                     case JFieldType.FLOAT:
                         // Write the value as a float32.
-                        bw.WriteF32((float)Values[i]);
+                        bw.WriteF32(float.Parse(Values[i].ToString()));
                         break;
                     default:
                         // Something went horribly wrong.
                         throw new InvalidDataException();
+                }
+
+                // Write out the packed int's buffer.
+                foreach (var data in buffer)
+                {
+                    // 
+                    bw.Goto(currentPosition + data.Key);
+                    // Write the packed int value.
+                    bw.WriteU32(data.Value);
                 }
 
                 // Seek back to the position we saved earlier.
