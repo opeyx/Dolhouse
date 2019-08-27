@@ -40,7 +40,7 @@ namespace Dolhouse.Binary
         #region Constructors
 
         /// <summary>
-        /// Init Binary Reader
+        /// Init Binary Reader.
         /// </summary>
         /// <param name="stream">The stream to read data from.</param>
         public DhBinaryReader(Stream stream, DhEndian endian)
@@ -51,7 +51,7 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
-        /// Init Binary Reader (Custom Encoding)
+        /// Init Binary Reader. (Custom Encoding)
         /// </summary>
         /// <param name="stream">The stream to read data from.</param>
         public DhBinaryReader(Stream stream, DhEndian endian, Encoding encoding)
@@ -74,6 +74,7 @@ namespace Dolhouse.Binary
         {
             return Reader.ReadByte();
         }
+
         /// <summary>
         /// Reads a specified number of bytes.
         /// </summary>
@@ -84,6 +85,15 @@ namespace Dolhouse.Binary
             byte[] data = Reader.ReadBytes(count);
             if (Endian == DhEndian.Big) { Array.Reverse(data); } // TODO: Fix this.
             return data;
+        }
+
+        /// <summary>
+        /// Retrieve Binary Reader's Basestream.
+        /// </summary>
+        /// <returns>The reader's basestream.</returns>
+        public Stream GetStream()
+        {
+            return Reader.BaseStream;
         }
 
         #endregion
