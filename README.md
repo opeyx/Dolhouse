@@ -13,6 +13,7 @@ To start using *Dolhouse*, you simply include the dll file in your project and y
 ## Current progress
 - JMP Reading / Writing **(Complete)**
 - GEB Reading / Writing (Work started)
+- BTI Reading / Writing *(Not started)*
 - MP Reading / Writing *(Not started)*
 - BIN Reading / Writing *(Not started)*
 - MDL Reading / Writing *(Not started)*
