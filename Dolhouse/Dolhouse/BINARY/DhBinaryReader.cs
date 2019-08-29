@@ -247,7 +247,7 @@ namespace Dolhouse.Binary
         #endregion
 
 
-        #region String (WORK IN PROGRESS)
+        #region String
 
         /// <summary>
         /// Read string from stream. (Null-Terminated)
@@ -255,7 +255,12 @@ namespace Dolhouse.Binary
         /// <returns>Null-Terminated string.</returns>
         public string ReadStr()
         {
-            return ReadStrNT();
+            List<char> chars = new List<char>();
+            while (Peek() != 0)
+            {
+                chars.Add((char)Read());
+            }
+            return new string(chars.ToArray());
         }
 
         /// <summary>
@@ -282,20 +287,6 @@ namespace Dolhouse.Binary
                 pos++;
             }
             Skip(32 - pos);
-            return new string(chars.ToArray());
-        }
-
-        /// <summary>
-        /// Read string from stream. (Null-Terminated)
-        /// </summary>
-        /// <returns>Null-Terminated string.</returns>
-        public string ReadStrNT()
-        {
-            List<char> chars = new List<char>();
-            while (Peek() != 0)
-            {
-                chars.Add((char)Read());
-            }
             return new string(chars.ToArray());
         }
 
