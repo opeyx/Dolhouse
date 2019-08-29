@@ -106,6 +106,12 @@ namespace Dolhouse.JMP
                 Entries[i].Write(bw, Fields);
             }
 
+            // Back up from the end of the file.
+            bw.Back(0);
+
+            // Pad file with @'s to nearest whole 32 bytes.
+            bw.WritePadding32('@');
+
             // Returns the JMP as a stream.
             return stream;
         }
