@@ -231,7 +231,7 @@ namespace Dolhouse.Binary
         #endregion
 
 
-        #region String (WORK IN PROGRESS)
+        #region String
 
         /// <summary>
         /// Write string.
@@ -269,30 +269,39 @@ namespace Dolhouse.Binary
         /// Write padding.
         /// </summary>
         /// <param name="count">Count of bytes to write.</param>
-        public void WritePadding(int count)
+        /// <param name="padChar">The char you wish to pad with.</param>
+        public void WritePadding(int count, char padChar = '\0')
         {
-            Write(new byte[count]);
+            byte[] data = new byte[count];
+            for(int i = 0; i < data.Length; i++)
+            {
+                data[i] = (byte)padChar;
+            }
+            Write(data);
         }
 
         /// <summary>
         /// Write padding to nearest whole 16.
         /// </summary>
-        public void WritePadding16()
+        /// <param name="padChar">The char you wish to pad with.</param>
+        public void WritePadding16(char padChar = '\0')
         {
             while (Writer.BaseStream.Position % 16 != 0)
             {
-                Write(0);
+                Write((byte)padChar);
             }
         }
+
 
         /// <summary>
         /// Write padding to nearest whole 32.
         /// </summary>
-        public void WritePadding32()
+        /// <param name="padChar">The char you wish to pad with.</param>
+        public void WritePadding32(char padChar = '\0')
         {
             while (Writer.BaseStream.Position % 32 != 0)
             {
-                Write(0);
+                Write((byte)padChar);
             }
         }
 
