@@ -6,7 +6,7 @@
 ------
 
 ## How do I use it?
-Keep in mind the project is still in **very early development**; To start using *Dolhouse*, you simply include the dll file in your project and you're good to go. To get the newest features, download the source code and build the dll yourself. If something that has been marked as **(Complete)**) breaks or doesn't work as intended, please create a issue for it, thanks!
+Keep in mind the project is still in **very early development**; To start using *Dolhouse*, you simply include the dll file in your project and you're good to go. To get the newest features, download the source code and build the dll yourself. If something that has been marked as **(Complete)** breaks or doesn't work as intended, please create a issue for it, thanks!
 
 ------
 
