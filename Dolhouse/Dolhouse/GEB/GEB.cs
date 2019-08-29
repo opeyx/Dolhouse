@@ -7,7 +7,7 @@ namespace Dolhouse.GEB
 
     /// <summary>
     /// (G)host (E)ntity (B)eacon
-    /// TODO: Further reasearch + Document properly.
+    /// TODO: Further reasearch.
     /// </summary>
     public class GEB
     {
@@ -20,6 +20,7 @@ namespace Dolhouse.GEB
         List<GSprite> Sprites { get; set; }
 
         #endregion
+
 
         /// <summary>
         /// Reads GEB from a data stream.
@@ -47,6 +48,7 @@ namespace Dolhouse.GEB
         /// <returns>The GEB as a stream.</returns>
         public Stream Write()
         {
+            // Define a stream to hold our GEB data.
             Stream stream = new MemoryStream();
 
             DhBinaryWriter bw = new DhBinaryWriter(stream, DhEndian.Big);
@@ -72,56 +74,135 @@ namespace Dolhouse.GEB
     /// </summary>
     public class GSprite
     {
+
+        #region Properties
+
+        /// <summary>
+        /// Unknown 1. Some kind of type?
+        /// </summary>
         public short Unknown1 { get; set; }
+
+        /// <summary>
+        /// Unknown 2. Some kind of type?
+        /// </summary>
         public short Unknown2 { get; set; }
+
+        /// <summary>
+        /// Sprite color in RGBA.
+        /// </summary>
         public int RGBA { get; set; }
+
+        /// <summary>
+        /// A list of 2D points specifying the size of the sprite plane.
+        /// </summary>
         public List<SpritePoint> Points { get; set; }
+
+        /// <summary>
+        /// Unknown 3. Some of them seem to be padding,
+        /// while some seem to be floats with a value of 2.
+        /// </summary>
         public int[] Unknown3 { get; set; }
+
+        /// <summary>
+        /// Unknown 4. Seems to be a normalized value (?)
+        /// </summary>
         public float Unknown4 { get; set; }
+
+        /// <summary>
+        /// Unknown 5. Seems to be a normalized value (?)
+        /// </summary>
         public float Unknown5 { get; set; }
+
+        /// <summary>
+        /// Unknown 6. Maybe a RGBA value (?)
+        /// </summary>
         public int Unknown6 { get; set; }
 
+        #endregion
+
+
+        /// <summary>
+        /// Read a GSprite from GEB.
+        /// </summary>
+        /// <param name="br">Binary Reader to use.</param>
         public GSprite(DhBinaryReader br)
         {
+
+            // Read GSprite's Unknown 1.
             Unknown1 = br.ReadS16();
+
+            // Read GSprite's Unknown 2.
             Unknown2 = br.ReadS16();
+
+            // Read GSprite's RGBA.
             RGBA = br.ReadS32();
 
+            // Define a new list to hold the sprite's points.
             Points = new List<SpritePoint>();
+
+            // Loop through GSprite's points.
             for (int i = 0; i < 4; i++)
             {
+                // Read point and add it to the spritepoint list.
                 Points.Add(new SpritePoint(br));
             }
 
+            // Define a array to hold the unknown values.
             Unknown3 = new int[10];
+
+            // Loop through the unknown values.
             for (int i = 0; i < Unknown3.Length; i++)
             {
+                // Read the current unknown value.
                 Unknown3[i] = br.ReadS32();
             }
 
+            // Read GSprite's Unknown 5.
             Unknown4 = br.ReadF32();
+
+            // Read GSprite's Unknown 6.
             Unknown5 = br.ReadF32();
+
+            // Read GSprite's Unknown 7.
             Unknown6 = br.ReadS32();
         }
 
+        /// <summary>
+        /// Write a GSprite with specified Binary Writer.
+        /// </summary>
         public void Write(DhBinaryWriter bw)
         {
+
+            // Write GSprite's Unknown 1.
             bw.WriteS16(Unknown1);
+
+            // Write GSprite's Unknown 2.
             bw.WriteS16(Unknown2);
+
+            // Write GSprite's RGBA.
             bw.WriteS32(RGBA);
 
-            for(int i = 0; i < Points.Count; i++)
+            // Loop through GSprite's points.
+            for (int i = 0; i < Points.Count; i++)
             {
+                // Write the current point.
                 Points[i].Write(bw);
             }
 
+            // Loop through the unknown values.
             for (int i = 0; i < Unknown3.Length; i++)
             {
+                // Write the current unknown value.
                 bw.WriteS32(Unknown3[3]);
             }
 
+            // Write GSprite's Unknown 4.
             bw.WriteF32(Unknown4);
+
+            // Write GSprite's Unknown 5.
             bw.WriteF32(Unknown5);
+
+            // Write GSprite's Unknown 6.
             bw.WriteS32(Unknown6);
         }
     }
@@ -132,22 +213,58 @@ namespace Dolhouse.GEB
     /// </summary>
     public class SpritePoint
     {
-        public float X { get; set; }
-        public float Y { get; set; }
-        public float Unknown1 { get; set; }
 
+        #region Properties
+
+        /// <summary>
+        /// Point's X coordinate.
+        /// </summary>
+        public float X { get; set; }
+
+        /// <summary>
+        /// Point's Y coordinate.
+        /// </summary>
+        public float Y { get; set; }
+
+        /// <summary>
+        /// Unknown1. Seems to just be padding.
+        /// </summary>
+        public int Unknown1 { get; set; }
+
+        #endregion
+
+
+        /// <summary>
+        /// Read a SpritePoint from GEB.
+        /// </summary>
+        /// <param name="br">Binary Reader to use.</param>
         public SpritePoint(DhBinaryReader br)
         {
+
+            // Read SpritePoint's X.
             X = br.ReadF32();
+
+            // Read SpritePoint's Y.
             Y = br.ReadF32();
-            Unknown1 = br.ReadF32();
+
+            // Read SpritePoint's Unknown 1.
+            Unknown1 = br.ReadS32();
         }
 
+        /// <summary>
+        /// Write a SpritePoint with specified Binary Writer.
+        /// </summary>
         public void Write(DhBinaryWriter bw)
         {
+
+            // Write SpritePoint's X.
             bw.WriteF32(X);
+
+            // Write SpritePoint's Y.
             bw.WriteF32(Y);
-            bw.WriteF32(Unknown1);
+
+            // Read SpritePoint's Unknown 1.
+            bw.WriteS32(Unknown1);
         }
     }
 }

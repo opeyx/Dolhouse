@@ -79,6 +79,7 @@ namespace Dolhouse.JMP
         /// <returns>The JMP as a stream.</returns>
         public Stream Write()
         {
+            // Define a stream to hold our GEB data.
             Stream stream = new MemoryStream();
 
             DhBinaryWriter bw = new DhBinaryWriter(stream, DhEndian.Big);
@@ -157,11 +158,23 @@ namespace Dolhouse.JMP
         /// <param name="br">Binary Reader to use.</param>
         public JField(DhBinaryReader br)
         {
+
+            // Read field's hash.
             Hash = br.ReadU32();
+
+            // Read field's bitmask.
             Bitmask = br.ReadU32();
+
+            // Read field's offset.
             Offset = br.ReadU16();
+
+            // Read field's shift.
             Shift = br.ReadS8();
+
+            // Read field's type.
             Type = (JFieldType)br.ReadU8();
+
+            // Resolve field's hash to get field name.
             Name = JMPUtils.HashToName(Hash);
         }
 
@@ -344,10 +357,16 @@ namespace Dolhouse.JMP
     public static class JMPUtils
     {
 
+        #region Properties
+
+
         /// <summary>
-        /// Properties
+        /// Dictionary to hold field hashes and names.
         /// </summary>
         private static Dictionary<uint, string> FieldDictionary = FieldHashes();
+
+        #endregion
+
 
         /// <summary>
         /// Attempt to find field name from the field hash.
@@ -356,12 +375,15 @@ namespace Dolhouse.JMP
         /// <returns>The name for this field.</returns>
         public static string HashToName(uint hash)
         {
+            // Attempt to resolve the hash into a known name.
             if (FieldDictionary.TryGetValue(hash, out string fieldName))
             {
+                // Name was resolved, return correct field name.
                 return fieldName;
             }
             else
             {
+                // Name could not be resolved, return hash as string.
                 return hash.ToString();
             }
         }
@@ -373,21 +395,34 @@ namespace Dolhouse.JMP
         /// <returns>A dictionary of the field hash and name.</returns>
         private static Dictionary<uint, string> FieldHashes()
         {
+
+            // Read the internal names file, split it by default delimiters.
             string[] lines = Resources.names.Split(
                 new[] { "\r\n", "\r", "\n" },
                 StringSplitOptions.None
             );
 
+            // Define a temporary dictionary to hold our field hashes and names.
             Dictionary<uint, string> fieldHashes = new Dictionary<uint, string>();
+
+            // Define a temporary list to hold our names file lines, aswell as removing duplicates.
             List<string> fieldNames = lines.Distinct().ToList();
+
+            // Loop through each of the lines.
             for (int i = 0; i < fieldNames.Count; i++)
             {
+                // Check if the current line is empty or starts with a # (comment)
                 if (string.IsNullOrWhiteSpace(fieldNames[i]) || fieldNames[i].StartsWith("#"))
                 {
+                    // Skip hashing the current line.
                     continue;
                 }
+
+                // Hash the current line and add it plus the field name to the fieldhashes dictionary.
                 fieldHashes.Add(Calculate(fieldNames[i]), fieldNames[i]);
             }
+
+            // Return the fieldHashes dictionary.
             return fieldHashes;
         }
 
@@ -400,10 +435,16 @@ namespace Dolhouse.JMP
         /// <returns>Calculated string hash.</returns>
         private static uint Calculate(string data)
         {
+
+            // Check if data is equals to null.
             if (data == null)
             {
+
+                // Cannot hash null data, throw exception.
                 throw new ArgumentNullException("data");
             }
+
+            // Return the calculated hash from the input data.
             return Calculate(System.Text.Encoding.ASCII.GetBytes(data));
         }
 
@@ -415,11 +456,19 @@ namespace Dolhouse.JMP
         /// <returns>Calculated bytes hash.</returns>
         private static uint Calculate(byte[] data)
         {
+
+            // Check if data is equals to null.
             if (data == null)
             {
+
+                // Cannot hash null data, throw exception.
                 throw new ArgumentNullException("data");
             }
+
+            // Define variable to temporary hold our hash.
             var hash = 0u;
+
+            // Loop through our input data.
             for (var i = 0; i < data.Length; ++i)
             {
                 hash <<= 8;
@@ -428,6 +477,8 @@ namespace Dolhouse.JMP
                 var r0 = unchecked((byte)((((hash - r6) / 2) + r6) >> 24));
                 hash -= r0 * 33554393u;
             }
+
+            // Return the calculated hash.
             return hash;
         }
     }
