@@ -270,7 +270,12 @@ namespace Dolhouse.Binary
         /// <returns>String that was read.</returns>
         public string ReadStr(int count)
         {
-            return Encoding.GetString(Read(count));
+            List<char> chars = new List<char>();
+            for(int i = 0; i < count; i++)
+            {
+                chars.Add((char)Read());
+            }
+            return Encoding.GetString(Encoding.GetBytes(chars.ToArray()));
         }
 
         /// <summary>
