@@ -1,7 +1,7 @@
 ﻿using Dolhouse.Binary;
 using System.IO;
 
-namespace Dolhouse.BTI
+namespace Dolhouse.Image
 {
 
     /// <summary>

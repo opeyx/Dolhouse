@@ -4,14 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Dolhouse.YAY0
+namespace Dolhouse.Compression
 {
 
     /// <summary>
     /// Yay0 Compression
     /// TODO: Add compression functionality + Document properly.
     /// </summary>
-    public static class YAY0
+    public static class Yay0
     {
 
         /// <summary>

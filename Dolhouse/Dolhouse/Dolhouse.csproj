@@ -41,20 +41,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BINARY\DhBinaryWriter.cs" />
-    <Compile Include="BINARY\DhBinaryReader.cs" />
-    <Compile Include="BINARY\DhEndian.cs" />
-    <Compile Include="BTI\BTI.cs" />
+    <Compile Include="Binary\DhBinaryWriter.cs" />
+    <Compile Include="Binary\DhBinaryReader.cs" />
+    <Compile Include="Binary\DhEndian.cs" />
+    <Compile Include="Image\BTI.cs" />
     <Compile Include="Dolhouse.cs" />
-    <Compile Include="GEB\GEB.cs" />
-    <Compile Include="JMP\JMP.cs" />
+    <Compile Include="Engine\GEB.cs" />
+    <Compile Include="Engine\JMP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="YAY0\YAY0.cs" />
+    <Compile Include="Compression\Yay0.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -64,6 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\names.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

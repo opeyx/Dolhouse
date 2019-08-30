@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Dolhouse.GEB
+namespace Dolhouse.Engine
 {
 
     /// <summary>
