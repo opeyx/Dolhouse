@@ -28,16 +28,20 @@ namespace Dolhouse.Engine
         /// <param name="stream">The stream containing the GEB data.</param>
         public GEB(Stream stream)
         {
+
+            // Define a binary reader to read with.
             DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
 
-            // Read GEB's 'sprite' count.
+            // Read GEB's sprite count.
             uint spriteCount = br.ReadU32();
 
-            // Read each 'sprite' entry.
+            // Define a new list to hold the sprite entries.
             Sprites = new List<GSprite>();
-            for(int i = 0; i < spriteCount; i++)
+
+            // Loop through the sprite entries.
+            for (int i = 0; i < spriteCount; i++)
             {
-                // Add the read 'sprite' to the 'Sprites' list.
+                // Add the read sprite to the Sprites list.
                 Sprites.Add(new GSprite(br));
             }
         }
@@ -51,6 +55,7 @@ namespace Dolhouse.Engine
             // Define a stream to hold our GEB data.
             Stream stream = new MemoryStream();
 
+            // Define a binary writer to write with.
             DhBinaryWriter bw = new DhBinaryWriter(stream, DhEndian.Big);
 
             // Write 'sprite' count.
@@ -189,11 +194,11 @@ namespace Dolhouse.Engine
                 Points[i].Write(bw);
             }
 
-            // Loop through the unknown values.
+            // Loop through the GSprite's Unknown 3 values.
             for (int i = 0; i < Unknown3.Length; i++)
             {
-                // Write the current unknown value.
-                bw.WriteS32(Unknown3[3]);
+                // Write the current GSprite's Unknown 3 value.
+                bw.WriteS32(Unknown3[i]);
             }
 
             // Write GSprite's Unknown 4.

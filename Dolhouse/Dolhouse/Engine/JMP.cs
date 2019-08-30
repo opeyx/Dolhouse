@@ -45,6 +45,8 @@ namespace Dolhouse.Engine
         /// <param name="stream">The stream containing the JMP data.</param>
         public JMP(Stream stream)
         {
+
+            // Define a binary reader to read with.
             DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
             
             // Read JMP's Header
@@ -82,6 +84,7 @@ namespace Dolhouse.Engine
             // Define a stream to hold our GEB data.
             Stream stream = new MemoryStream();
 
+            // Define a binary writer to write with.
             DhBinaryWriter bw = new DhBinaryWriter(stream, DhEndian.Big);
 
             // Write JMP's Header
@@ -126,7 +129,7 @@ namespace Dolhouse.Engine
         #region Field Properties
 
         /// <summary>
-        /// Field Name (TODO: Fix this)
+        /// Field Name
         /// </summary>
         public string Name { get; set; }
 

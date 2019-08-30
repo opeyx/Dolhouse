@@ -22,6 +22,8 @@ namespace Dolhouse.Compression
         /// <returns>Decompressed data as a stream.</returns>
         public static Stream Decompress(Stream stream)
         {
+
+            // Define a binary reader to read with.
             DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
 
             // Define a list of bytes to hold the decompressed data.
