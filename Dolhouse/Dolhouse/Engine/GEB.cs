@@ -58,13 +58,13 @@ namespace Dolhouse.Engine
             // Define a binary writer to write with.
             DhBinaryWriter bw = new DhBinaryWriter(stream, DhEndian.Big);
 
-            // Write 'sprite' count.
+            // Write GEB's sprite count.
             bw.WriteU32((uint)Sprites.Count);
 
-            // Loop through 'sprite' entries.
+            // Loop through the sprite entries.
             for (int i = 0; i < Sprites.Count; i++)
             {
-                // Write 'sprite'.
+                // Write sprite.
                 Sprites[i].Write(bw);
             }
 
@@ -142,7 +142,7 @@ namespace Dolhouse.Engine
             // Read GSprite's RGBA.
             RGBA = br.ReadS32();
 
-            // Define a new list to hold the sprite's points.
+            // Define a new list to hold the GSprite's points.
             Points = new List<SpritePoint>();
 
             // Loop through GSprite's points.
@@ -162,13 +162,13 @@ namespace Dolhouse.Engine
                 Unknown3[i] = br.ReadS32();
             }
 
-            // Read GSprite's Unknown 5.
+            // Read GSprite's Unknown 4.
             Unknown4 = br.ReadF32();
 
-            // Read GSprite's Unknown 6.
+            // Read GSprite's Unknown 5.
             Unknown5 = br.ReadF32();
 
-            // Read GSprite's Unknown 7.
+            // Read GSprite's Unknown 6.
             Unknown6 = br.ReadS32();
         }
 
