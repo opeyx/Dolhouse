@@ -15,7 +15,7 @@ Keep in mind the project is still in **very early development**; To start using 
 - GEB Reading / Writing **(Complete)**
 - BTI Reading / Writing *(Not started)*
 - MP Reading / Writing *(Not started)*
-- BIN Reading / Writing *(Not started)*
+- BIN Reading / Writing (Work started)
 - MDL Reading / Writing *(Not started)*
 - RARC Reading / Writing *(Not started)*
 - Yay0 Compression / Decompression (Work started)
