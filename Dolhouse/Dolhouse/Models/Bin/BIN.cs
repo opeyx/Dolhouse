@@ -151,7 +151,7 @@ namespace Dolhouse.Models.Bin
             Normals = new List<BinNormal>();
 
             // Loop through bin's normals. TODO: This is static for now, add automatic normal count.
-            for (int i = 0; i < 176; i++)
+            for (int i = 0; i < 69; i++)
             {
 
                 // Read a bin normal and add it to the normals list.

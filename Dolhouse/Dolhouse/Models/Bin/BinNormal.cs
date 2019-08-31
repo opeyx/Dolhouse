@@ -21,6 +21,11 @@ namespace Dolhouse.Models.Bin
         /// </summary>
         public float Y { get; set; }
 
+        /// <summary>
+        /// Z-Coordinate.
+        /// </summary>
+        public float Z { get; set; }
+
         #endregion
 
 
@@ -36,6 +41,9 @@ namespace Dolhouse.Models.Bin
 
             // Read Y-Coordinate.
             Y = br.ReadF32();
+
+            // Read Z-Coordinate.
+            Z = br.ReadF32();
         }
 
         /// <summary>
@@ -50,6 +58,9 @@ namespace Dolhouse.Models.Bin
 
             // Write Y-Coordinate.
             bw.WriteF32(Y);
+
+            // Write Z-Coordinate.
+            bw.WriteF32(Z);
         }
     }
 }
