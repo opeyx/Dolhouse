@@ -20,7 +20,7 @@
 x64/
 x86/
 bld/
-# [Bb]in/ Dirty quick-fix for now.
+# [Bb]in/ This quick-fix works for now.
 [Oo]bj/
 [Ll]og/
 
