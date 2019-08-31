@@ -48,7 +48,13 @@
     <Compile Include="Dolhouse.cs" />
     <Compile Include="Engine\GEB.cs" />
     <Compile Include="Engine\JMP.cs" />
-    <Compile Include="Models\BIN.cs" />
+    <Compile Include="Models\Bin\BIN.cs" />
+    <Compile Include="Models\Bin\BinMaterial.cs" />
+    <Compile Include="Models\Bin\BinNormal.cs" />
+    <Compile Include="Models\Bin\BinPosition.cs" />
+    <Compile Include="Models\Bin\BinShader.cs" />
+    <Compile Include="Models\Bin\BinTexture.cs" />
+    <Compile Include="Models\Bin\BinTextureCoordinate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
