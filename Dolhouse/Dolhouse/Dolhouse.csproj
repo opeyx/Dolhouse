@@ -49,9 +49,13 @@
     <Compile Include="Engine\GEB.cs" />
     <Compile Include="Engine\JMP.cs" />
     <Compile Include="Models\Bin\BIN.cs" />
+    <Compile Include="Models\Bin\BinBatch.cs" />
+    <Compile Include="Models\Bin\BinBatchAttributes.cs" />
     <Compile Include="Models\Bin\BinMaterial.cs" />
     <Compile Include="Models\Bin\BinNormal.cs" />
     <Compile Include="Models\Bin\BinPosition.cs" />
+    <Compile Include="Models\Bin\BinPrimitive.cs" />
+    <Compile Include="Models\Bin\BinPrimitiveVertex.cs" />
     <Compile Include="Models\Bin\BinShader.cs" />
     <Compile Include="Models\Bin\BinTexture.cs" />
     <Compile Include="Models\Bin\BinTextureCoordinate.cs" />
