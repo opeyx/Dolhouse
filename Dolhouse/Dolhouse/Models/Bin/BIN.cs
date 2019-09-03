@@ -238,7 +238,7 @@ namespace Dolhouse.Models.Bin
                 bw.WriteU32(Offsets[i]);
             }
 
-            // TODO: WRITE THE REST OF BIN.
+            // TODO: WRITE THE REST OF THE BIN.
 
             return stream;
         }
