@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace Dolhouse.Models.Bin
 {
+
+
+    /// <summary>
+    /// Batch Attributes
+    /// </summary>
     [Flags]
-    public enum BinBatchAttributes : uint // same order as GX
+    public enum BinBatchAttributes : uint
     {
         PosNormMatrix = 1 << 0,
         Tex0Matrix = 1 << 1,
