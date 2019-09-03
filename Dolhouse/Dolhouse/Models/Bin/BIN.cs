@@ -287,7 +287,7 @@ namespace Dolhouse.Models.Bin
             // Write Faces.
             objString += "# Faces\r\n";
 
-            // TODO
+            // TODO: Write faces.
 
             // Return the BIN as a WaveFront Obj.
             return objString;
