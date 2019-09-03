@@ -1,4 +1,5 @@
 ﻿using Dolhouse.Binary;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,12 +46,12 @@ namespace Dolhouse.Models.Bin
         /// <summary>
         /// Bin positions.
         /// </summary>
-        public List<BinPosition> Positions { get; set; }
+        public List<Vector3> Positions { get; set; }
 
         /// <summary>
         /// Bin normals.
         /// </summary>
-        public List<BinNormal> Normals { get; set; }
+        public List<Vector3> Normals { get; set; }
 
         /// <summary>
         /// Bin texture coordinates.
@@ -132,7 +133,7 @@ namespace Dolhouse.Models.Bin
             br.Goto(Offsets[2]);
 
             // Define a new list to hold the bin's positions.
-            Positions = new List<BinPosition>();
+            Positions = new List<Vector3>();
 
             // Loop through bin's positions. TODO: Fix this; This is a pretty shitty way to calculate amount of bin positions ...
             for (int i = 0; i < ((Math.Floor((decimal)(Offsets[3] - Offsets[2])) / 6) - 1); i++)
@@ -146,8 +147,8 @@ namespace Dolhouse.Models.Bin
                     // Go back 6 bytes as we just "simulated" to read a bin position.
                     br.Goto(br.Position() - 6);
 
-                    // Read a bin position and add it to the positions list.
-                    Positions.Add(new BinPosition(br));
+                    // Read a position and add it to the positions list.
+                    Positions.Add(new Vector3(br.ReadF16(), br.ReadF16(), br.ReadF16()));
                 }
             }
 
@@ -156,14 +157,14 @@ namespace Dolhouse.Models.Bin
             br.Goto(Offsets[3]);
 
             // Define a new list to hold the bin's normals.
-            Normals = new List<BinNormal>();
+            Normals = new List<Vector3>();
 
             // Loop through bin's normals. TODO: This is static for now, add automatic normal count.
             for (int i = 0; i < 69; i++)
             {
 
-                // Read a bin normal and add it to the normals list.
-                Normals.Add(new BinNormal(br));
+                // Read a normal and add it to the normals list.
+                Normals.Add(new Vector3(br.ReadF32(), br.ReadF32(), br.ReadF32()));
             }
 
 

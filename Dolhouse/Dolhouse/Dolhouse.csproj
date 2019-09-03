@@ -55,8 +55,6 @@
     <Compile Include="Models\Bin\BinBatch.cs" />
     <Compile Include="Models\Bin\BinBatchAttributes.cs" />
     <Compile Include="Models\Bin\BinMaterial.cs" />
-    <Compile Include="Models\Bin\BinNormal.cs" />
-    <Compile Include="Models\Bin\BinPosition.cs" />
     <Compile Include="Models\Bin\BinPrimitive.cs" />
     <Compile Include="Models\Bin\BinPrimitiveVertex.cs" />
     <Compile Include="Models\Bin\BinShader.cs" />
