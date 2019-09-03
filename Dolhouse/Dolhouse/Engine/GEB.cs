@@ -1,4 +1,5 @@
 ﻿using Dolhouse.Binary;
+using OpenTK;
 using System.Collections.Generic;
 using System.IO;
 
@@ -222,14 +223,9 @@ namespace Dolhouse.Engine
         #region Properties
 
         /// <summary>
-        /// Point's X coordinate.
+        /// Point's Position.
         /// </summary>
-        public float X { get; set; }
-
-        /// <summary>
-        /// Point's Y coordinate.
-        /// </summary>
-        public float Y { get; set; }
+        public Vector2 Position { get; set; }
 
         /// <summary>
         /// Unknown1. Seems to just be padding.
@@ -246,11 +242,8 @@ namespace Dolhouse.Engine
         public SpritePoint(DhBinaryReader br)
         {
 
-            // Read SpritePoint's X.
-            X = br.ReadF32();
-
-            // Read SpritePoint's Y.
-            Y = br.ReadF32();
+            // Read SpritePoint's Position.
+            Position = new Vector2(br.ReadF32(), br.ReadF32());
 
             // Read SpritePoint's Unknown 1.
             Unknown1 = br.ReadS32();
@@ -262,11 +255,11 @@ namespace Dolhouse.Engine
         public void Write(DhBinaryWriter bw)
         {
 
-            // Write SpritePoint's X.
-            bw.WriteF32(X);
+            // Write SpritePoint's X Position.
+            bw.WriteF32(Position.X);
 
-            // Write SpritePoint's Y.
-            bw.WriteF32(Y);
+            // Write SpritePoint's X Position.
+            bw.WriteF32(Position.Y);
 
             // Read SpritePoint's Unknown 1.
             bw.WriteS32(Unknown1);
