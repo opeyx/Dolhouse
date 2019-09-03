@@ -14,7 +14,7 @@ Keep in mind the project is still in **very early development**; To start using 
 - JMP Reading / Writing **(Complete)**
 - GEB Reading / Writing **(Complete)**
 - BTI Reading / Writing *(Not started)*
-- MP Reading / Writing *(Not started)*
+- MP Reading / Writing (Work started)
 - BIN Reading / Writing (Work started)
 - MDL Reading / Writing *(Not started)*
 - RARC Reading / Writing *(Not started)*
