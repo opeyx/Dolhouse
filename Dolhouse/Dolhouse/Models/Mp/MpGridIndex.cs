@@ -8,6 +8,7 @@ namespace Dolhouse.Models.Mp
     /// </summary>
     public class MpGridIndex
     {
+
         #region Properties
 
         public int TotalTriangleGroupIndex { get; set; }
