@@ -258,7 +258,7 @@ namespace Dolhouse.Engine
             // Write SpritePoint's X Position.
             bw.WriteF32(Position.X);
 
-            // Write SpritePoint's X Position.
+            // Write SpritePoint's Y Position.
             bw.WriteF32(Position.Y);
 
             // Read SpritePoint's Unknown 1.
