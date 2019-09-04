@@ -19,6 +19,7 @@ Keep in mind the project is still in **very early development**; To start using 
 - MDL Reading / Writing *(Not started)*
 - RARC Reading / Writing *(Not started)*
 - Yay0 Compression / Decompression (Work started)
+- PRM Reading / Writing (Work started)
 
 **NOTE:** The progress mentioned above is only **estimated progress**, this means that progress may go back and forth in states!
 
