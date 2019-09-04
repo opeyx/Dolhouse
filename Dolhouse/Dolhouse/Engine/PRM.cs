@@ -15,7 +15,10 @@ namespace Dolhouse.Engine
     {
 
         #region Properties
-        
+
+        /// <summary>
+        /// List of entries stored in PRM.
+        /// </summary>
         public List<PrmEntry> Entries { get; set; }
 
         #endregion
@@ -105,9 +108,10 @@ namespace Dolhouse.Engine
         /// <summary>
         /// Entry's resolved type.
         /// </summary>
-        public PrmEntryType Type { get; set; }
+        public PrmType Type { get; set; }
 
         #endregion
+
 
         /// <summary>
         /// Read a PrmEntry from PRM.
@@ -134,47 +138,45 @@ namespace Dolhouse.Engine
             // Check Type.
             switch (Type)
             {
-                case PrmEntryType.BYTE:
+                case PrmType.BYTE:
 
                     // Read Value as a byte.
                     Value = br.Read();
                     break;
-                case PrmEntryType.SHORT:
+                case PrmType.SHORT:
 
                     // Read Value as a short.
                     Value = br.ReadS16();
                     break;
-                case PrmEntryType.INT:
+                case PrmType.INT:
 
                     // Read Value as a int.
                     Value = br.ReadS32();
                     break;
-                case PrmEntryType.FLOAT:
+                case PrmType.FLOAT:
 
                     // Read Value as a float.
                     Value = br.ReadF32();
                     break;
-                case PrmEntryType.RGBA:
+                case PrmType.RGBA:
 
                     // Read Value as a RGBA.
                     Value = br.ReadS32();
                     break;
-                case PrmEntryType.VECTOR3:
+                case PrmType.VECTOR3:
 
                     // Read Value as a Vector3.
                     Value = new Vector3(br.ReadF32(), br.ReadF32(), br.ReadF32());
                     break;
                 default:
-
-                    // Read Value as a int. (Unknown)
-                    Value = br.ReadS32();
-                    break;
+                    throw new NotImplementedException("Parameter entry type is unknown!");
             }
         }
 
         /// <summary>
         /// Write a PrmEntry with specified Binary Writer.
         /// </summary>
+        /// <param name="bw">Binary Writer to use.</param>
         public void Write(DhBinaryWriter bw)
         {
             // Write Hash.
@@ -189,8 +191,40 @@ namespace Dolhouse.Engine
             // Write ValueLength.
             bw.WriteU32(ValueLength);
 
-            // Write Value.
-            bw.Write(BitConverter.GetBytes((int)Value));
+            // Check Type.
+            switch (Type)
+            {
+                case PrmType.BYTE:
+
+                    // Write Value as a byte.
+                    bw.Write((byte)Value);
+                    break;
+                case PrmType.SHORT:
+
+                    // Write Value as a short.
+                    bw.WriteS16((short)Value);
+                    break;
+                case PrmType.INT:
+
+                    // Write Value as a int.
+                    bw.WriteS32((int)Value);
+                    break;
+                case PrmType.FLOAT:
+
+                    // Write Value as a float.
+                    bw.WriteF32((float)Value);
+                    break;
+                case PrmType.RGBA:
+
+                    // Write Value as a RGBA.
+                    bw.WriteS32((int)Value);
+                    break;
+                case PrmType.VECTOR3:
+                    // Write Value as a Vector3. TODO: Implement this.
+                    throw new NotImplementedException();
+                default:
+                    throw new NotImplementedException("Parameter entry type is unknown.");
+            }
         }
     }
 
@@ -215,18 +249,18 @@ namespace Dolhouse.Engine
         /// </summary>
         /// <param name="hash">Hash for the entry you want the type for.</param>
         /// <returns>The type for this entry.</returns>
-        public static PrmEntryType HashToType(ushort hash)
+        public static PrmType HashToType(ushort hash)
         {
             // Attempt to resolve the hash into a known type.
             if (EntryDictionary.TryGetValue(hash, out byte entryType))
             {
                 // Type was resolved, return correct entry type.
-                return (PrmEntryType)entryType;
+                return (PrmType)entryType;
             }
             else
             {
                 // Type could not be resolved, return type as unknown.
-                return PrmEntryType.UNKNOWN;
+                return PrmType.UNKNOWN;
             }
         }
 
@@ -256,13 +290,14 @@ namespace Dolhouse.Engine
                 // Check if the current line is empty or starts with a # (comment)
                 if (string.IsNullOrWhiteSpace(prmLines[i]) || prmLines[i].StartsWith("#"))
                 {
-                    // Skip hashing the current line.
+                    // Skip the current line.
                     continue;
                 }
 
+                // Split the current prm line by char ','.
                 string[] entryDetails = prmLines[i].Split(',');
 
-                // Hash the current line and add it plus the field name to the entry types dictionary.
+                // Add the current prm line's hash and type to the entryTypes dictionary.
                 entryTypes.Add(ushort.Parse(entryDetails[0]), byte.Parse(entryDetails[2]));
             }
 
@@ -271,7 +306,11 @@ namespace Dolhouse.Engine
         }
     }
 
-    public enum PrmEntryType
+
+    /// <summary>
+    /// Parameter Entry Type
+    /// </summary>
+    public enum PrmType
     {
         BYTE = 1,
         SHORT = 2,
