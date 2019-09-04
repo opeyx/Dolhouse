@@ -61,7 +61,10 @@ namespace Dolhouse.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to # orientation
+        ///   Looks up a localized string similar to # Full credits to:
+        ///# arookas, SpaceCats64
+        ///
+        ///# Orientation
         ///pos_x
         ///pos_y
         ///pos_z
@@ -72,7 +75,7 @@ namespace Dolhouse.Properties {
         ///scale_y
         ///scale_z
         ///
-        ///# identification
+        ///# Identification
         ///name
         ///dmd_name
         ///path_name
@@ -81,7 +84,7 @@ namespace Dolhouse.Properties {
         ///access_name
         ///CodeName
         ///
-        ///# generic arguments
+        ///# Generic arguments
         ///arg0
         ///arg1
         ///arg2
@@ -92,17 +95,17 @@ namespace Dolhouse.Properties {
         ///arg7
         ///arg8
         ///
-        ///# point
+        ///# Point
         ///pnt0_x
         ///pnt0_y
         ///pnt0_z
         ///
-        ///# furniture
+        ///# Furniture
         ///furniture_x
         ///furniture_y
         ///furniture_z
         ///
-        ///# unsorted
+        ///# Unsorted
         ///poly_material
         ///use
         ///next
@@ -117,14 +120,45 @@ namespace Dolhouse.Properties {
         ///telesa_appear
         ///sheet
         ///sheet_gum
-        ///sheet_texture
-        ///counter
-        ///item_offset_y
-        ///appear_ [rest of string was truncated]&quot;;.
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string names {
+        internal static string jmp {
             get {
-                return ResourceManager.GetString("names", resourceCulture);
+                return ResourceManager.GetString("jmp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 7438,sAlphaSpeed,1
+        ///15116,mFlagOnId,1
+        ///3606,sAppearAngle,2
+        ///12753,mCheckBox,2
+        ///23818,mTimeOnNoDmage,2
+        ///24887,mOmega,2
+        ///24926,sOmega,2
+        ///28929,mAttackType,2
+        ///29336,sClinchOmega,2
+        ///41148,mFlag,2
+        ///44491,mTime,2
+        ///45730,mDist,2
+        ///49216,mBright,2
+        ///1122,mBlinkFeq,4
+        ///1193,mActAfterAttackFa,4
+        ///1683,mTailLife,4
+        ///1923,mHasCoin,4
+        ///1971,sFrameAttackReady,4
+        ///4541,mActAfterAttackSu,4
+        ///5610,mReplaceFrame,4
+        ///5901,sFrameJibaku2,4
+        ///8024,mAttackPattern1,4
+        ///8025,mAttackPattern2,4
+        ///9512,mHitDamage,4
+        ///9989,sFrameJibakuPlus,4
+        ///11818 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string prm {
+            get {
+                return ResourceManager.GetString("prm", resourceCulture);
             }
         }
     }

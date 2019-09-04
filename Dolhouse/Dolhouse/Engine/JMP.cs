@@ -217,11 +217,11 @@ namespace Dolhouse.Engine
     /// </summary>
     public class JEntry
     {
+
         /// <summary>
         /// The values stored within this entry.
         /// </summary>
         public object[] Values { get; set; }
-
 
         /// <summary>
         /// Read a single entry from JMP.
@@ -368,7 +368,6 @@ namespace Dolhouse.Engine
 
         #region Properties
 
-
         /// <summary>
         /// Dictionary to hold field hashes and names.
         /// </summary>
@@ -384,14 +383,17 @@ namespace Dolhouse.Engine
         /// <returns>The name for this field.</returns>
         public static string HashToName(uint hash)
         {
+
             // Attempt to resolve the hash into a known name.
             if (FieldDictionary.TryGetValue(hash, out string fieldName))
             {
+
                 // Name was resolved, return correct field name.
                 return fieldName;
             }
             else
             {
+
                 // Name could not be resolved, return hash as string.
                 return hash.ToString();
             }
@@ -399,14 +401,14 @@ namespace Dolhouse.Engine
 
 
         /// <summary>
-        /// Generates a dictionary from the internal names.txt file.
+        /// Generates a dictionary from the internal jmp.txt file.
         /// </summary>
         /// <returns>A dictionary of the field hash and name.</returns>
         private static Dictionary<uint, string> FieldHashes()
         {
 
             // Read the internal names file, split it by default delimiters.
-            string[] lines = Resources.names.Split(
+            string[] lines = Resources.jmp.Split(
                 new[] { "\r\n", "\r", "\n" },
                 StringSplitOptions.None
             );
@@ -414,7 +416,7 @@ namespace Dolhouse.Engine
             // Define a temporary dictionary to hold our field hashes and names.
             Dictionary<uint, string> fieldHashes = new Dictionary<uint, string>();
 
-            // Define a temporary list to hold our names file lines, aswell as removing duplicates.
+            // Define a temporary list to hold our jmp file lines, aswell as removing duplicates.
             List<string> fieldNames = lines.Distinct().ToList();
 
             // Loop through each of the lines.

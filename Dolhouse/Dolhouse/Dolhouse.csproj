@@ -47,6 +47,7 @@
     <Compile Include="Binary\DhBinaryWriter.cs" />
     <Compile Include="Binary\DhBinaryReader.cs" />
     <Compile Include="Binary\DhEndian.cs" />
+    <Compile Include="Engine\PRM.cs" />
     <Compile Include="Image\BTI.cs" />
     <Compile Include="Dolhouse.cs" />
     <Compile Include="Engine\GEB.cs" />
@@ -75,13 +76,16 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
-    <None Include="Resources\names.txt" />
+    <None Include="Resources\jmp.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\prm.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
