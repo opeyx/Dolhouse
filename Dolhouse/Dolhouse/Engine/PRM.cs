@@ -162,12 +162,12 @@ namespace Dolhouse.Engine
                 case PrmType.RGBA:
 
                     // Read Value as a RGBA.
-                    Value = new Color4(br.Read(), br.Read(), br.Read(), br.Read());
+                    Value = br.ReadRgba();
                     break;
                 case PrmType.VECTOR3:
 
                     // Read Value as a Vector3.
-                    Value = new Vector3(br.ReadF32(), br.ReadF32(), br.ReadF32());
+                    Value = br.ReadVec3();
                     break;
                 default:
                     throw new NotImplementedException("Parameter entry type is unknown!");
@@ -217,11 +217,14 @@ namespace Dolhouse.Engine
                     break;
                 case PrmType.RGBA:
 
-                    // Write Value as a RGBA. TODO: Implement this.
-                    throw new NotImplementedException();
+                    // Write Value as a RGBA.
+                    bw.WriteRgba((Color4)Value);
+                    break;
                 case PrmType.VECTOR3:
-                    // Write Value as a Vector3. TODO: Implement this.
-                    throw new NotImplementedException();
+
+                    // Write Value as a Vector3.
+                    bw.WriteVec3((Vector3)Value);
+                    break;
                 default:
                     throw new NotImplementedException("Parameter entry type is unknown.");
             }
