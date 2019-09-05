@@ -51,6 +51,7 @@
     <Compile Include="Image\BTI.cs" />
     <Compile Include="Dolhouse.cs" />
     <Compile Include="Engine\GEB.cs" />
+    <Compile Include="Engine\TXP.cs" />
     <Compile Include="Engine\JMP.cs" />
     <Compile Include="Models\Bin\BIN.cs" />
     <Compile Include="Models\Bin\BinBatch.cs" />

@@ -76,7 +76,7 @@ namespace Dolhouse.Engine
             bw.WriteU16(FrameCount);
 
             //Calculate and write frame data offset
-            bw.WriteU32((uint)(0x08 * TXPEntries.Count));
+            bw.WriteU32((uint)(0xC * TXPEntries.Count));
 
             bw.SaveOffset(0);
 
