@@ -44,9 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Binary\DhBinaryWriter.cs" />
-    <Compile Include="Binary\DhBinaryReader.cs" />
-    <Compile Include="Binary\DhEndian.cs" />
+    <Compile Include="BINARY\DhBinaryWriter.cs" />
+    <Compile Include="BINARY\DhBinaryReader.cs" />
+    <Compile Include="BINARY\DhEndian.cs" />
     <Compile Include="Engine\PRM.cs" />
     <Compile Include="Image\BTI.cs" />
     <Compile Include="Dolhouse.cs" />
