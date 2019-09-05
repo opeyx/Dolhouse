@@ -2,6 +2,7 @@ using Dolhouse.Binary;
 using OpenTK;
 using System.Collections.Generic;
 using System.IO;
+using System;
 
 namespace Dolhouse.Engine
 {
@@ -18,7 +19,7 @@ namespace Dolhouse.Engine
         /// <summary>
         /// Frame count used for every entry
         /// <summary>
-        UInt16 FrameCount { get; set; }
+        ushort FrameCount { get; set; }
         
         #endregion
 
@@ -39,13 +40,13 @@ namespace Dolhouse.Engine
             }
         
             //Read the number of entries in the txp file
-            uint entryCount = br.ReadU32();
+            ushort entryCount = br.ReadU16();
 
             //Read the number of frames in each entry
-            FrameCount = br.ReadU32();
+            FrameCount = br.ReadU16();
 
-            //Read the offset to the frame data, though its unused
-            uint frameDataOffset = br.ReadU32();
+            //Skip unused frame offset
+            br.ReadU32();
 
             TXPEntries = new List<TXPEntry>();
 
@@ -69,27 +70,28 @@ namespace Dolhouse.Engine
             bw.WriteU16(0);
 
             // Write Entry Count
-            bw.WriteU16(TXPEntries.Count);
+            bw.WriteU16((ushort)TXPEntries.Count);
 
             // Write Frame Count
             bw.WriteU16(FrameCount);
 
             //Calculate and write frame data offset
-            bw.WriteU32(0x08 * TXPEntries.Count);
+            bw.WriteU32((uint)(0x08 * TXPEntries.Count));
 
             bw.SaveOffset(0);
+
             //Write dummy frame data offsets
             for(int i = 0; i < TXPEntries.Count; i++){
                 bw.WriteU64(0);
             }
 
             //Make a list to store the offsets for each entry's frame data
-            List<uint> frameDataOffsets = new List<uint>();
+            List<long> frameDataOffsets = new List<long>();
 
             //Write the entries
             for(int entry = 0; entry < TXPEntries.Count; entry++)
             {
-                entry.Write(bw, frameDataOffsets);
+                TXPEntries[entry].Write(bw, frameDataOffsets);
             }
 
             bw.LoadOffset(0);
@@ -97,7 +99,7 @@ namespace Dolhouse.Engine
             for(int i = 0; i < TXPEntries.Count; i++){
                 bw.WriteU16(1);
                 bw.WriteU16(0);
-                bw.WriteU32(frameDataOffsets[i]);
+                bw.WriteU32((uint)frameDataOffsets[i]);
             }
 
             // Returns the TXP as a stream
@@ -132,7 +134,7 @@ namespace Dolhouse.Engine
 
         #endregion
 
-        public TXPEntry(DhBinaryReader br, uint frameCount)
+        public TXPEntry(DhBinaryReader br, ushort frameCount)
         {
 
             //Ensure that Uknown 1 and 2 are 1 and 0 respectivley
@@ -158,19 +160,19 @@ namespace Dolhouse.Engine
             //Fill TexObjIndicies for each frame
             for(int frame = 0; frame < frameCount; frame++) 
             {
-                TexObjIndicies[frame] = br.ReadU16();
+                TexObjIndicies[frame] = br.ReadS16();
             }
 
             br.LoadOffset(0);
 
         }
 
-        public Stream Write(DhBinaryWriter bw, List<uint> frameDataOffsets)
+        public void Write(DhBinaryWriter bw, List<long> frameDataOffsets)
         {
             frameDataOffsets.Add(bw.GetStream().Position);
             for(int i = 0; i < TexObjIndicies.Length; i++)
             {
-                bw.WriteU16(TexObjIndicies[i]);
+                bw.WriteS16(TexObjIndicies[i]);
             }
         }
     }
