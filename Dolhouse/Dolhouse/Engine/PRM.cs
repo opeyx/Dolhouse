@@ -1,6 +1,7 @@
 ﻿using Dolhouse.Binary;
 using Dolhouse.Properties;
 using OpenTK;
+using OpenTK.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -161,7 +162,7 @@ namespace Dolhouse.Engine
                 case PrmType.RGBA:
 
                     // Read Value as a RGBA.
-                    Value = br.ReadS32();
+                    Value = new Color4(br.Read(), br.Read(), br.Read(), br.Read());
                     break;
                 case PrmType.VECTOR3:
 
@@ -216,9 +217,8 @@ namespace Dolhouse.Engine
                     break;
                 case PrmType.RGBA:
 
-                    // Write Value as a RGBA.
-                    bw.WriteS32((int)Value);
-                    break;
+                    // Write Value as a RGBA. TODO: Implement this.
+                    throw new NotImplementedException();
                 case PrmType.VECTOR3:
                     // Write Value as a Vector3. TODO: Implement this.
                     throw new NotImplementedException();
@@ -263,7 +263,6 @@ namespace Dolhouse.Engine
                 return PrmType.UNKNOWN;
             }
         }
-
 
         /// <summary>
         /// Generates a dictionary from the internal prm.txt file.
