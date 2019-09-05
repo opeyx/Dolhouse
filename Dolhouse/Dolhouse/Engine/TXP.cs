@@ -14,12 +14,12 @@ namespace Dolhouse.Engine
         /// <summary>
         /// List of TXPEntries
         /// <summary>
-        List<TXPEntry> TXPEntries { get; set; }
+        public List<TXPEntry> TXPEntries { get; set; }
 
         /// <summary>
         /// Frame count used for every entry
         /// <summary>
-        ushort FrameCount { get; set; }
+        public ushort FrameCount { get; set; }
         
         #endregion
 
@@ -80,9 +80,10 @@ namespace Dolhouse.Engine
 
             bw.SaveOffset(0);
 
-            //Write dummy frame data offsets
+            //Write dummy entry headers
             for(int i = 0; i < TXPEntries.Count; i++){
                 bw.WriteU64(0);
+                bw.WriteU32(0);
             }
 
             //Make a list to store the offsets for each entry's frame data
@@ -98,7 +99,8 @@ namespace Dolhouse.Engine
             //Write frame data offsets
             for(int i = 0; i < TXPEntries.Count; i++){
                 bw.WriteU16(1);
-                bw.WriteU16(0);
+                bw.WriteS16(TXPEntries[i].MaterialIndex);
+                bw.WriteU32(0);
                 bw.WriteU32((uint)frameDataOffsets[i]);
             }
 
@@ -120,33 +122,36 @@ namespace Dolhouse.Engine
         /// <summary>
         /// Unknown Short
         /// </summary>
-        short Unknown1 { get; set; }
+        public short Unknown1 { get; set; }
 
         /// <summary>
         /// Material Index
         /// </summary>
-        short MaterialIndex { get; set; }
+        public short MaterialIndex { get; set; }
 
         /// <summary>
         /// MDL TexObj indicies
         /// </summary>
-        short[] TexObjIndicies { get; set; }
+        public short[] TexObjIndicies { get; set; }
 
         #endregion
 
         public TXPEntry(DhBinaryReader br, ushort frameCount)
         {
 
-            //Ensure that Uknown 1 and 2 are 1 and 0 respectivley
+            //Ensure that Uknown 1 is 1
             if(br.ReadU16() != 1)
             {
                 throw new Exception("Unknown1 wasn't 1!");
             }
             
-            if(br.ReadU16() != 0)
+            //Read material index
+            MaterialIndex = br.ReadS16();
+
+            if(br.ReadU32() != 0)
             {
                 throw new Exception("Unknown2 wasn't 0!");
-            } 
+            }
 
             //Read the frame data offset for this 
             uint frameDataOffset = br.ReadU32();
