@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OpenTK;
+using OpenTK.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -293,6 +295,43 @@ namespace Dolhouse.Binary
             }
             Skip(32 - pos);
             return new string(chars.ToArray());
+        }
+
+        #endregion
+
+
+        #region Vectors
+
+        /// <summary>
+        /// Read Vector2 from stream.
+        /// </summary>
+        /// <returns>Vector2 that was read.</returns>
+        public Vector2 ReadVec2()
+        {
+            return new Vector2(ReadF32(), ReadF32());
+        }
+
+        /// <summary>
+        /// Read Vector3 from stream.
+        /// </summary>
+        /// <returns>Vector3 that was read.</returns>
+        public Vector3 ReadVec3()
+        {
+            return new Vector3(ReadF32(), ReadF32(), ReadF32());
+        }
+
+        #endregion
+
+
+        #region Colors
+
+        /// <summary>
+        /// Read Rgba from stream.
+        /// </summary>
+        /// <returns>Rgba that was read.</returns>
+        public Color4 ReadRgba()
+        {
+            return new Color4(Read(), Read(), Read(), Read());
         }
 
         #endregion

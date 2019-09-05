@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OpenTK;
+using OpenTK.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -258,6 +260,51 @@ namespace Dolhouse.Binary
             Array.Reverse(data);
             Write(data);
             Write(padding);
+        }
+
+        #endregion
+
+
+        #region Vectors
+
+        /// <summary>
+        /// Write vector2.
+        /// </summary>
+        /// <param name="value">The vector2 to write.</param>
+        public void WriteVec2(Vector2 value)
+        {
+            WriteF32(value.X);
+            WriteF32(value.Y);
+        }
+
+        /// <summary>
+        /// Write vector3.
+        /// </summary>
+        /// <param name="value">The vector3 to write.</param>
+        public void WriteVec3(Vector3 value)
+        {
+            WriteF32(value.X);
+            WriteF32(value.Y);
+            WriteF32(value.Z);
+        }
+
+        #endregion
+
+
+        #region Colors
+
+        /// <summary>
+        /// Write rgba.
+        /// </summary>
+        /// <param name="value">The rgba to write.</param>
+        public void WriteRgba(Color4 value)
+        {
+            uint data =
+                (uint)(value.R * byte.MaxValue) << 24 |
+                (uint)(value.G * byte.MaxValue) << 16 |
+                (uint)(value.B * byte.MaxValue) << 8 |
+                (uint)(value.A * byte.MaxValue);
+            WriteU32(data);
         }
 
         #endregion
