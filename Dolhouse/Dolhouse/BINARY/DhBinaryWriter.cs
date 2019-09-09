@@ -108,11 +108,33 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Write array of unsigned bytes.
+        /// </summary>
+        public void WriteU8s(byte[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                Writer.Write(value[i]);
+            }
+        }
+
+        /// <summary>
         /// Write signed byte.
         /// </summary>
         public void WriteS8(sbyte value)
         {
             Writer.Write(value);
+        }
+
+        /// <summary>
+        /// Write array of signed bytes.
+        /// </summary>
+        public void WriteS8s(sbyte[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                Writer.Write(value[i]);
+            }
         }
 
         #endregion
@@ -129,11 +151,33 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Write array of unsigned shorts.
+        /// </summary>
+        public void WriteU16s(ushort[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                Write(BitConverter.GetBytes(value[i]));
+            }
+        }
+
+        /// <summary>
         /// Write signed short.
         /// </summary>
         public void WriteS16(short value)
         {
-            Write(BitConverter.GetBytes(value));
+            Write(BitConverter.GetBytes(value[i]));
+        }
+
+        /// <summary>
+        /// Write array of signed shorts.
+        /// </summary>
+        public void WriteS16s(short[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                Write(BitConverter.GetBytes(value[i]));
+            }
         }
 
         #endregion
@@ -150,11 +194,33 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Write array of unsigned integers.
+        /// </summary>
+        public void WriteU32s(uint[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                Write(BitConverter.GetBytes(value[i]));
+            }
+        }
+
+        /// <summary>
         /// Write signed integer.
         /// </summary>
         public void WriteS32(int value)
         {
             Write(BitConverter.GetBytes(value));
+        }
+
+        /// <summary>
+        /// Write array of signed integers.
+        /// </summary>
+        public void WriteSS32s(int[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                Write(BitConverter.GetBytes(value[i]));
+            }
         }
 
         #endregion
@@ -171,11 +237,33 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Write array of unsigned longs.
+        /// </summary>
+        public void WriteU64s(ulong[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                Write(BitConverter.GetBytes(value[i]));
+            }
+        }
+
+        /// <summary>
         /// Write signed long.
         /// </summary>
         public void WriteS64(long value)
         {
             Write(BitConverter.GetBytes(value));
+        }
+
+        /// <summary>
+        /// Write array of signed longs.
+        /// </summary>
+        public void WriteS64s(long[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                Write(BitConverter.GetBytes(value[i]));
+            }
         }
 
         #endregion
@@ -192,6 +280,17 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Write array of float16s.
+        /// </summary>
+        public void WriteF16s(short[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                Write(BitConverter.GetBytes(value[i]));
+            }
+        }
+
+        /// <summary>
         /// Write float32
         /// </summary>
         public void WriteF32(float value)
@@ -200,11 +299,33 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Write array of float32s.
+        /// </summary>
+        public void WriteF32s(float[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                Write(BitConverter.GetBytes(value[i]));
+            }
+        }
+
+        /// <summary>
         /// Write float64
         /// </summary>
         public void WriteF64(double value)
         {
             Write(BitConverter.GetBytes(value));
+        }
+
+        /// <summary>
+        /// Write array of float64s.
+        /// </summary>
+        public void WriteF64s(double[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                Write(BitConverter.GetBytes(value[i]));
+            }
         }
 
         #endregion

@@ -113,12 +113,40 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read array of unsigned bytes.
+        /// </summary>
+        /// <returns>The read array of unsigned bytes.</returns>
+        public byte[] ReadU8s(int count)
+        {
+            byte[] data = new byte[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = Read();
+            }
+            return data;
+        }
+
+        /// <summary>
         /// Read signed byte.
         /// </summary>
         /// <returns>The read signed byte.</returns>
         public sbyte ReadS8()
         {
             return (sbyte)Read();
+        }
+
+        /// <summary>
+        /// Read array of signed bytes.
+        /// </summary>
+        /// <returns>The read array of signed bytes.</returns>
+        public sbyte[] ReadS8s(int count)
+        {
+            sbyte[] data = new sbyte[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = (sbyte)Read();
+            }
+            return data;
         }
 
         #endregion
@@ -136,12 +164,40 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read array of unsigned shorts.
+        /// </summary>
+        /// <returns>The read array of unsigned shorts.</returns>
+        public ushort[] ReadU16s(int count)
+        {
+            ushort[] data = new ushort[count];
+            for(int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToUInt16(Read(2), 0);
+            }
+            return data;
+        }
+
+        /// <summary>
         /// Read signed short.
         /// </summary>
         /// <returns>The read signed short.</returns>
         public short ReadS16()
         {
             return BitConverter.ToInt16(Read(2), 0);
+        }
+
+        /// <summary>
+        /// Read array of signed shorts.
+        /// </summary>
+        /// <returns>The read array of signed shorts.</returns>
+        public short[] ReadS16s(int count)
+        {
+            short[] data = new short[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToInt16(Read(2), 0);
+            }
+            return data;
         }
 
         #endregion
@@ -159,12 +215,40 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read array of unsigned integers.
+        /// </summary>
+        /// <returns>The read array of unsigned integers.</returns>
+        public uint[] ReadU32s(int count)
+        {
+            uint[] data = new uint[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToUInt32(Read(4), 0);
+            }
+            return data;
+        }
+
+        /// <summary>
         /// Read signed integer.
         /// </summary>
         /// <returns>The read signed integer.</returns>
         public int ReadS32()
         {
             return BitConverter.ToInt32(Read(4), 0);
+        }
+
+        /// <summary>
+        /// Read array of signed integers.
+        /// </summary>
+        /// <returns>The read array of signed integers.</returns>
+        public int[] ReadS32s(int count)
+        {
+            int[] data = new int[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToInt32(Read(4), 0);
+            }
+            return data;
         }
 
         #endregion
@@ -182,12 +266,40 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read array of unsigned longs.
+        /// </summary>
+        /// <returns>The read array of unsigned longs.</returns>
+        public ulong[] ReadU64s(int count)
+        {
+            ulong[] data = new ulong[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToUInt64(Read(8), 0);
+            }
+            return data;
+        }
+
+        /// <summary>
         /// Read signed long.
         /// </summary>
         /// <returns>The read signed long.</returns>
         public long ReadS64()
         {
             return BitConverter.ToInt64(Read(8), 0);
+        }
+
+        /// <summary>
+        /// Read array of signed longs.
+        /// </summary>
+        /// <returns>The read array of signed longs.</returns>
+        public long[] ReadS64s(int count)
+        {
+            long[] data = new long[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToInt64(Read(8), 0);
+            }
+            return data;
         }
 
         #endregion
@@ -205,6 +317,20 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read array of 16-bit floats.
+        /// </summary>
+        /// <returns>The read array of 16-bit floats.</returns>
+        public short[] ReadF16s(int count)
+        {
+            short[] data = new short[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToInt16(Read(2), 0);
+            }
+            return data;
+        }
+
+        /// <summary>
         /// Read 32-bit float.
         /// </summary>
         /// <returns>The read 32-bit float.</returns>
@@ -214,12 +340,40 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read array of 32-bit floats.
+        /// </summary>
+        /// <returns>The read array of 32-bit floats.</returns>
+        public float[] ReadF32s(int count)
+        {
+            float[] data = new float[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToSingle(Read(4), 0);
+            }
+            return data;
+        }
+
+        /// <summary>
         /// Read 64-bit float.
         /// </summary>
         /// <returns>The read 64-bit float.</returns>
         public double ReadF64()
         {
             return BitConverter.ToDouble(Read(8), 0);
+        }
+
+        /// <summary>
+        /// Read array of 64-bit floats.
+        /// </summary>
+        /// <returns>The read array of 64-bit floats.</returns>
+        public double[] ReadF64s(int count)
+        {
+            double[] data = new double[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToDouble(Read(8), 0);
+            }
+            return data;
         }
 
         #endregion
