@@ -166,7 +166,7 @@ namespace Dolhouse.Binary
         /// </summary>
         public void WriteS16(short value)
         {
-            Write(BitConverter.GetBytes(value[i]));
+            Write(BitConverter.GetBytes(value));
         }
 
         /// <summary>
@@ -369,7 +369,6 @@ namespace Dolhouse.Binary
 
         /// <summary>
         /// Write string + pad it to 32 bytes.
-        /// TODO: Fix write; it currently uses two write operations.
         /// </summary>
         /// <param name="value">The string to write.</param>
         public void WriteStr32(string value)

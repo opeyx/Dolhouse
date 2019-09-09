@@ -435,7 +435,7 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
-        /// Read 32 byte long string from stream. (Return first part only)
+        /// Read 32 byte long string from stream. (Return first NT part only)
         /// </summary>
         /// <returns>First Null-Terminated part of string.</returns>
         public string ReadStr32()
