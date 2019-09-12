@@ -69,6 +69,15 @@ namespace Dolhouse.Binary
         #region Operations
 
         /// <summary>
+        /// Sets the reader's endian to the one specified.
+        /// <param name="endian">Endian to change to.</param>
+        /// </summary>
+        public void SetEndian(DhEndian endian)
+        {
+            Endian = endian;
+        }
+
+        /// <summary>
         /// Read a single byte.
         /// </summary>
         /// <returns>The byte you read.</returns>

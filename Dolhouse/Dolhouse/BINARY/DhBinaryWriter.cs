@@ -69,6 +69,15 @@ namespace Dolhouse.Binary
         #region Operations
 
         /// <summary>
+        /// Sets the writer's endian to the one specified.
+        /// <param name="endian">Endian to change to.</param>
+        /// </summary>
+        public void SetEndian(DhEndian endian)
+        {
+            Endian = endian;
+        }
+
+        /// <summary>
         /// Writes a single byte.
         /// </summary>
         public void Write(byte value)
