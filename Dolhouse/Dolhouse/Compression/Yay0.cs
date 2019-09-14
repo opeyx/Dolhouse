@@ -1,5 +1,4 @@
 ﻿using Dolhouse.Binary;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -31,7 +30,7 @@ namespace Dolhouse.Compression
 
             // Make sure the magic is "Yay0"
             if (br.ReadU32() != 1499560240)
-            { throw new Exception("No valid Yay0 signature was found!"); }
+            { throw new InvalidDataException("No valid Yay0 signature was found!"); }
             int decompressedLength = br.ReadS32();
             int compressedOffset = br.ReadS32();
             int decompressedOffset = br.ReadS32();
