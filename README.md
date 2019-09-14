@@ -17,7 +17,7 @@ Keep in mind the project is still in **very early development**; To start using 
 - MP Reading / Writing (Work started)
 - BIN Reading / Writing (Work started)
 - MDL Reading / Writing *(Not started)*
-- RARC Reading / Writing *(Not started)*
+- RARC Reading / Writing (Work started)
 - Yay0 Compression / Decompression (Work started)
 - PRM Reading / Writing **(Complete)**
 - TXP Reading / Writing (Work started, @SpaceCats64)
