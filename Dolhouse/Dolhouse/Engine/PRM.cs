@@ -26,6 +26,16 @@ namespace Dolhouse.Engine
 
 
         /// <summary>
+        /// Initialize a new empty PRM.
+        /// </summary>
+        public PRM()
+        {
+
+            // Define a new list to hold the parameter entries.
+            Entries = new List<PrmEntry>();
+        }
+
+        /// <summary>
         /// Reads PRM from a data stream.
         /// </summary>
         /// <param name="stream">The stream containing the PRM data.</param>
@@ -113,6 +123,31 @@ namespace Dolhouse.Engine
 
         #endregion
 
+
+        /// <summary>
+        /// Create a new empty PrmEntry.
+        /// </summary>
+        public PrmEntry()
+        {
+
+            // Set Hash.
+            Hash = 0;
+
+            // Set NameLength.
+            NameLength = 0;
+
+            // Set Name.
+            Name = "";
+
+            // Set ValueLength.
+            ValueLength = 1;
+
+            // Set Value.
+            Value = 0;
+
+            // Set Type.
+            Type = PrmType.UNKNOWN;
+        }
 
         /// <summary>
         /// Create a new PrmEntry from pre-defined values.
