@@ -40,6 +40,22 @@ namespace Dolhouse.Engine
 
 
         /// <summary>
+        /// Initialize a new empty JMP.
+        /// </summary>
+        public JMP()
+        {
+            // Set JMP's Header
+            EntryOffset = 0;
+            EntrySize = 0;
+
+            // Define a new list to hold the JMP's Fields.
+            Fields = new List<JField>();
+
+            // Define a new list to hold the JMP's Entries.
+            Entries = new List<JEntry>();
+        }
+
+        /// <summary>
         /// Reads JMP from a data stream.
         /// </summary>
         /// <param name="stream">The stream containing the JMP data.</param>
@@ -162,6 +178,31 @@ namespace Dolhouse.Engine
 
 
         /// <summary>
+        /// Initialize a new empty field.
+        /// </summary>
+        public JField()
+        {
+
+            // Set field's hash.
+            Hash = 0;
+
+            // Set field's bitmask.
+            Bitmask = 0;
+
+            // Set field's offset.
+            Offset = 0;
+
+            // Set field's shift.
+            Shift = 0;
+
+            // Set field's type.
+            Type = JFieldType.INTEGER;
+
+            // Set field's name.
+            Name = "";
+        }
+
+        /// <summary>
         /// Read a single field from JMP.
         /// </summary>
         /// <param name="br">Binary Reader to use.</param>
@@ -218,10 +259,56 @@ namespace Dolhouse.Engine
     public class JEntry
     {
 
+        #region Properties
+
         /// <summary>
         /// The values stored within this entry.
         /// </summary>
         public object[] Values { get; set; }
+
+        #endregion
+
+
+        /// <summary>
+        /// Initialize a new empty entry.
+        /// </summary>
+        /// <param name="fields">List of fields in JMP.</param>
+        public JEntry(List<JField> fields)
+        {
+
+            // Define a new object array to hold entry's values.
+            Values = new object[fields.Count];
+
+            // Loop through each field in the JMP.
+            for (int i = 0; i < fields.Count; i++)
+            {
+
+                // Define a new object to hold our data.
+                object value;
+
+                // Check which type the current value is.
+                switch (fields[i].Type)
+                {
+                    case JFieldType.INTEGER:
+                        // Set the data as a integer.
+                        value = 0;
+                        break;
+                    case JFieldType.STRING:
+                        // Set the data as a 32-byte long string.
+                        value = "";
+                        break;
+                    case JFieldType.FLOAT:
+                        // Set the data as a float32.
+                        value = 0.0f;
+                        break;
+                    default:
+                        // Something went horribly wrong.
+                        throw new InvalidDataException();
+                }
+                // Set the value of this entry's value's data to the value we just read.
+                Values[i] = value;
+            }
+        }
 
         /// <summary>
         /// Read a single entry from JMP.
