@@ -305,7 +305,7 @@ namespace Dolhouse.Engine
                         // Something went horribly wrong.
                         throw new InvalidDataException();
                 }
-                // Set the value of this entry's value's data to the value we just read.
+                // Set the value of this entry's value's data to the value we just looped through.
                 Values[i] = value;
             }
         }
