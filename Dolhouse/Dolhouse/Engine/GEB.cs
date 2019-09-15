@@ -24,6 +24,16 @@ namespace Dolhouse.Engine
 
 
         /// <summary>
+        /// Initialize a new empty GEB.
+        /// </summary>
+        public GEB()
+        {
+
+            // Define a new list to hold the sprite entries.
+            Sprites = new List<GSprite>();
+        }
+
+        /// <summary>
         /// Reads GEB from a data stream.
         /// </summary>
         /// <param name="stream">The stream containing the GEB data.</param>
@@ -126,6 +136,37 @@ namespace Dolhouse.Engine
 
         #endregion
 
+
+        /// <summary>
+        /// Initialize a new empty GSprite.
+        /// </summary>
+        public GSprite()
+        {
+
+            // Set GSprite's Unknown 1.
+            Unknown1 = 0;
+
+            // Set GSprite's Unknown 2.
+            Unknown2 = 0;
+
+            // Set GSprite's RGBA.
+            RGBA = 0;
+
+            // Define a new list to hold the GSprite's points.
+            Points = new List<SpritePoint>();
+
+            // Define a array to hold the unknown values.
+            Unknown3 = new int[10];
+
+            // Set GSprite's Unknown 4.
+            Unknown4 = 0;
+
+            // Set GSprite's Unknown 5.
+            Unknown5 = 0;
+
+            // Set GSprite's Unknown 6.
+            Unknown6 = 0;
+        }
 
         /// <summary>
         /// Read a GSprite from GEB.
@@ -234,6 +275,19 @@ namespace Dolhouse.Engine
 
         #endregion
 
+
+        /// <summary>
+        /// Initialize a new empty SpritePoint.
+        /// </summary>
+        public SpritePoint()
+        {
+
+            // Set SpritePoint's Position.
+            Position = new Vector2();
+
+            // Set SpritePoint's Unknown 1.
+            Unknown1 = 0;
+        }
 
         /// <summary>
         /// Read a SpritePoint from GEB.
