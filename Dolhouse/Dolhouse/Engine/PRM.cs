@@ -115,6 +115,37 @@ namespace Dolhouse.Engine
 
 
         /// <summary>
+        /// Create a new PrmEntry from pre-defined values.
+        /// </summary>
+        /// <param name="hash">Entry Hash.</param>
+        /// <param name="nameLength">Entry Name Length.</param>
+        /// <param name="name">Entry Name.</param>
+        /// <param name="valueLength">Entry Value Length.</param>
+        /// <param name="value">Entry Value.</param>
+        /// <param name="type">Entry Type.</param>
+        public PrmEntry(ushort hash, ushort nameLength, string name, uint valueLength, object value, PrmType type)
+        {
+
+            // Set Hash.
+            Hash = hash;
+
+            // Set NameLength.
+            NameLength = nameLength;
+
+            // Set Name.
+            Name = name;
+
+            // Set ValueLength.
+            ValueLength = valueLength;
+
+            // Set Value.
+            Value = value;
+
+            // Set Type.
+            Type = type;
+        }
+
+        /// <summary>
         /// Read a PrmEntry from PRM.
         /// </summary>
         /// <param name="br">Binary Reader to use.</param>
