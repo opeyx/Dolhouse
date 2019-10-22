@@ -516,8 +516,8 @@ namespace Dolhouse.Binary
         /// /// <summary>
         /// Peek at specified number of bytes.
         /// </summary>
-        /// <param name="count">The number of chars to peek at.</param>
-        /// <returns>Array of chars peeked at.</returns>
+        /// <param name="count">The number of bytes to peek at.</param>
+        /// <returns>Array of bytes peeked at.</returns>
         private byte[] Peek(int count)
         {
             byte[] data = Read(count);

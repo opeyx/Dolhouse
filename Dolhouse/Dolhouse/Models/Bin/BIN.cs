@@ -70,6 +70,7 @@ namespace Dolhouse.Models.Bin
 
         #endregion
 
+
         /// <summary>
         /// Reads BIN from a stream.
         /// </summary>
