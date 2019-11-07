@@ -1,7 +1,6 @@
 ﻿using Dolhouse.Binary;
 using Dolhouse.Properties;
-using OpenTK;
-using OpenTK.Graphics;
+using Dolhouse.Type;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -284,12 +283,12 @@ namespace Dolhouse.Engine
                 case PrmType.RGBA:
 
                     // Write Value as a RGBA.
-                    bw.WriteRgba((Color4)Value);
+                    bw.WriteRgba((Clr4)Value);
                     break;
                 case PrmType.VECTOR3:
 
                     // Write Value as a Vector3.
-                    bw.WriteVec3((Vector3)Value);
+                    bw.WriteVec3((Vec3)Value);
                     break;
                 default:
                     throw new NotImplementedException("Parameter entry type is unknown.");

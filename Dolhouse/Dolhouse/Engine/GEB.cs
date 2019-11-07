@@ -1,5 +1,5 @@
 ﻿using Dolhouse.Binary;
-using OpenTK;
+using Dolhouse.Type;
 using System.Collections.Generic;
 using System.IO;
 
@@ -266,7 +266,7 @@ namespace Dolhouse.Engine
         /// <summary>
         /// Point's Position.
         /// </summary>
-        public Vector2 Position { get; set; }
+        public Vec2 Position { get; set; }
 
         /// <summary>
         /// Unknown1. Seems to just be padding.
@@ -283,7 +283,7 @@ namespace Dolhouse.Engine
         {
 
             // Set SpritePoint's Position.
-            Position = new Vector2();
+            Position = new Vec2();
 
             // Set SpritePoint's Unknown 1.
             Unknown1 = 0;
@@ -297,7 +297,7 @@ namespace Dolhouse.Engine
         {
 
             // Read SpritePoint's Position.
-            Position = new Vector2(br.ReadF32(), br.ReadF32());
+            Position = new Vec2(br.ReadF32(), br.ReadF32());
 
             // Read SpritePoint's Unknown 1.
             Unknown1 = br.ReadS32();

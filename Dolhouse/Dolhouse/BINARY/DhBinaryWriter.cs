@@ -1,5 +1,4 @@
-﻿using OpenTK;
-using OpenTK.Graphics;
+﻿using Dolhouse.Type;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -400,7 +399,7 @@ namespace Dolhouse.Binary
         /// Write vector2.
         /// </summary>
         /// <param name="value">The vector2 to write.</param>
-        public void WriteVec2(Vector2 value)
+        public void WriteVec2(Vec2 value)
         {
             WriteF32(value.X);
             WriteF32(value.Y);
@@ -410,7 +409,7 @@ namespace Dolhouse.Binary
         /// Write vector3.
         /// </summary>
         /// <param name="value">The vector3 to write.</param>
-        public void WriteVec3(Vector3 value)
+        public void WriteVec3(Vec3 value)
         {
             WriteF32(value.X);
             WriteF32(value.Y);
@@ -426,7 +425,7 @@ namespace Dolhouse.Binary
         /// Write rgba.
         /// </summary>
         /// <param name="value">The rgba to write.</param>
-        public void WriteRgba(Color4 value)
+        public void WriteRgba(Clr4 value)
         {
             uint data =
                 (uint)(value.R * byte.MaxValue) << 24 |

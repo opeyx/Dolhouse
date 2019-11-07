@@ -1,5 +1,5 @@
 ﻿using Dolhouse.Binary;
-using OpenTK;
+using Dolhouse.Type;
 using System.Collections.Generic;
 using System.IO;
 
@@ -17,17 +17,17 @@ namespace Dolhouse.Models.Mp
         /// <summary>
         /// Grid scale.
         /// </summary>
-        public Vector3 GridScale { get; set; }
+        public Vec3 GridScale { get; set; }
 
         /// <summary>
         /// Minimum Bounds.
         /// </summary>
-        public Vector3 MinimumBounds { get; set; }
+        public Vec3 MinimumBounds { get; set; }
 
         /// <summary>
         /// Axis Lengths.
         /// </summary>
-        public Vector3 AxisLengths { get; set; }
+        public Vec3 AxisLengths { get; set; }
 
         /// <summary>
         /// Offsets.
@@ -37,12 +37,12 @@ namespace Dolhouse.Models.Mp
         /// <summary>
         /// List of vertices.
         /// </summary>
-        public List<Vector3> Vertices { get; set; }
+        public List<Vec3> Vertices { get; set; }
 
         /// <summary>
         /// List of normals / edge tangents.
         /// </summary>
-        public List<Vector3> Normals { get; set; }
+        public List<Vec3> Normals { get; set; }
 
         /// <summary>
         /// List of triangle data.
@@ -67,13 +67,13 @@ namespace Dolhouse.Models.Mp
             DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
 
             // Read Grid Scale.
-            GridScale = new Vector3(br.ReadF32(), br.ReadF32(), br.ReadF32());
+            GridScale = new Vec3(br.ReadF32(), br.ReadF32(), br.ReadF32());
 
             // Read Minimum Bounds.
-            MinimumBounds = new Vector3(br.ReadF32(), br.ReadF32(), br.ReadF32());
+            MinimumBounds = new Vec3(br.ReadF32(), br.ReadF32(), br.ReadF32());
 
             // Read Axis Lengths.
-            AxisLengths = new Vector3(br.ReadF32(), br.ReadF32(), br.ReadF32());
+            AxisLengths = new Vec3(br.ReadF32(), br.ReadF32(), br.ReadF32());
 
             // Define new array to hold offsets.
             Offsets = new int[7];
@@ -93,13 +93,13 @@ namespace Dolhouse.Models.Mp
             int verticeCount = (Offsets[1] - Offsets[0]) / 12;
 
             // Define new list to hold vertices.
-            Vertices = new List<Vector3>();
+            Vertices = new List<Vec3>();
 
             // Loop through vertices.
             for (int i = 0; i < verticeCount; i++)
             {
                 // Read vertex and add it to the vertice list.
-                Vertices.Add(new Vector3(br.ReadF32(), br.ReadF32(), br.ReadF32()));
+                Vertices.Add(new Vec3(br.ReadF32(), br.ReadF32(), br.ReadF32()));
             }
 
 
@@ -110,13 +110,13 @@ namespace Dolhouse.Models.Mp
             int normalCount = (Offsets[2] - Offsets[1]) / 12;
 
             // Define new list to hold normals.
-            Normals = new List<Vector3>();
+            Normals = new List<Vec3>();
 
             // Loop through normals.
             for (int i = 0; i < verticeCount; i++)
             {
                 // Read normal and add it to the normal list.
-                Normals.Add(new Vector3(br.ReadF32(), br.ReadF32(), br.ReadF32()));
+                Normals.Add(new Vec3(br.ReadF32(), br.ReadF32(), br.ReadF32()));
             }
 
 

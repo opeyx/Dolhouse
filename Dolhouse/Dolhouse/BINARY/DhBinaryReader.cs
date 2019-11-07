@@ -1,5 +1,4 @@
-﻿using OpenTK;
-using OpenTK.Graphics;
+﻿using Dolhouse.Type;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -469,18 +468,18 @@ namespace Dolhouse.Binary
         /// Read Vector2 from stream.
         /// </summary>
         /// <returns>Vector2 that was read.</returns>
-        public Vector2 ReadVec2()
+        public Vec2 ReadVec2()
         {
-            return new Vector2(ReadF32(), ReadF32());
+            return new Vec2(ReadF32(), ReadF32());
         }
 
         /// <summary>
         /// Read Vector3 from stream.
         /// </summary>
         /// <returns>Vector3 that was read.</returns>
-        public Vector3 ReadVec3()
+        public Vec3 ReadVec3()
         {
-            return new Vector3(ReadF32(), ReadF32(), ReadF32());
+            return new Vec3(ReadF32(), ReadF32(), ReadF32());
         }
 
         #endregion
@@ -492,9 +491,9 @@ namespace Dolhouse.Binary
         /// Read Rgba from stream.
         /// </summary>
         /// <returns>Rgba that was read.</returns>
-        public Color4 ReadRgba()
+        public Clr4 ReadRgba()
         {
-            return new Color4(Read(), Read(), Read(), Read());
+            return new Clr4(Read(), Read(), Read(), Read());
         }
 
         #endregion
