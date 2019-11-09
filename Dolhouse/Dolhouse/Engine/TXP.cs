@@ -8,6 +8,7 @@ namespace Dolhouse.Engine
 
     public class TXP 
     {
+
         #region Properties
         
         /// <summary>

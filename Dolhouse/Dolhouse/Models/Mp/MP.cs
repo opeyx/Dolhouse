@@ -56,6 +56,7 @@ namespace Dolhouse.Models.Mp
 
         #endregion
 
+
         /// <summary>
         /// Reads MP from a stream.
         /// </summary>
