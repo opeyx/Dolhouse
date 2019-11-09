@@ -97,7 +97,7 @@ namespace Dolhouse.Engine
         /// <returns>The JMP as a stream.</returns>
         public Stream Write()
         {
-            // Define a stream to hold our GEB data.
+            // Define a stream to hold our JMP data.
             Stream stream = new MemoryStream();
 
             // Define a binary writer to write with.
