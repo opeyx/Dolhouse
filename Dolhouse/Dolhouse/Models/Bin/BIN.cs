@@ -56,7 +56,7 @@ namespace Dolhouse.Models.Bin
         /// <summary>
         /// Bin texture coordinates.
         /// </summary>
-        public List<BinTextureCoordinate> TextureCoordinates { get; set; }
+        public List<Vec2> TextureCoordinates { get; set; }
 
         /// <summary>
         /// Bin normals.
@@ -173,14 +173,14 @@ namespace Dolhouse.Models.Bin
             br.Goto(Offsets[6]);
 
             // Define a new list to hold the bin's texture coordinates.
-            TextureCoordinates = new List<BinTextureCoordinate>();
+            TextureCoordinates = new List<Vec2>();
 
             // Loop through bin's texture coordinates. TODO: This is static for now, add automatic texture coordinates count.
             for (int i = 0; i < 72; i++)
             {
 
                 // Read a bin texture coordinates and add it to the texture coordinates list.
-                TextureCoordinates.Add(new BinTextureCoordinate(br));
+                TextureCoordinates.Add(new Vec2(br.ReadF32(), br.ReadF32()));
             }
 
 

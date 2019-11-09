@@ -59,7 +59,6 @@
     <Compile Include="Models\Bin\BinPrimitiveVertex.cs" />
     <Compile Include="Models\Bin\BinShader.cs" />
     <Compile Include="Models\Bin\BinTexture.cs" />
-    <Compile Include="Models\Bin\BinTextureCoordinate.cs" />
     <Compile Include="Models\Mp\MP.cs" />
     <Compile Include="Models\Mp\MpGridIndex.cs" />
     <Compile Include="Models\Mp\MpTriangleData.cs" />
