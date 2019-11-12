@@ -118,6 +118,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Write array of unsigned bytes.
         /// </summary>
+        /// <param name="value">The array of unsigned bytes to write.</param>
         public void WriteU8s(byte[] value)
         {
             for (int i = 0; i < value.Length; i++)
@@ -137,6 +138,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Write array of signed bytes.
         /// </summary>
+        /// <param name="value">The array of signed bytes to write.</param>
         public void WriteS8s(sbyte[] value)
         {
             for (int i = 0; i < value.Length; i++)
@@ -161,6 +163,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Write array of unsigned shorts.
         /// </summary>
+        /// <param name="value">The array of unsigned shorts to write.</param>
         public void WriteU16s(ushort[] value)
         {
             for (int i = 0; i < value.Length; i++)
@@ -180,6 +183,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Write array of signed shorts.
         /// </summary>
+        /// <param name="value">The array of signed shorts to write.</param>
         public void WriteS16s(short[] value)
         {
             for (int i = 0; i < value.Length; i++)
@@ -204,6 +208,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Write array of unsigned integers.
         /// </summary>
+        /// <param name="value">The array of unsigned integers to write.</param>
         public void WriteU32s(uint[] value)
         {
             for (int i = 0; i < value.Length; i++)
@@ -215,6 +220,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Write signed integer.
         /// </summary>
+        /// <param name="value">The array of signed integers to write.</param>
         public void WriteS32(int value)
         {
             Write(BitConverter.GetBytes(value));
@@ -247,6 +253,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Write array of unsigned longs.
         /// </summary>
+        /// <param name="value">The array of unsigned longs to write.</param>
         public void WriteU64s(ulong[] value)
         {
             for (int i = 0; i < value.Length; i++)
@@ -266,6 +273,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Write array of signed longs.
         /// </summary>
+        /// <param name="value">The array of signed longs to write.</param>
         public void WriteS64s(long[] value)
         {
             for (int i = 0; i < value.Length; i++)
@@ -290,6 +298,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Write array of float16s.
         /// </summary>
+        /// <param name="value">The array of float16s to write.</param>
         public void WriteF16s(short[] value)
         {
             for (int i = 0; i < value.Length; i++)
@@ -309,6 +318,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Write array of float32s.
         /// </summary>
+        /// <param name="value">The array of float32s to write.</param>
         public void WriteF32s(float[] value)
         {
             for (int i = 0; i < value.Length; i++)
@@ -328,6 +338,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Write array of float64s.
         /// </summary>
+        /// <param name="value">The array of float64s to write.</param>
         public void WriteF64s(double[] value)
         {
             for (int i = 0; i < value.Length; i++)
@@ -353,7 +364,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Write array of chars.
         /// </summary>
-        /// <param name="value">The chars to write.</param>
+        /// <param name="value">The array of chars to write.</param>
         public void WriteChars(char[] value)
         {
             Write(Encoding.GetBytes(value));
@@ -396,9 +407,9 @@ namespace Dolhouse.Binary
         #region Vectors
 
         /// <summary>
-        /// Write vector2.
+        /// Write Vector2.
         /// </summary>
-        /// <param name="value">The vector2 to write.</param>
+        /// <param name="value">The Vector2 to write.</param>
         public void WriteVec2(Vec2 value)
         {
             WriteF32(value.X);

@@ -123,6 +123,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Read array of unsigned bytes.
         /// </summary>
+        /// <param name="count">Amount of unsigned bytes to read.</param>
         /// <returns>The read array of unsigned bytes.</returns>
         public byte[] ReadU8s(int count)
         {
@@ -146,6 +147,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Read array of signed bytes.
         /// </summary>
+        /// <param name="count">Amount of signed bytes to read.</param>
         /// <returns>The read array of signed bytes.</returns>
         public sbyte[] ReadS8s(int count)
         {
@@ -174,6 +176,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Read array of unsigned shorts.
         /// </summary>
+        /// <param name="count">Amount of unsigned shorts to read.</param>
         /// <returns>The read array of unsigned shorts.</returns>
         public ushort[] ReadU16s(int count)
         {
@@ -197,6 +200,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Read array of signed shorts.
         /// </summary>
+        /// <param name="count">Amount of signed shorts to read.</param>
         /// <returns>The read array of signed shorts.</returns>
         public short[] ReadS16s(int count)
         {
@@ -225,6 +229,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Read array of unsigned integers.
         /// </summary>
+        /// <param name="count">Amount of unsigned integers to read.</param>
         /// <returns>The read array of unsigned integers.</returns>
         public uint[] ReadU32s(int count)
         {
@@ -248,6 +253,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Read array of signed integers.
         /// </summary>
+        /// <param name="count">Amount of signed integers to read.</param>
         /// <returns>The read array of signed integers.</returns>
         public int[] ReadS32s(int count)
         {
@@ -276,6 +282,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Read array of unsigned longs.
         /// </summary>
+        /// <param name="count">Amount of unsigned longs to read.</param>
         /// <returns>The read array of unsigned longs.</returns>
         public ulong[] ReadU64s(int count)
         {
@@ -299,6 +306,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Read array of signed longs.
         /// </summary>
+        /// <param name="count">Amount of signed longs to read.</param>
         /// <returns>The read array of signed longs.</returns>
         public long[] ReadS64s(int count)
         {
@@ -327,6 +335,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Read array of 16-bit floats.
         /// </summary>
+        /// <param name="count">Amount of 16-bit floats to read.</param>
         /// <returns>The read array of 16-bit floats.</returns>
         public short[] ReadF16s(int count)
         {
@@ -350,6 +359,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Read array of 32-bit floats.
         /// </summary>
+        /// <param name="count">Amount of 32-bit floats to read.</param>
         /// <returns>The read array of 32-bit floats.</returns>
         public float[] ReadF32s(int count)
         {
@@ -373,6 +383,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Read array of 64-bit floats.
         /// </summary>
+        /// <param name="count">Amount of 64-bit floats to read.</param>
         /// <returns>The read array of 64-bit floats.</returns>
         public double[] ReadF64s(int count)
         {
