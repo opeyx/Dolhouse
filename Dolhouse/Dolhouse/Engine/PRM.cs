@@ -226,8 +226,8 @@ namespace Dolhouse.Engine
                     break;
                 case PrmType.RGBA:
 
-                    // Read Value as a RGBA.
-                    Value = br.ReadRgba();
+                    // Read Value as a Clr4.
+                    Value = br.ReadClr4();
                     break;
                 case PrmType.VECTOR3:
 
@@ -282,8 +282,8 @@ namespace Dolhouse.Engine
                     break;
                 case PrmType.RGBA:
 
-                    // Write Value as a RGBA.
-                    bw.WriteRgba((Clr4)Value);
+                    // Write Value as a Clr4.
+                    bw.WriteClr4((Clr4)Value);
                     break;
                 case PrmType.VECTOR3:
 
