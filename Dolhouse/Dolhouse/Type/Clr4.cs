@@ -83,5 +83,14 @@
             B = (float)b / 255;
             A = (float)a / 255;
         }
+
+        /// <summary>
+        /// Return the Clr4 as a string.
+        /// </summary>
+        /// <returns>The Clr4 formatted as a string.</returns>
+        public override string ToString()
+        {
+            return R.ToString("n6") + ", " + G.ToString("n6") + ", " + B.ToString("n6") + ", " + A.ToString("n6");
+        }
     }
 }

@@ -51,5 +51,14 @@
             X = x;
             Y = y;
         }
+
+        /// <summary>
+        /// Return the Vec2 as a string.
+        /// </summary>
+        /// <returns>The Vec2 formatted as a string.</returns>
+        public override string ToString()
+        {
+            return "(" + X.ToString("n6") + ", " + Y.ToString("n6") + ")";
+        }
     }
 }

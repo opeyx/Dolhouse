@@ -60,5 +60,14 @@
             Y = y;
             Z = z;
         }
+
+        /// <summary>
+        /// Return the Vec3 as a string.
+        /// </summary>
+        /// <returns>The Vec3 formatted as a string.</returns>
+        public override string ToString()
+        {
+            return "(" + X.ToString("n6") + ", " + Y.ToString("n6") + ", " + Z.ToString("n6") + ")";
+        }
     }
 }
