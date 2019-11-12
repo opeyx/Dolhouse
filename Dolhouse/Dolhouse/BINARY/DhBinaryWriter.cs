@@ -417,14 +417,41 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
-        /// Write vector3.
+        /// Write array of Vector2.
         /// </summary>
-        /// <param name="value">The vector3 to write.</param>
+        /// <param name="value">The array of Vector2s to write.</param>
+        public void WriteVec3(Vec2[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                WriteF32(value[i].X);
+                WriteF32(value[i].Y);
+            }
+        }
+
+        /// <summary>
+        /// Write Vector3.
+        /// </summary>
+        /// <param name="value">The Vector3 to write.</param>
         public void WriteVec3(Vec3 value)
         {
             WriteF32(value.X);
             WriteF32(value.Y);
             WriteF32(value.Z);
+        }
+
+        /// <summary>
+        /// Write array of Vector3.
+        /// </summary>
+        /// <param name="value">The array of Vector3s to write.</param>
+        public void WriteVec3(Vec3[] value)
+        {
+            for(int i = 0; i < value.Length; i++)
+            {
+                WriteF32(value[i].X);
+                WriteF32(value[i].Y);
+                WriteF32(value[i].Z);
+            }
         }
 
         #endregion
@@ -433,10 +460,10 @@ namespace Dolhouse.Binary
         #region Colors
 
         /// <summary>
-        /// Write rgba.
+        /// Write Clr4.
         /// </summary>
-        /// <param name="value">The rgba to write.</param>
-        public void WriteRgba(Clr4 value)
+        /// <param name="value">The Clr4 to write.</param>
+        public void WriteClr4(Clr4 value)
         {
             uint data =
                 (uint)(value.R * byte.MaxValue) << 24 |
@@ -444,6 +471,23 @@ namespace Dolhouse.Binary
                 (uint)(value.B * byte.MaxValue) << 8 |
                 (uint)(value.A * byte.MaxValue);
             WriteU32(data);
+        }
+
+        /// <summary>
+        /// Write array of Clr4.
+        /// </summary>
+        /// <param name="value">The array of Clr4s to write.</param>
+        public void WriteClr4s(Clr4[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                uint data =
+                (uint)(value[i].R * byte.MaxValue) << 24 |
+                (uint)(value[i].G * byte.MaxValue) << 16 |
+                (uint)(value[i].B * byte.MaxValue) << 8 |
+                (uint)(value[i].A * byte.MaxValue);
+                WriteU32(data);
+            }
         }
 
         #endregion

@@ -476,21 +476,51 @@ namespace Dolhouse.Binary
         #region Vectors
 
         /// <summary>
-        /// Read Vector2 from stream.
+        /// Read Vector2.
         /// </summary>
-        /// <returns>Vector2 that was read.</returns>
+        /// <returns>The read Vector2.</returns>
         public Vec2 ReadVec2()
         {
             return new Vec2(ReadF32(), ReadF32());
         }
 
-        /// <summary>
-        /// Read Vector3 from stream.
+        /// /// <summary>
+        /// Read array of Vector2.
         /// </summary>
-        /// <returns>Vector3 that was read.</returns>
+        /// <param name="count">Amount of Vector2s to read.</param>
+        /// <returns>The read array of Vector2s.</returns>
+        public Vec2[] ReadVec2s(int count)
+        {
+            Vec2[] data = new Vec2[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = new Vec2(ReadF32(), ReadF32());
+            }
+            return data;
+        }
+
+        /// <summary>
+        /// Read Vector3.
+        /// </summary>
+        /// <returns>The read Vector3.</returns>
         public Vec3 ReadVec3()
         {
             return new Vec3(ReadF32(), ReadF32(), ReadF32());
+        }
+
+        /// /// <summary>
+        /// Read array of Vector3.
+        /// </summary>
+        /// <param name="count">Amount of Vector3s to read.</param>
+        /// <returns>The read array of Vector3s.</returns>
+        public Vec3[] ReadVec3s(int count)
+        {
+            Vec3[] data = new Vec3[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = new Vec3(ReadF32(), ReadF32(), ReadF32());
+            }
+            return data;
         }
 
         #endregion
@@ -499,12 +529,27 @@ namespace Dolhouse.Binary
         #region Colors
 
         /// <summary>
-        /// Read Rgba from stream.
+        /// Read Clr4 from stream.
         /// </summary>
-        /// <returns>Rgba that was read.</returns>
-        public Clr4 ReadRgba()
+        /// <returns>The read Clr4.</returns>
+        public Clr4 ReadClr4()
         {
             return new Clr4(Read(), Read(), Read(), Read());
+        }
+
+        /// <summary>
+        /// Read array of Clr4s.
+        /// </summary>
+        /// <param name="count">Amount of Clr4s to read.</param>
+        /// <returns>The read array of Clr4s.</returns>
+        public Clr4[] ReadClr4s(int count)
+        {
+            Clr4[] data = new Clr4[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = new Clr4(Read(), Read(), Read(), Read());
+            }
+            return data;
         }
 
         #endregion
