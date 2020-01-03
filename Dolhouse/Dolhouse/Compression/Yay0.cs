@@ -28,32 +28,42 @@ namespace Dolhouse.Compression
             // Define a list of bytes to hold the decompressed data.
             List<byte> output = new List<byte>();
 
-            // Make sure the magic is "Yay0"
+            // Make sure the magic is "Yay0".
             if (br.ReadU32() != 1499560240)
             { throw new InvalidDataException("No valid Yay0 signature was found!"); }
+
+            // Read the length of the decompressed data.
             int decompressedLength = br.ReadS32();
+
+            // Read the compressed data offset.
             int compressedOffset = br.ReadS32();
+
+            // Read the non-compressed data offset.
             int decompressedOffset = br.ReadS32();
+
+            // Define variable to hold each layout bits' offset.
             int layoutBitsOffset;
 
             // Begin decompression.
             while (output.Count < decompressedLength)
             {
+
                 // Define variable to hold the layout byte.
-                byte LayoutByte = br.Read();
+                byte layoutByte = br.Read();
+
                 // Define variable to hold the individual layout bits.
-                BitArray LayoutBits = new BitArray(new byte[1] { LayoutByte });
+                BitArray layoutBits = new BitArray(new byte[1] { layoutByte });
 
                 // Loop through the layout bits.
                 for (int i = 7; i > -1 && (output.Count < decompressedLength); i--)
                 {
                     // The next layout bit is 1. (Uncompressed data)
-                    if (LayoutBits[i] == true)
+                    if (layoutBits[i] == true)
                     {
                         // Yay0 Non-compressed Data Chunk:
                         // Add one byte from decompressedOffset to decompressedData.
 
-                        // Define variable to hold the current layout bits offset.
+                        // Set variable to the current layout bits' offset.
                         layoutBitsOffset = (int)stream.Position;
 
                         // Seek to the compressed data offset.
