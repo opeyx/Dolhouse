@@ -70,6 +70,8 @@
     </Compile>
     <Compile Include="Compression\Yay0.cs" />
     <Compile Include="Type\Clr4.cs" />
+    <Compile Include="Type\Mat4.cs" />
+    <Compile Include="Type\Vec4.cs" />
     <Compile Include="Type\Vec3.cs" />
     <Compile Include="Type\Vec2.cs" />
   </ItemGroup>
