@@ -45,7 +45,7 @@
         }
 
         /// <summary>
-        /// Initialize a new Vec4 by four Vec4's.
+        /// Initialize a new Mat4 by four Vec4's.
         /// </summary>
         /// <param name="row1">Value to set row1 to.</param>
         /// <param name="row2">Value to set row2 to.</param>
