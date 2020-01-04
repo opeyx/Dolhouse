@@ -454,6 +454,33 @@ namespace Dolhouse.Binary
             }
         }
 
+        /// <summary>
+        /// Write Vector4.
+        /// </summary>
+        /// <param name="value">The Vector4 to write.</param>
+        public void WriteVec4(Vec4 value)
+        {
+            WriteF32(value.X);
+            WriteF32(value.Y);
+            WriteF32(value.Z);
+            WriteF32(value.W);
+        }
+
+        /// <summary>
+        /// Write array of Vector4.
+        /// </summary>
+        /// <param name="value">The array of Vector4s to write.</param>
+        public void WriteVec4(Vec4[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                WriteF32(value[i].X);
+                WriteF32(value[i].Y);
+                WriteF32(value[i].Z);
+                WriteF32(value[i].W);
+            }
+        }
+
         #endregion
 
 

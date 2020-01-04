@@ -523,6 +523,30 @@ namespace Dolhouse.Binary
             return data;
         }
 
+        /// <summary>
+        /// Read Vector4.
+        /// </summary>
+        /// <returns>The read Vector4.</returns>
+        public Vec4 ReadVec4()
+        {
+            return new Vec4(ReadF32(), ReadF32(), ReadF32(), ReadF32());
+        }
+
+        /// /// <summary>
+        /// Read array of Vector4.
+        /// </summary>
+        /// <param name="count">Amount of Vector4s to read.</param>
+        /// <returns>The read array of Vector4s.</returns>
+        public Vec4[] ReadVec4s(int count)
+        {
+            Vec4[] data = new Vec4[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = new Vec4(ReadF32(), ReadF32(), ReadF32(), ReadF32());
+            }
+            return data;
+        }
+
         #endregion
 
 
