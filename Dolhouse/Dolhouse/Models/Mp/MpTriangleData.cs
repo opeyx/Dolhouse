@@ -98,7 +98,27 @@ namespace Dolhouse.Models.Mp
         /// <param name="bw">Binary Writer to use.</param>
         public void Write(DhBinaryWriter bw)
         {
-            // TODO: Implement this.
+
+            // Write Vertex Indices.
+            bw.WriteS16s(VertexIndices);
+
+            // Write Normal Index.
+            bw.WriteS16(NormalIndex);
+
+            // Write Edge Tangent Indices.
+            bw.WriteS16s(EdgeTangentIndices);
+
+            // Write Unknown 1.
+            bw.WriteS16(Unknown1);
+
+            // Write Unknown 2.
+            bw.WriteF32(Unknown2);
+
+            // Write Unknown 3.
+            bw.WriteS16(Unknown3);
+
+            // Write Unknown 4.
+            bw.WriteS16(Unknown4);
         }
     }
 }
