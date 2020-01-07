@@ -550,6 +550,35 @@ namespace Dolhouse.Binary
         #endregion
 
 
+        #region Matrices
+
+        /// <summary>
+        /// Read Mat4.
+        /// </summary>
+        /// <returns>The read Mat4.</returns>
+        public Mat4 ReadMat4()
+        {
+            return new Mat4(ReadVec4(), ReadVec4(), ReadVec4(), ReadVec4());
+        }
+
+        /// <summary>
+        /// Read array of Mat4.
+        /// </summary>
+        /// <param name="count">Amount of Mat4s to read.</param>
+        /// <returns>The read array of Mat4s.</returns>
+        public Mat4[] ReadMat4s(int count)
+        {
+            Mat4[] data = new Mat4[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = new Mat4(ReadVec4(), ReadVec4(), ReadVec4(), ReadVec4());
+            }
+            return data;
+        }
+
+        #endregion
+
+
         #region Colors
 
         /// <summary>

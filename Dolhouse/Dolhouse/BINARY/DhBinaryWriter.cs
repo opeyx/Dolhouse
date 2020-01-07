@@ -484,6 +484,38 @@ namespace Dolhouse.Binary
         #endregion
 
 
+        #region Matrices
+
+        /// <summary>
+        /// Write Mat4.
+        /// </summary>
+        /// <param name="value">The Mat4 to write.</param>
+        public void WriteMat4(Mat4 value)
+        {
+            WriteVec4(value.Row1);
+            WriteVec4(value.Row2);
+            WriteVec4(value.Row3);
+            WriteVec4(value.Row4);
+        }
+
+        /// <summary>
+        /// Write array of Mat4.
+        /// </summary>
+        /// <param name="value">The array of Mat4s to write.</param>
+        public void WriteMat4(Mat4[] value)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                WriteVec4(value[i].Row1);
+                WriteVec4(value[i].Row2);
+                WriteVec4(value[i].Row3);
+                WriteVec4(value[i].Row4);
+            }
+        }
+
+        #endregion
+
+
         #region Colors
 
         /// <summary>
