@@ -484,7 +484,7 @@ namespace Dolhouse.Binary
             return new Vec2(ReadF32(), ReadF32());
         }
 
-        /// /// <summary>
+        /// <summary>
         /// Read array of Vector2.
         /// </summary>
         /// <param name="count">Amount of Vector2s to read.</param>
@@ -508,7 +508,7 @@ namespace Dolhouse.Binary
             return new Vec3(ReadF32(), ReadF32(), ReadF32());
         }
 
-        /// /// <summary>
+        /// <summary>
         /// Read array of Vector3.
         /// </summary>
         /// <param name="count">Amount of Vector3s to read.</param>
@@ -532,7 +532,7 @@ namespace Dolhouse.Binary
             return new Vec4(ReadF32(), ReadF32(), ReadF32(), ReadF32());
         }
 
-        /// /// <summary>
+        /// <summary>
         /// Read array of Vector4.
         /// </summary>
         /// <param name="count">Amount of Vector4s to read.</param>
