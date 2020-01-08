@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+	<Compile Include="Archive\RARC.cs" />
     <Compile Include="BINARY\DhBinaryWriter.cs" />
     <Compile Include="BINARY\DhBinaryReader.cs" />
     <Compile Include="BINARY\DhEndian.cs" />
