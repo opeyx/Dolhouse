@@ -1,10 +1,5 @@
 ﻿using Dolhouse.Binary;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dolhouse.Engine
 {
@@ -30,19 +25,19 @@ namespace Dolhouse.Engine
         public byte Loop { get; set; }
 
         /// <summary>
-        /// Unknown 1 (Padding?(
+        /// Unknown 1 (Padding?)
         /// </summary>
         public short Unknown1 { get; set; }
 
         /// <summary>
-        /// Amount of key positions.
+        /// Amount of keyframes.
         /// </summary>
-        public uint KeyPositionCount { get; set; }
+        public uint KeyFrameCount { get; set; }
 
         /// <summary>
-        /// Offset to key positions. (Absolute)
+        /// Offset to keyframes. (Absolute)
         /// </summary>
-        public uint KeyPositionsOffset { get; set; }
+        public uint KeyFrameOffset { get; set; }
 
         /// <summary>
         /// Unknown 2. (Offset?)
@@ -55,7 +50,7 @@ namespace Dolhouse.Engine
         public int Unknown3 { get; set; }
 
         /// <summary>
-        /// Unknown 4. (Count?)
+        /// Unknown 4. (Header size?)
         /// </summary>
         public int Unknown4 { get; set; }
 
@@ -71,11 +66,11 @@ namespace Dolhouse.Engine
             Version = 2;
             Loop = 0;
             Unknown1 = 0;
-            KeyPositionCount = 0;
-            KeyPositionsOffset = 0;
+            KeyFrameCount = 0;
+            KeyFrameOffset = 0;
             Unknown2 = 0;
             Unknown3 = 0;
-            Unknown4 = 0;
+            Unknown4 = 24; // Seems to always be 24 (dec).
 
             /*
                 Keyframes - Interpolation type list:
@@ -96,8 +91,8 @@ namespace Dolhouse.Engine
             Version = br.ReadU8();
             Loop = br.ReadU8();
             Unknown1 = br.ReadS16();
-            KeyPositionCount = br.ReadU32();
-            KeyPositionsOffset = br.ReadU32();
+            KeyFrameCount = br.ReadU32();
+            KeyFrameOffset = br.ReadU32();
             Unknown2 = br.ReadS32();
             Unknown3 = br.ReadS32();
             Unknown4 = br.ReadS32();
