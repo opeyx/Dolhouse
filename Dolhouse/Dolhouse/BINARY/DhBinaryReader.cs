@@ -86,6 +86,20 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read a single byte at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the bytes at.</param>
+        /// <returns>The byte you read.</returns>
+        public byte ReadAt(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            byte data = Read();
+            Goto(currentPosition);
+            return data;
+        }
+
+        /// <summary>
         /// Reads a specified number of bytes.
         /// </summary>
         /// <param name="count">The number of bytes to read.</param>
@@ -94,6 +108,21 @@ namespace Dolhouse.Binary
         {
             byte[] data = Reader.ReadBytes(count);
             if (Endian == DhEndian.Big) { Array.Reverse(data); } // TODO: Fix this.
+            return data;
+        }
+
+        /// <summary>
+        /// Reads a specified number of bytes at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the bytes at.</param>
+        /// <param name="count">The number of bytes to read.</param>
+        /// <returns>Array of bytes read.</returns>
+        public byte[] ReadAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            byte[] data = Read(count);
+            Goto(currentPosition);
             return data;
         }
 
