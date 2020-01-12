@@ -439,7 +439,21 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
-        /// Read string of specific length.
+        /// Read string from stream at absolute offset. (Null-Terminated)
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the string at.</param>
+        /// <returns>Null-Terminated string.</returns>
+        public string ReadStrAt(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            string result = ReadStr();
+            Goto(currentPosition);
+            return result;
+        }
+
+        /// <summary>
+        /// Read string of specific length from stream.
         /// </summary>
         /// <param name="count">The string length to read.</param>
         /// <returns>String that was read.</returns>
@@ -451,6 +465,21 @@ namespace Dolhouse.Binary
                 chars.Add((char)Read());
             }
             return Encoding.GetString(Encoding.GetBytes(chars.ToArray()));
+        }
+
+        /// <summary>
+        /// Read string of specific length from stream at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the string at.</param>
+        /// <param name="count">The string length to read.</param>
+        /// <returns>String that was read.</returns>
+        public string ReadStrAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            string result = ReadStr(count);
+            Goto(currentPosition);
+            return result;
         }
 
         /// <summary>
@@ -468,6 +497,20 @@ namespace Dolhouse.Binary
             }
             Skip(32 - pos);
             return new string(chars.ToArray());
+        }
+
+        /// <summary>
+        /// Read 32 byte long string from stream at absolute offset. (Return first NT part only)
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the string at.</param>
+        /// <returns>First Null-Terminated part of string.</returns>
+        public string ReadStr32At(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            string result = ReadStr32();
+            Goto(currentPosition);
+            return result;
         }
 
         #endregion
