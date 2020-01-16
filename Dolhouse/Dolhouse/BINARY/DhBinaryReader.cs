@@ -150,6 +150,20 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read unsigned byte at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the byte at.</param>
+        /// <returns>The read unsigned byte.</returns>
+        public byte ReadU8At(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            byte data = Read();
+            Goto(currentPosition);
+            return data;
+        }
+
+        /// <summary>
         /// Read array of unsigned bytes.
         /// </summary>
         /// <param name="count">Amount of unsigned bytes to read.</param>
@@ -165,12 +179,45 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read array of unsigned bytes at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the unsigned bytes at.</param>
+        /// <param name="count">Amount of unsigned bytes to read.</param>
+        /// <returns>The read array of unsigned bytes.</returns>
+        public byte[] ReadU8sAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            byte[] data = new byte[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = Read();
+            }
+            Goto(currentPosition);
+            return data;
+        }
+
+        /// <summary>
         /// Read signed byte.
         /// </summary>
         /// <returns>The read signed byte.</returns>
         public sbyte ReadS8()
         {
             return (sbyte)Read();
+        }
+
+        /// <summary>
+        /// Read signed byte at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the signed byte at.</param>
+        /// <returns>The read signed byte.</returns>
+        public sbyte ReadS8At(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            sbyte data = (sbyte)Read();
+            Goto(currentPosition);
+            return data;
         }
 
         /// <summary>
@@ -185,6 +232,25 @@ namespace Dolhouse.Binary
             {
                 data[i] = (sbyte)Read();
             }
+            return data;
+        }
+
+        /// <summary>
+        /// Read array of signed bytes at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the signed bytes at.</param>
+        /// <param name="count">Amount of signed bytes to read.</param>
+        /// <returns>The read array of signed bytes.</returns>
+        public sbyte[] ReadS8sAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            sbyte[] data = new sbyte[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = (sbyte)Read();
+            }
+            Goto(currentPosition);
             return data;
         }
 
@@ -203,6 +269,20 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read unsigned short at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the unsigned short at.</param>
+        /// <returns>The read unsigned short.</returns>
+        public ushort ReadU16At(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            ushort data = BitConverter.ToUInt16(Read(2), 0);
+            Goto(currentPosition);
+            return data;
+        }
+
+        /// <summary>
         /// Read array of unsigned shorts.
         /// </summary>
         /// <param name="count">Amount of unsigned shorts to read.</param>
@@ -218,12 +298,45 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read array of unsigned shorts at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the unsigned shorts at.</param>
+        /// <param name="count">Amount of unsigned shorts to read.</param>
+        /// <returns>The read array of unsigned shorts.</returns>
+        public ushort[] ReadU16sAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            ushort[] data = new ushort[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToUInt16(Read(2), 0);
+            }
+            Goto(currentPosition);
+            return data;
+        }
+
+        /// <summary>
         /// Read signed short.
         /// </summary>
         /// <returns>The read signed short.</returns>
         public short ReadS16()
         {
             return BitConverter.ToInt16(Read(2), 0);
+        }
+
+        /// <summary>
+        /// Read signed short at at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the signed short at.</param>
+        /// <returns>The read signed short.</returns>
+        public short ReadS16At(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            short data = BitConverter.ToInt16(Read(2), 0);
+            Goto(currentPosition);
+            return data;
         }
 
         /// <summary>
@@ -238,6 +351,25 @@ namespace Dolhouse.Binary
             {
                 data[i] = BitConverter.ToInt16(Read(2), 0);
             }
+            return data;
+        }
+
+        /// <summary>
+        /// Read array of signed shorts.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the signed shorts at.</param>
+        /// <param name="count">Amount of signed shorts to read.</param>
+        /// <returns>The read array of signed shorts.</returns>
+        public short[] ReadS16sAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            short[] data = new short[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToInt16(Read(2), 0);
+            }
+            Goto(currentPosition);
             return data;
         }
 
@@ -256,6 +388,20 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read unsigned integer at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the unsigned integer at.</param>
+        /// <returns>The read unsigned integer.</returns>
+        public uint ReadU32At(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            uint data = BitConverter.ToUInt32(Read(4), 0);
+            Goto(currentPosition);
+            return data;
+        }
+
+        /// <summary>
         /// Read array of unsigned integers.
         /// </summary>
         /// <param name="count">Amount of unsigned integers to read.</param>
@@ -271,12 +417,45 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read array of unsigned integers at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the unsigned integers at.</param>
+        /// <param name="count">Amount of unsigned integers to read.</param>
+        /// <returns>The read array of unsigned integers.</returns>
+        public uint[] ReadU32sAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            uint[] data = new uint[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToUInt32(Read(4), 0);
+            }
+            Goto(currentPosition);
+            return data;
+        }
+
+        /// <summary>
         /// Read signed integer.
         /// </summary>
         /// <returns>The read signed integer.</returns>
         public int ReadS32()
         {
             return BitConverter.ToInt32(Read(4), 0);
+        }
+
+        /// <summary>
+        /// Read signed integer at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the signed integer at.</param>
+        /// <returns>The read signed integer.</returns>
+        public int ReadS32At(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            int data = BitConverter.ToInt32(Read(4), 0);
+            Goto(currentPosition);
+            return data;
         }
 
         /// <summary>
@@ -291,6 +470,25 @@ namespace Dolhouse.Binary
             {
                 data[i] = BitConverter.ToInt32(Read(4), 0);
             }
+            return data;
+        }
+
+        /// <summary>
+        /// Read array of signed integers at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the signed integers at.</param>
+        /// <param name="count">Amount of signed integers to read.</param>
+        /// <returns>The read array of signed integers.</returns>
+        public int[] ReadS32sAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            int[] data = new int[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToInt32(Read(4), 0);
+            }
+            Goto(currentPosition);
             return data;
         }
 
@@ -309,6 +507,20 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read unsigned long at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the unsigned long at.</param>
+        /// <returns>The read unsigned long.</returns>
+        public ulong ReadU64At(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            ulong data = BitConverter.ToUInt64(Read(8), 0);
+            Goto(currentPosition);
+            return data;
+        }
+
+        /// <summary>
         /// Read array of unsigned longs.
         /// </summary>
         /// <param name="count">Amount of unsigned longs to read.</param>
@@ -324,12 +536,45 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read array of unsigned longs at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the unsigned longs at.</param>
+        /// <param name="count">Amount of unsigned longs to read.</param>
+        /// <returns>The read array of unsigned longs.</returns>
+        public ulong[] ReadU64sAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            ulong[] data = new ulong[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToUInt64(Read(8), 0);
+            }
+            Goto(currentPosition);
+            return data;
+        }
+
+        /// <summary>
         /// Read signed long.
         /// </summary>
         /// <returns>The read signed long.</returns>
         public long ReadS64()
         {
             return BitConverter.ToInt64(Read(8), 0);
+        }
+
+        /// <summary>
+        /// Read signed long at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the signed long at.</param>
+        /// <returns>The read signed long.</returns>
+        public long ReadS64At(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            long data = BitConverter.ToInt64(Read(8), 0);
+            Goto(currentPosition);
+            return data;
         }
 
         /// <summary>
@@ -344,6 +589,25 @@ namespace Dolhouse.Binary
             {
                 data[i] = BitConverter.ToInt64(Read(8), 0);
             }
+            return data;
+        }
+
+        /// <summary>
+        /// Read array of signed longs.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the signed longs at.</param>
+        /// <param name="count">Amount of signed longs to read.</param>
+        /// <returns>The read array of signed longs.</returns>
+        public long[] ReadS64sAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            long[] data = new long[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToInt64(Read(8), 0);
+            }
+            Goto(currentPosition);
             return data;
         }
 
@@ -362,6 +626,20 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read 16-bit float at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the 16-bit float at.</param>
+        /// <returns>The read 16-bit float.</returns>
+        public short ReadF16At(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            short data = BitConverter.ToInt16(Read(2), 0);
+            Goto(currentPosition);
+            return data;
+        }
+
+        /// <summary>
         /// Read array of 16-bit floats.
         /// </summary>
         /// <param name="count">Amount of 16-bit floats to read.</param>
@@ -377,12 +655,45 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read array of 16-bit floats at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the 16-bit floats at.</param>
+        /// <param name="count">Amount of 16-bit floats to read.</param>
+        /// <returns>The read array of 16-bit floats.</returns>
+        public short[] ReadF16sAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            short[] data = new short[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToInt16(Read(2), 0);
+            }
+            Goto(currentPosition);
+            return data;
+        }
+
+        /// <summary>
         /// Read 32-bit float.
         /// </summary>
         /// <returns>The read 32-bit float.</returns>
         public float ReadF32()
         {
             return BitConverter.ToSingle(Read(4), 0);
+        }
+
+        /// <summary>
+        /// Read 32-bit float at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the 32-bit float at.</param>
+        /// <returns>The read 32-bit float.</returns>
+        public float ReadF32At(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            float data = BitConverter.ToSingle(Read(4), 0);
+            Goto(currentPosition);
+            return data;
         }
 
         /// <summary>
@@ -401,12 +712,45 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
+        /// Read array of 32-bit floats at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the 32-bit floats at.</param>
+        /// <param name="count">Amount of 32-bit floats to read.</param>
+        /// <returns>The read array of 32-bit floats.</returns>
+        public float[] ReadF32sAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            float[] data = new float[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToSingle(Read(4), 0);
+            }
+            Goto(currentPosition);
+            return data;
+        }
+
+        /// <summary>
         /// Read 64-bit float.
         /// </summary>
         /// <returns>The read 64-bit float.</returns>
         public double ReadF64()
         {
             return BitConverter.ToDouble(Read(8), 0);
+        }
+
+        /// <summary>
+        /// Read 64-bit float at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the 64-bit float at.</param>
+        /// <returns>The read 64-bit float.</returns>
+        public double ReadF64At(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            double data = BitConverter.ToDouble(Read(8), 0);
+            Goto(currentPosition);
+            return data;
         }
 
         /// <summary>
@@ -421,6 +765,25 @@ namespace Dolhouse.Binary
             {
                 data[i] = BitConverter.ToDouble(Read(8), 0);
             }
+            return data;
+        }
+
+        /// <summary>
+        /// Read array of 64-bit floats at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the 64-bit floats at.</param>
+        /// <param name="count">Amount of 64-bit floats to read.</param>
+        /// <returns>The read array of 64-bit floats.</returns>
+        public double[] ReadF64sAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            double[] data = new double[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = BitConverter.ToDouble(Read(8), 0);
+            }
+            Goto(currentPosition);
             return data;
         }
 
@@ -439,13 +802,42 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
-        /// Reads a specified number of chars.
+        /// Read a char at absolute offset.
         /// </summary>
-        /// <param name="count">The number of chars to read.</param>
-        /// <returns>Array of chars read.</returns>
+        /// <param name="offset">The absolute offset to read the char at.</param>
+        /// <returns>The read char.</returns>
+        public char ReadCharAt(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            char data = (char)Read();
+            Goto(currentPosition);
+            return data;
+        }
+
+        /// <summary>
+        /// Read array of chars.
+        /// </summary>
+        /// <param name="count">Amount of chars to read.</param>
+        /// <returns>The read array of chars.</returns>
         public char[] ReadChars(int count)
         {
             return Encoding.GetChars(Read(count));
+        }
+
+        /// <summary>
+        /// Read array of chars at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the chars at.</param>
+        /// <param name="count">Amount of chars to read.</param>
+        /// <returns>The read array of chars.</returns>
+        public char[] ReadCharsAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            char[] data = Encoding.GetChars(Read(count));
+            Goto(currentPosition);
+            return data;
         }
 
         #endregion
