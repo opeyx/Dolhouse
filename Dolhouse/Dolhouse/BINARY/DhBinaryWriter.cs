@@ -229,7 +229,7 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Write array of signed integers.
         /// </summary>
-        public void WriteSS32s(int[] value)
+        public void WriteS32s(int[] value)
         {
             for (int i = 0; i < value.Length; i++)
             {
