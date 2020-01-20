@@ -342,7 +342,7 @@ namespace Dolhouse.Engine
                         break;
                     case JFieldType.STRING:
                         // Read the data as a 32-byte long string.
-                        value = br.ReadStr32();
+                        value = br.ReadFixedStr(32);
                         break;
                     case JFieldType.FLOAT:
                         // Read the data as a float32.
@@ -363,7 +363,7 @@ namespace Dolhouse.Engine
 
         /// <summary>
         /// Write a single entry to stream.
-        /// Credits for the 'packing' snippet goes to arookas:
+        /// Full credits for the 'packing' snippet goes to arookas:
         /// https://github.com/arookas/jmpman/blob/master/jmpman/jmp.cs
         /// </summary>
         /// <param name="bw">Binary Writer to use.</param>
@@ -410,7 +410,7 @@ namespace Dolhouse.Engine
                         break;
                     case JFieldType.STRING:
                         // Write the value as a string.
-                        bw.WriteStr32(Values[i].ToString());
+                        bw.WriteFixedStr(Values[i].ToString(), 32);
                         break;
                     case JFieldType.FLOAT:
                         // Write the value as a float32.
@@ -526,7 +526,8 @@ namespace Dolhouse.Engine
 
 
         /// <summary>
-        /// Calculate hash from string. Full credits for this snippet goes to arookas:
+        /// Calculate hash from string.
+        /// Full credits for this snippet goes to arookas:
         /// https://github.com/arookas/jmpman/blob/master/jmpman/hash.cs
         /// </summary>
         /// <param name="data">String to calculate hash from.</param>
@@ -547,7 +548,8 @@ namespace Dolhouse.Engine
         }
 
         /// <summary>
-        /// Calculate hash from bytes. Full credits for this snippet goes to arookas:
+        /// Calculate hash from bytes.
+        /// Full credits for this snippet goes to arookas:
         /// https://github.com/arookas/jmpman/blob/master/jmpman/hash.cs
         /// </summary>
         /// <param name="data">Byte array to calculate hash from.</param>
