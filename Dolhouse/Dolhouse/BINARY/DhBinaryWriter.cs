@@ -390,12 +390,13 @@ namespace Dolhouse.Binary
         /// Write string + pad it to 32 bytes.
         /// </summary>
         /// <param name="value">The string to write.</param>
-        public void WriteStr32(string value)
+        /// <param name="value">The fixed length to write.</param>
+        public void WriteFixedStr(string value, int count)
         {
             byte[] data = Encoding.GetBytes(value);
-            if (data.Length > 32)
+            if (data.Length > count)
                 throw new FormatException();
-            byte[] padding = new byte[32 - data.Length];
+            byte[] padding = new byte[count - data.Length];
             Array.Reverse(data);
             Write(data);
             Write(padding);

@@ -892,7 +892,7 @@ namespace Dolhouse.Binary
         /// Read string of specific length from stream at absolute offset.
         /// </summary>
         /// <param name="offset">The absolute offset to read the string at.</param>
-        /// <param name="count">The string length to read.</param>
+        /// <param name="count">The fixed string length to read.</param>
         /// <returns>String that was read.</returns>
         public string ReadStrAt(long offset, int count)
         {
@@ -904,10 +904,11 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
-        /// Read 32 byte long string from stream. (Return first NT part only)
+        /// Read string of fixed length from stream. (Return first NT part only)
         /// </summary>
+        /// <param name="count">The string length to read.</param>
         /// <returns>First Null-Terminated part of string.</returns>
-        public string ReadStr32()
+        public string ReadFixedStr(int count)
         {
             List<char> chars = new List<char>();
             int pos = 0;
@@ -916,20 +917,23 @@ namespace Dolhouse.Binary
                 chars.Add((char)Read());
                 pos++;
             }
-            Skip(32 - pos);
+            if (chars.Count > count)
+                throw new FormatException();
+            Skip(count - pos);
             return new string(chars.ToArray());
         }
 
         /// <summary>
-        /// Read 32 byte long string from stream at absolute offset. (Return first NT part only)
+        /// Read string of fixed length from stream at absolute offset. (Return first NT part only)
         /// </summary>
         /// <param name="offset">The absolute offset to read the string at.</param>
+        /// <param name="count">The fixed string length to read.</param>
         /// <returns>First Null-Terminated part of string.</returns>
-        public string ReadStr32At(long offset)
+        public string ReadFixedStrAt(long offset, int count)
         {
             long currentPosition = Position();
             Goto(offset);
-            string result = ReadStr32();
+            string result = ReadFixedStr(count);
             Goto(currentPosition);
             return result;
         }
