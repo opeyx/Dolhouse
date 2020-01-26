@@ -1,27 +1,46 @@
 ﻿using Dolhouse.Binary;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dolhouse.Models.Mp
 {
+
+    /// <summary>
+    /// Triangle Group
+    /// </summary>
     public class TriangleGroup
     {
-        public int[] Indices { get; set; }
 
+        #region Properties
+
+        /// <summary>
+        /// Indices of the triangles within this triangle group.
+        /// </summary>
+        public ushort[] Indices { get; set; }
+        
+        #endregion
+
+
+        /// <summary>
+        /// Read a single triangle group from MP.
+        /// </summary>
+        /// <param name="br">The BinaryReader to read with.</param>
         public TriangleGroup(DhBinaryReader br)
         {
-            List<int> indices = new List<int>();
 
+            // Define temporary list of ushorts to hold the indices.
+            List<ushort> indices = new List<ushort>();
+
+            // We'll read untill we read 0xFFFF, that means the end of this triangle group.
             while(br.ReadU16() != 0xFFFF)
             {
+                // We'll go two bytes back, since we checked for 0xFFFF.
                 br.Sail(-2);
 
-                indices.Add(br.ReadS16());
+                // Read a ushort, and add it to the list of indices.
+                indices.Add(br.ReadU16());
             }
 
+            // Set the indices array to the ones we've read.
             Indices = indices.ToArray();
         }
     }

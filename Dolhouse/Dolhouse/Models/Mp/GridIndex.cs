@@ -11,7 +11,16 @@ namespace Dolhouse.Models.Mp
 
         #region Properties
 
+        /// <summary>
+        /// Index of triangle group thats's within grid cell.
+        /// Credits: @Sage-Of-Mirrors
+        /// </summary>
         public int TotalTriangleGroupIndex { get; set; }
+
+        /// <summary>
+        /// Index of triangle group thats's considered floor / walkable.
+        /// Credits: @Sage-Of-Mirrors
+        /// </summary>
         public int FloorTriangleGroupIndex { get; set; }
 
         #endregion
