@@ -43,5 +43,19 @@ namespace Dolhouse.Models.Mp
             // Set the indices array to the ones we've read.
             Indices = indices.ToArray();
         }
+
+        /// <summary>
+        /// Write a single triangle group with specified Binary Writer.
+        /// </summary>
+        /// <param name="bw">Binary Writer to use.</param>
+        public void Write(DhBinaryWriter bw)
+        {
+
+            // Write indices.
+            bw.WriteU16s(Indices);
+
+            // Write ushort to define end of this triangle group.
+            bw.WriteU16(0xFFFF);
+        }
     }
 }
