@@ -6,7 +6,7 @@ namespace Dolhouse.Models.Mp
     /// <summary>
     /// Triangle Data
     /// </summary>
-    public class MpTriangleData
+    public class TriangleData
     {
 
         #region Properties
@@ -53,7 +53,7 @@ namespace Dolhouse.Models.Mp
         /// Read a single triangle data entry from MP.
         /// </summary>
         /// <param name="br">Binary Reader to use.</param>
-        public MpTriangleData(DhBinaryReader br)
+        public TriangleData(DhBinaryReader br)
         {
 
             // Define a new array to hold vertex indices.

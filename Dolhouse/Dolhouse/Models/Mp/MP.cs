@@ -1,5 +1,6 @@
 ﻿using Dolhouse.Binary;
 using Dolhouse.Type;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -47,12 +48,22 @@ namespace Dolhouse.Models.Mp
         /// <summary>
         /// List of triangle data.
         /// </summary>
-        public List<MpTriangleData> TriangleData { get; set; }
+        public List<TriangleData> TriangleData { get; set; }
+
+        /// <summary>
+        /// List of triangle groups.
+        /// </summary>
+        public List<TriangleGroup> TriangleGroups { get; set; }
 
         /// <summary>
         /// List of grid indices.
         /// </summary>
-        public List<MpGridIndex> GridIndices { get; set; }
+        public List<GridIndex> GridIndices { get; set; }
+
+        /// <summary>
+        /// List of unknown data. (3 bytes each)
+        /// </summary>
+        public List<Unknown> Unknowns { get; set; }
 
         #endregion
 
@@ -124,47 +135,90 @@ namespace Dolhouse.Models.Mp
             // Go to mp's triangle data offset.
             br.Goto(Offsets[2]);
 
-            // Calculate amount of normals.
+            // Calculate amount of triangles.
             int triangleDataCount = (Offsets[3] - Offsets[2]) / 24;
 
-            // Define new list to hold normals.
-            TriangleData = new List<MpTriangleData>();
+            // Define new list to hold triangle data.
+            TriangleData = new List<TriangleData>();
 
-            // Loop through normals.
+            // Loop through triangles.
             for (int i = 0; i < triangleDataCount; i++)
             {
-                // Read normal and add it to the normal list.
-                TriangleData.Add(new MpTriangleData(br));
+                // Read triangle and add it to the triangle data list.
+                TriangleData.Add(new TriangleData(br));
             }
 
 
             // Go to mp's triangle group offset.
             br.Goto(Offsets[3]);
 
-            // TODO: Implement reading Triangle Group data.
+            // Define new list to hold triangle groups.
+            TriangleGroups = new List<TriangleGroup>();
+
+            // Make sure first ushort is 0xFFFF.
+            if(br.ReadU16() != 0xFFFF)
+            {
+                throw new FormatException("Start of triangle groups section was not 0xFFFF!");
+            }
+
+            // We'll read triangle groups as long as we're not entering the next section.
+            while(br.Position() < Offsets[4] - 2)
+            {
+
+                // Read group and add it to the groups list.
+                TriangleGroups.Add(new TriangleGroup(br));
+            }
+
+            // Make sure last ushort is 0xFFFF.
+            if (br.ReadU16() != 0xFFFF)
+            {
+                throw new FormatException("End of triangle groups section was not 0xFFFF!");
+            }
 
 
             // Go to mp's grid index offset.
             br.Goto(Offsets[4]);
 
-            // Calculate amount of grid index entries.
-            int gridIndexCount = (Offsets[4] - Offsets[3]) / 8;
+            // Calculate amount of grid index entries. (Offset 5 is a duplicate of offset 4)
+            int gridIndexCount = (Offsets[6] - Offsets[4]) / 8;
 
             // Define new list to hold grid indices.
-            GridIndices = new List<MpGridIndex>();
+            GridIndices = new List<GridIndex>();
 
             // Loop through grid indices.
             for (int i = 0; i < gridIndexCount; i++)
             {
-                // Read grid index and add it to the grid indices list.
-                GridIndices.Add(new MpGridIndex(br));
+                GridIndices.Add(new GridIndex(br));
             }
 
 
             // Go to mp's unknown offset.
-            br.Goto(Offsets[5]);
+            br.Goto(Offsets[6]);
 
-            // TODO: Implement reading Unknown data.
+            // Define new list to hold unknown data.
+            Unknowns = new List<Unknown>();
+
+            // We'll read unknowns as long as we're not reading padding EOF.
+            while (br.Position() < br.GetStream().Length)
+            {
+
+                // Check if next byte is 0xFF. (More data)
+                if (br.Read() == 0xFF)
+                {
+
+                    // Jump back a byte, since we checked for data.
+                    br.Sail(-1);
+
+                    // Read unknown and add it to the unknowns list.
+                    Unknowns.Add(new Unknown(br));
+                }
+                else
+                {
+
+                    // We've reached padding, stop reading.
+                    break;
+                }
+            }
         }
 
         /// <summary>

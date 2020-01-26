@@ -6,7 +6,7 @@ namespace Dolhouse.Models.Mp
     /// <summary>
     /// Grid Index
     /// </summary>
-    public class MpGridIndex
+    public class GridIndex
     {
 
         #region Properties
@@ -21,7 +21,7 @@ namespace Dolhouse.Models.Mp
         /// Read a single grid index from MP.
         /// </summary>
         /// <param name="br">Binary Reader to use.</param>
-        public MpGridIndex(DhBinaryReader br)
+        public GridIndex(DhBinaryReader br)
         {
 
             // Read TotalTriangleGroupIndex.
