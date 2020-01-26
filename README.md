@@ -27,7 +27,7 @@ Again, please keep in mind that the project is still in **early development**. B
 **NOTE:** The progress mentioned above is only **estimated progress**, this means that progress may go back and forth in states!
 
 ### Progress states
- - **Complete** - This task has been considered complete (Atleast at the point of PU),  and has been moved to the **Completed** section
+ - **Complete** - This task has been considered complete, and has been moved to the **Completed** section
  - (Work started) - This task has been started, but is not considered functional yet.
  - *(Not started)* - Task task has not been started yet. (Research may have started though)
 
