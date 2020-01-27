@@ -24,6 +24,17 @@
         /// </summary>
         public float Z { get; set; }
 
+        /// <summary>
+        /// Gets the length (magnitude) of the Vec3.
+        /// </summary>
+        public float Length
+        {
+            get
+            {
+                return (float)System.Math.Sqrt(X * X + Y * Y + Z * Z);
+            }
+        }
+
         #endregion
 
 
@@ -69,5 +80,93 @@
         {
             return "(" + X.ToString("n6") + ", " + Y.ToString("n6") + ", " + Z.ToString("n6") + ")";
         }
+
+
+        #region Static Methods
+
+        /// <summary>
+        /// Scale a vector to unit length.
+        /// </summary>
+        /// <param name="vec">The input vector.</param>
+        /// <returns>The normalized vector.</returns>
+        public static Vec3 Normalize(Vec3 vec)
+        {
+            vec.X *= (1.0f / vec.Length);
+            vec.Y *= (1.0f / vec.Length);
+            vec.Z *= (1.0f / vec.Length);
+            return vec;
+        }
+
+        /// <summary>
+        /// Adds two vectors.
+        /// </summary>
+        /// <param name="left">First operand.</param>
+        /// <param name="right">Second operand.</param>
+        /// <returns>Result of the addition.</returns>
+        public static Vec3 Add(Vec3 left, Vec3 right)
+        {
+            return new Vec3(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
+        }
+
+        /// <summary>
+        /// Subtracts two vectors.
+        /// </summary>
+        /// <param name="left">First operand.</param>
+        /// <param name="right">Second operand.</param>
+        /// <returns>Result of the subtraction.</returns>
+        public static Vec3 Subtract(Vec3 left, Vec3 right)
+        {
+            return new Vec3(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
+        }
+
+        /// <summary>
+        /// Multiplies a vector by a scalar.
+        /// </summary>
+        /// <param name="left">First operand.</param>
+        /// <param name="right">Second operand.</param>
+        /// <param>Result of the multiplication.</param>
+        public static Vec3 Multiply(Vec3 left, Vec3 right)
+        {
+            return new Vec3(left.X * right.X, left.Y * right.Y, left.Z * right.Z);
+        }
+
+        /// <summary>
+        /// Divide a vector by the components of a vector (scale).
+        /// </summary>
+        /// <param name="left">First operand.</param>
+        /// <param name="right">Second operand.</param>
+        /// <param>Result of the division.</param>
+        public static Vec3 Divide(Vec3 left, Vec3 right)
+        {
+            return new Vec3(left.X / right.X, left.Y / right.Y, left.Z / right.Z);
+        }
+
+        /// <summary>
+        /// Calculate the dot (scalar) product of two vectors.
+        /// </summary>
+        /// <param name="left">First operand.</param>
+        /// <param name="right">Second operand.</param>
+        /// <param>The dot product of the two inputs</param>
+        public static float Dot(Vec3 left, Vec3 right)
+        {
+            return left.X * right.X + left.Y * right.Y + left.Z * right.Z;
+        }
+
+        /// <summary>
+        /// Caclulate the cross (vector) product of two vectors.
+        /// </summary>
+        /// <param name="left">First operand.</param>
+        /// <param name="right">First operand.</param>
+        /// <returns>The cross product of the two inputs</returns>
+        public static Vec3 Cross(Vec3 left, Vec3 right)
+        {
+            return new Vec3(
+                (left.Y * right.Z - left.Z * right.Y),
+                (left.Z * right.X - left.X * right.Z),
+                (left.X * right.Y - left.Y * right.X)
+            );
+        }
+
+        #endregion
     }
 }
