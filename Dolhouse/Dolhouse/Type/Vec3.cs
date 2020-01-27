@@ -120,7 +120,7 @@
         }
 
         /// <summary>
-        /// Multiplies a vector by a scalar.
+        /// Multiplies a vector by the components a vector (scale).
         /// </summary>
         /// <param name="left">First operand.</param>
         /// <param name="right">Second operand.</param>
