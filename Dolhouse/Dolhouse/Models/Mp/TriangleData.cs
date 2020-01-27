@@ -27,6 +27,18 @@ namespace Dolhouse.Models.Mp
         public short[] EdgeTangentIndices { get; set; }
 
         /// <summary>
+        /// Plane Point Index.
+        /// Credits to: @Sage-Of-Mirrors
+        /// </summary>
+        public short PlanePointIndex { get; set; }
+
+        /// <summary>
+        /// PlaneD Value.
+        /// Credits to: @Sage-Of-Mirrors
+        /// </summary>
+        public float PlaneDValue { get; set; }
+
+        /// <summary>
         /// Unknown 1.
         /// </summary>
         public short Unknown1 { get; set; }
@@ -34,17 +46,7 @@ namespace Dolhouse.Models.Mp
         /// <summary>
         /// Unknown 2.
         /// </summary>
-        public float Unknown2 { get; set; }
-
-        /// <summary>
-        /// Unknown 3.
-        /// </summary>
-        public short Unknown3 { get; set; }
-
-        /// <summary>
-        /// Unknown 4.
-        /// </summary>
-        public short Unknown4 { get; set; }
+        public short Unknown2 { get; set; }
 
         #endregion
 
@@ -78,18 +80,18 @@ namespace Dolhouse.Models.Mp
                 // Read Edge Tangent index and store it in the EdgeTangentIndices array.
                 EdgeTangentIndices[i] = br.ReadS16();
             }
-            
+
+            // Read PlanePointIndex.
+            PlanePointIndex = br.ReadS16();
+
+            // Read PlaneD Value.
+            PlaneDValue = br.ReadF32();
+
             // Read Unknown 1.
             Unknown1 = br.ReadS16();
 
             // Read Unknown 2.
-            Unknown2 = br.ReadF32();
-
-            // Read Unknown 3.
-            Unknown3 = br.ReadS16();
-
-            // Read Unknown 4.
-            Unknown4 = br.ReadS16();
+            Unknown2 = br.ReadS16();
         }
 
         /// <summary>
@@ -108,17 +110,17 @@ namespace Dolhouse.Models.Mp
             // Write Edge Tangent Indices.
             bw.WriteS16s(EdgeTangentIndices);
 
+            // Write PlanePointIndex.
+            bw.WriteS16(PlanePointIndex);
+
+            // Write PlaneD Value.
+            bw.WriteF32(PlaneDValue);
+
             // Write Unknown 1.
             bw.WriteS16(Unknown1);
 
             // Write Unknown 2.
-            bw.WriteF32(Unknown2);
-
-            // Write Unknown 3.
-            bw.WriteS16(Unknown3);
-
-            // Write Unknown 4.
-            bw.WriteS16(Unknown4);
+            bw.WriteS16(Unknown2);
         }
     }
 }
