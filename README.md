@@ -15,6 +15,7 @@ Again, please keep in mind that the project is still in **early development**. B
 - PRM Reading / Writing
 - GEB Reading / Writing
 - MP Reading / Writing
+- TXP Reading / Writing *(Credits to @opeyx, @SpaceCats64)*
 - Yay0 Compression / Decompression *(Credits to @Cuyler36, @Daniel-McCarthy)*
 
 ## In-progress
@@ -22,7 +23,6 @@ Again, please keep in mind that the project is still in **early development**. B
 - BIN Reading / Writing (Work started)
 - MDL Reading / Writing *(Not started)*
 - RARC Reading / Writing (Work started)
-- TXP Reading / Writing (Work started, @SpaceCats64)
 
 **NOTE:** The progress mentioned above is only **estimated progress**, this means that progress may go back and forth in states!
 
