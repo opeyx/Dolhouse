@@ -158,7 +158,7 @@ namespace Dolhouse.Binary
         {
             long currentPosition = Position();
             Goto(offset);
-            byte data = Read();
+            byte data = ReadU8();
             Goto(currentPosition);
             return data;
         }
@@ -173,7 +173,7 @@ namespace Dolhouse.Binary
             byte[] data = new byte[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = Read();
+                data[i] = ReadU8();
             }
             return data;
         }
@@ -191,7 +191,7 @@ namespace Dolhouse.Binary
             byte[] data = new byte[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = Read();
+                data[i] = ReadU8();
             }
             Goto(currentPosition);
             return data;
@@ -215,7 +215,7 @@ namespace Dolhouse.Binary
         {
             long currentPosition = Position();
             Goto(offset);
-            sbyte data = (sbyte)Read();
+            sbyte data = ReadS8();
             Goto(currentPosition);
             return data;
         }
@@ -230,7 +230,7 @@ namespace Dolhouse.Binary
             sbyte[] data = new sbyte[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = (sbyte)Read();
+                data[i] = ReadS8();
             }
             return data;
         }
@@ -248,7 +248,7 @@ namespace Dolhouse.Binary
             sbyte[] data = new sbyte[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = (sbyte)Read();
+                data[i] = ReadS8();
             }
             Goto(currentPosition);
             return data;
@@ -277,7 +277,7 @@ namespace Dolhouse.Binary
         {
             long currentPosition = Position();
             Goto(offset);
-            ushort data = BitConverter.ToUInt16(Read(2), 0);
+            ushort data = ReadU16();
             Goto(currentPosition);
             return data;
         }
@@ -292,7 +292,7 @@ namespace Dolhouse.Binary
             ushort[] data = new ushort[count];
             for(int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToUInt16(Read(2), 0);
+                data[i] = ReadU16();
             }
             return data;
         }
@@ -310,7 +310,7 @@ namespace Dolhouse.Binary
             ushort[] data = new ushort[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToUInt16(Read(2), 0);
+                data[i] = ReadU16();
             }
             Goto(currentPosition);
             return data;
@@ -334,7 +334,7 @@ namespace Dolhouse.Binary
         {
             long currentPosition = Position();
             Goto(offset);
-            short data = BitConverter.ToInt16(Read(2), 0);
+            short data = ReadS16();
             Goto(currentPosition);
             return data;
         }
@@ -349,7 +349,7 @@ namespace Dolhouse.Binary
             short[] data = new short[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToInt16(Read(2), 0);
+                data[i] = ReadS16();
             }
             return data;
         }
@@ -367,7 +367,7 @@ namespace Dolhouse.Binary
             short[] data = new short[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToInt16(Read(2), 0);
+                data[i] = ReadS16();
             }
             Goto(currentPosition);
             return data;
@@ -396,7 +396,7 @@ namespace Dolhouse.Binary
         {
             long currentPosition = Position();
             Goto(offset);
-            uint data = BitConverter.ToUInt32(Read(4), 0);
+            uint data = ReadU32();
             Goto(currentPosition);
             return data;
         }
@@ -411,7 +411,7 @@ namespace Dolhouse.Binary
             uint[] data = new uint[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToUInt32(Read(4), 0);
+                data[i] = ReadU32();
             }
             return data;
         }
@@ -429,7 +429,7 @@ namespace Dolhouse.Binary
             uint[] data = new uint[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToUInt32(Read(4), 0);
+                data[i] = ReadU32();
             }
             Goto(currentPosition);
             return data;
@@ -453,7 +453,7 @@ namespace Dolhouse.Binary
         {
             long currentPosition = Position();
             Goto(offset);
-            int data = BitConverter.ToInt32(Read(4), 0);
+            int data = ReadS32();
             Goto(currentPosition);
             return data;
         }
@@ -468,7 +468,7 @@ namespace Dolhouse.Binary
             int[] data = new int[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToInt32(Read(4), 0);
+                data[i] = ReadS32();
             }
             return data;
         }
@@ -486,7 +486,7 @@ namespace Dolhouse.Binary
             int[] data = new int[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToInt32(Read(4), 0);
+                data[i] = ReadS32();
             }
             Goto(currentPosition);
             return data;
@@ -515,7 +515,7 @@ namespace Dolhouse.Binary
         {
             long currentPosition = Position();
             Goto(offset);
-            ulong data = BitConverter.ToUInt64(Read(8), 0);
+            ulong data = ReadU64();
             Goto(currentPosition);
             return data;
         }
@@ -530,7 +530,7 @@ namespace Dolhouse.Binary
             ulong[] data = new ulong[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToUInt64(Read(8), 0);
+                data[i] = ReadU64();
             }
             return data;
         }
@@ -548,7 +548,7 @@ namespace Dolhouse.Binary
             ulong[] data = new ulong[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToUInt64(Read(8), 0);
+                data[i] = ReadU64();
             }
             Goto(currentPosition);
             return data;
@@ -572,7 +572,7 @@ namespace Dolhouse.Binary
         {
             long currentPosition = Position();
             Goto(offset);
-            long data = BitConverter.ToInt64(Read(8), 0);
+            long data = ReadS64();
             Goto(currentPosition);
             return data;
         }
@@ -587,7 +587,7 @@ namespace Dolhouse.Binary
             long[] data = new long[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToInt64(Read(8), 0);
+                data[i] = ReadS64();
             }
             return data;
         }
@@ -605,7 +605,7 @@ namespace Dolhouse.Binary
             long[] data = new long[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToInt64(Read(8), 0);
+                data[i] = ReadS64();
             }
             Goto(currentPosition);
             return data;
@@ -622,7 +622,7 @@ namespace Dolhouse.Binary
         /// <returns>The read 16-bit float.</returns>
         public short ReadF16()
         {
-            return BitConverter.ToInt16(Read(2), 0);
+            return ReadS16();
         }
 
         /// <summary>
@@ -634,7 +634,7 @@ namespace Dolhouse.Binary
         {
             long currentPosition = Position();
             Goto(offset);
-            short data = BitConverter.ToInt16(Read(2), 0);
+            short data = ReadS16();
             Goto(currentPosition);
             return data;
         }
@@ -649,7 +649,7 @@ namespace Dolhouse.Binary
             short[] data = new short[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToInt16(Read(2), 0);
+                data[i] = ReadS16();
             }
             return data;
         }
@@ -667,7 +667,7 @@ namespace Dolhouse.Binary
             short[] data = new short[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToInt16(Read(2), 0);
+                data[i] = ReadS16();
             }
             Goto(currentPosition);
             return data;
@@ -691,7 +691,7 @@ namespace Dolhouse.Binary
         {
             long currentPosition = Position();
             Goto(offset);
-            float data = BitConverter.ToSingle(Read(4), 0);
+            float data = ReadF32();
             Goto(currentPosition);
             return data;
         }
@@ -706,7 +706,7 @@ namespace Dolhouse.Binary
             float[] data = new float[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToSingle(Read(4), 0);
+                data[i] = ReadF32();
             }
             return data;
         }
@@ -724,7 +724,7 @@ namespace Dolhouse.Binary
             float[] data = new float[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToSingle(Read(4), 0);
+                data[i] = ReadF32();
             }
             Goto(currentPosition);
             return data;
@@ -748,7 +748,7 @@ namespace Dolhouse.Binary
         {
             long currentPosition = Position();
             Goto(offset);
-            double data = BitConverter.ToDouble(Read(8), 0);
+            double data = ReadF64();
             Goto(currentPosition);
             return data;
         }
@@ -763,7 +763,7 @@ namespace Dolhouse.Binary
             double[] data = new double[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToDouble(Read(8), 0);
+                data[i] = ReadF64();
             }
             return data;
         }
@@ -781,7 +781,7 @@ namespace Dolhouse.Binary
             double[] data = new double[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = BitConverter.ToDouble(Read(8), 0);
+                data[i] = ReadF64();
             }
             Goto(currentPosition);
             return data;
@@ -835,7 +835,7 @@ namespace Dolhouse.Binary
         {
             long currentPosition = Position();
             Goto(offset);
-            char[] data = Encoding.GetChars(Read(count));
+            char[] data = ReadChars(count);
             Goto(currentPosition);
             return data;
         }
@@ -962,7 +962,7 @@ namespace Dolhouse.Binary
             Vec2[] data = new Vec2[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = new Vec2(ReadF32(), ReadF32());
+                data[i] = ReadVec2();
             }
             return data;
         }
@@ -986,7 +986,7 @@ namespace Dolhouse.Binary
             Vec3[] data = new Vec3[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = new Vec3(ReadF32(), ReadF32(), ReadF32());
+                data[i] = ReadVec3();
             }
             return data;
         }
@@ -1010,7 +1010,7 @@ namespace Dolhouse.Binary
             Vec4[] data = new Vec4[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = new Vec4(ReadF32(), ReadF32(), ReadF32(), ReadF32());
+                data[i] = ReadVec4();
             }
             return data;
         }
@@ -1039,7 +1039,7 @@ namespace Dolhouse.Binary
             Mat4[] data = new Mat4[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = new Mat4(ReadVec4(), ReadVec4(), ReadVec4(), ReadVec4());
+                data[i] = ReadMat4();
             }
             return data;
         }
@@ -1068,7 +1068,7 @@ namespace Dolhouse.Binary
             Clr4[] data = new Clr4[count];
             for (int i = 0; i < count; i++)
             {
-                data[i] = new Clr4(Read(), Read(), Read(), Read());
+                data[i] = ReadClr4();
             }
             return data;
         }

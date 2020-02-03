@@ -367,6 +367,7 @@ namespace Dolhouse.Binary
         /// <param name="value">The array of chars to write.</param>
         public void WriteChars(char[] value)
         {
+            if(Endian == DhEndian.Big) { Array.Reverse(value); }
             Write(Encoding.GetBytes(value));
         }
 
