@@ -27,6 +27,19 @@ namespace Dolhouse.Models.Mp
 
 
         /// <summary>
+        /// Initialize a new empty GridIndex.
+        /// </summary>
+        public GridIndex()
+        {
+
+            // Set TotalTriangleGroupIndex.
+            TotalTriangleGroupIndex = 0;
+
+            // Set FloorTriangleGroupIndex.
+            FloorTriangleGroupIndex = 0;
+        }
+
+        /// <summary>
         /// Read a single grid index from MP.
         /// </summary>
         /// <param name="br">Binary Reader to use.</param>

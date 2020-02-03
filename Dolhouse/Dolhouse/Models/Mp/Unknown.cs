@@ -8,6 +8,7 @@ namespace Dolhouse.Models.Mp
     /// </summary>
     public class Unknown
     {
+
         #region Properties
 
         /// <summary>
@@ -17,6 +18,16 @@ namespace Dolhouse.Models.Mp
 
         #endregion
 
+
+        /// <summary>
+        /// Initialize a new empty Unknown.
+        /// </summary>
+        public Unknown()
+        {
+
+            // Read unknown 1. (3 bytes)
+            Unknown1 = new byte[0];
+        }
 
         /// <summary>
         /// Read a single unknown from MP.

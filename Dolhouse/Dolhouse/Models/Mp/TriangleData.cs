@@ -52,6 +52,34 @@ namespace Dolhouse.Models.Mp
 
 
         /// <summary>
+        /// Initialize a new empty TriangleData.
+        /// </summary>
+        public TriangleData()
+        {
+
+            // Define a new array to hold vertex indices.
+            VertexIndices = new short[3];
+
+            // Set Normal Index.
+            NormalIndex = 0;
+
+            // Define a new array to hold edge tangent indices.
+            EdgeTangentIndices = new short[3];
+
+            // Set Plane Point Index.
+            PlanePointIndex = 0;
+
+            // Set PlaneD Value.
+            PlaneDValue = 0;
+
+            // Set Unknown 1.
+            Unknown1 = 0;
+
+            // Set Unknown 2.
+            Unknown2 = 0;
+        }
+
+        /// <summary>
         /// Read a single triangle data entry from MP.
         /// </summary>
         /// <param name="br">Binary Reader to use.</param>

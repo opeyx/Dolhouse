@@ -16,9 +16,19 @@ namespace Dolhouse.Models.Mp
         /// Indices of the triangles within this triangle group.
         /// </summary>
         public ushort[] Indices { get; set; }
-        
+
         #endregion
 
+
+        /// <summary>
+        /// Initialize a new empty TriangleGroup.
+        /// </summary>
+        public TriangleGroup()
+        {
+
+            // Define a new array to hold triangle indices.
+            Indices = new ushort[0];
+        }
 
         /// <summary>
         /// Read a single triangle group from MP.

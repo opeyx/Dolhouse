@@ -69,6 +69,43 @@ namespace Dolhouse.Models.Mp
 
 
         /// <summary>
+        /// Initialize a new empty MP.
+        /// </summary>
+        public MP()
+        {
+
+            // Set Grid Scale.
+            GridScale = new Vec3();
+
+            // Set Minimum Bounds.
+            MinimumBounds = new Vec3();
+
+            // Set Axis Lengths.
+            AxisLengths = new Vec3();
+
+            // Define new array to hold offsets.
+            Offsets = new int[7];
+
+            // Define new list to hold vertices.
+            Vertices = new List<Vec3>();
+
+            // Define new list to hold normals.
+            Normals = new List<Vec3>();
+
+            // Define new list to hold triangle data.
+            TriangleData = new List<TriangleData>();
+
+            // Define new list to hold triangle groups.
+            TriangleGroups = new List<TriangleGroup>();
+
+            // Define new list to hold grid indices.
+            GridIndices = new List<GridIndex>();
+
+            // Define new list to hold unknown data.
+            Unknowns = new List<Unknown>();
+        }
+
+        /// <summary>
         /// Reads MP from a stream.
         /// </summary>
         /// <param name="stream">The stream containing the MP data.</param>

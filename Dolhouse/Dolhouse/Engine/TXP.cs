@@ -47,6 +47,31 @@ namespace Dolhouse.Engine
 
 
         /// <summary>
+        /// Initialize a new empty TXP.
+        /// </summary>
+        public TXP()
+        {
+
+            // Set Unknown 1.
+            Unknown1 = 1;
+
+            // Set Unknown 2.
+            Unknown2 = 0;
+
+            // Set Entry Count.
+            EntryCount = 0;
+
+            // Set Keyframe Count.
+            KeyFrameCount = 0;
+
+            // Read Keyframe Offset.
+            KeyFrameOffset = 12;
+
+            // Define a new list to hold the TXP's entries.
+            Entries = new List<TxpEntry>();
+        }
+
+        /// <summary>
         /// Reads TXP from a data stream.
         /// </summary>
         /// <param name="stream">The stream containing the TXP data.</param>
@@ -191,6 +216,28 @@ namespace Dolhouse.Engine
 
 
         /// <summary>
+        /// Initialize a new empty TxpEntry.
+        /// </summary>
+        public TxpEntry()
+        {
+
+            // Set Unknown 1.
+            Unknown1 = 0;
+
+            // Set Material Index.
+            MaterialIndex = 0;
+
+            // Set Unknown 2.
+            Unknown2 = 0;
+
+            // Set Indices Offset.
+            IndicesOffset = 0;
+
+            // Set Indices.
+            Indices = new short[0];
+        }
+
+        /// <summary>
         /// Read a single entry in TXP.
         /// </summary>
         /// <param name="br">The binaryreader to read with.</param>
@@ -210,7 +257,7 @@ namespace Dolhouse.Engine
             // Read Indices Offset.
             IndicesOffset  = br.ReadU32();
 
-            // Read indices.
+            // Read Indices.
             Indices = br.ReadS16sAt(IndicesOffset, keyFrameCount);
         }
 
