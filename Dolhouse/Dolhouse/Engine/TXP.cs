@@ -41,7 +41,7 @@ namespace Dolhouse.Engine
         /// <summary>
         /// List of entries.
         /// <summary>
-        public List<Entry> Entries { get; set; }
+        public List<TxpEntry> Entries { get; set; }
 
         #endregion
 
@@ -72,14 +72,14 @@ namespace Dolhouse.Engine
             KeyFrameOffset = br.ReadU32();
 
             // Initialize the list to hold our entries.
-            Entries = new List<Entry>();
+            Entries = new List<TxpEntry>();
 
             // Loop through entries.
             for(int i = 0; i < EntryCount; i++)
             {
 
                 // Read entry.
-                Entries.Add(new Entry(br, KeyFrameCount));
+                Entries.Add(new TxpEntry(br, KeyFrameCount));
             }
         }
 
@@ -157,7 +157,7 @@ namespace Dolhouse.Engine
     /// <summary>
     /// TXP Entry
     /// </summary>
-    public class Entry
+    public class TxpEntry
     {
 
         #region Properties
@@ -195,7 +195,7 @@ namespace Dolhouse.Engine
         /// </summary>
         /// <param name="br">The binaryreader to read with.</param>
         /// <param name="keyFrameCount">The amount of keyframes in each entry.</param>
-        public Entry(DhBinaryReader br, ushort keyFrameCount)
+        public TxpEntry(DhBinaryReader br, ushort keyFrameCount)
         {
 
             // Read Unknown 1.
