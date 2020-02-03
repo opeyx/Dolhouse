@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Dolhouse.Compression
 {
@@ -13,6 +12,41 @@ namespace Dolhouse.Compression
     /// </summary>
     public static class Yay0
     {
+
+        /// <summary>
+        /// Check whether or not data is compressed using Yay0.
+        /// </summary>
+        /// <param name="stream">Stream containing the data to check.</param>
+        /// <returns>Boolean determining whether or not the stream is Yay0 compressed.</returns>
+        public static bool IsCompressed(Stream stream)
+        {
+
+            // Define a binary reader to read with.
+            DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
+
+            // Boolean that determines if data is compressed using Yay0.
+            bool compressedData;
+
+            // Check if the magic is "Yay0".
+            if (br.ReadU32() == 1499560240)
+            {
+
+                // The data seems to be Yay0 compressed.
+                compressedData = true;
+            }
+            else
+            {
+
+                // The data doesn't seem to be Yay0 compressed.
+                compressedData = false;
+            }
+
+            // Goto start of stream.
+            br.Goto(0);
+
+            // Return the result.
+            return compressedData;
+        }
 
         /// <summary>
         /// Compressing data with Yay0. Full credits for this snippet goes to Cuyler36:
@@ -40,13 +74,13 @@ namespace Dolhouse.Compression
             const int OFSBITS = 12;
             int decPtr = 0;
 
-            // Setup mask buffer related variables.
+            // Initialize the mask buffer related variables.
             uint maskMaxSize = (uint)(data.Length + 32) >> 3; // 1 bit per byte
             uint maskBitCount = 0, mask = 0;
             uint[] maskBuffer = new uint[maskMaxSize / 4];
             int maskPtr = 0;
 
-            // Initialize the links buffer related variables.
+            // Initialize the link buffer related variables.
             uint linkMaxSize = (uint)data.Length / 2;
             ushort linkOffset = 0;
             ushort[] linkBuffer = new ushort[linkMaxSize];

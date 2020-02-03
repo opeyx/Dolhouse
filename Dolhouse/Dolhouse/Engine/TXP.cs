@@ -12,7 +12,7 @@ namespace Dolhouse.Engine
         #region Properties
         
         /// <summary>
-        /// List of TXPEntries
+        /// List of entries.
         /// <summary>
         public List<TXPEntry> TXPEntries { get; set; }
 

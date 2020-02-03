@@ -81,7 +81,7 @@ namespace Dolhouse.Models.Mp
                 EdgeTangentIndices[i] = br.ReadS16();
             }
 
-            // Read PlanePointIndex.
+            // Read Plane Point Index.
             PlanePointIndex = br.ReadS16();
 
             // Read PlaneD Value.
@@ -110,7 +110,7 @@ namespace Dolhouse.Models.Mp
             // Write Edge Tangent Indices.
             bw.WriteS16s(EdgeTangentIndices);
 
-            // Write PlanePointIndex.
+            // Write Plane Point Index.
             bw.WriteS16(PlanePointIndex);
 
             // Write PlaneD Value.

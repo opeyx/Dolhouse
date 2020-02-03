@@ -1,3 +1,8 @@
+# Full credits to:
+# opeyx
+# Format: Hash, Name, Type
+# (1 = byte, 2 = short. 4 = int, 6 = float, 8 = RGBA, 12 = Vec3)
+
 7438,sAlphaSpeed,1
 15116,mFlagOnId,1
 3606,sAppearAngle,2

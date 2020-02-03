@@ -291,7 +291,7 @@ namespace Dolhouse.Engine
                     bw.WriteVec3((Vec3)Value);
                     break;
                 default:
-                    throw new NotImplementedException("PRM parameter entry type is unknown.");
+                    throw new NotImplementedException("PRM parameter entry type is unknown!");
             }
         }
     }
