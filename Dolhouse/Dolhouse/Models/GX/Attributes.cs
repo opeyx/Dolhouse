@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Dolhouse.Models.Bin
+namespace Dolhouse.Models.GX
 {
 
-
     /// <summary>
-    /// Batch Attributes
+    /// GX Attributes
     /// </summary>
     [Flags]
-    public enum BinBatchAttributes : uint
+    public enum Attributes : uint
     {
         PosNormMatrix = 1 << 0,
         Tex0Matrix = 1 << 1,

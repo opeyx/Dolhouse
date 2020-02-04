@@ -1,7 +1,10 @@
 ﻿using Dolhouse.Binary;
+using Dolhouse.Image.BTI;
+using Dolhouse.Models.GX;
 using Dolhouse.Type;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace Dolhouse.Models.Bin
@@ -31,17 +34,17 @@ namespace Dolhouse.Models.Bin
         /// <summary>
         /// Bin offsets. There's always 21 offsets!
         /// </summary>
-        public List<uint> Offsets { get; set; }
+        public uint[] Offsets { get; set; }
 
         /// <summary>
         /// Bin textures.
         /// </summary>
-        public List<BinTexture> Textures { get; set; }
+        public List<BTI> Textures { get; set; }
 
         /// <summary>
         /// Bin materials.
         /// </summary>
-        public List<BinMaterial> Materials { get; set; }
+        public List<Material> Materials { get; set; }
 
         /// <summary>
         /// Bin positions.
@@ -54,22 +57,51 @@ namespace Dolhouse.Models.Bin
         public List<Vec3> Normals { get; set; }
 
         /// <summary>
-        /// Bin texture coordinates.
+        /// Bin texture coordinates 0.
         /// </summary>
-        public List<Vec2> TextureCoordinates { get; set; }
+        public List<Vec2> TextureCoordinates0 { get; set; }
+
+        /// <summary>
+        /// Bin texture coordinates 1.
+        /// </summary>
+        public List<Vec2> TextureCoordinates1 { get; set; }
 
         /// <summary>
         /// Bin normals.
         /// </summary>
-        public List<BinShader> Shaders { get; set; }
+        public List<Shader> Shaders { get; set; }
 
         /// <summary>
         /// Bin batches.
         /// </summary>
-        public List<BinBatch> Batches { get; set; }
+        public List<Batch> Batches { get; set; }
+
+        /// <summary>
+        /// Bin graph objects.
+        /// </summary>
+        public List<GraphObject> GraphObjects { get; set; }
 
         #endregion
 
+
+        /// <summary>
+        /// Initialize a new empty BIN.
+        /// </summary>
+        public BIN()
+        {
+            Version = 2;
+            ModelName = "dolhouse-x";
+            Offsets = new uint[21];
+            Textures = new List<BTI>();
+            Materials = new List<Material>();
+            Positions = new List<Vec3>();
+            Normals = new List<Vec3>();
+            TextureCoordinates0 = new List<Vec2>();
+            TextureCoordinates1 = new List<Vec2>();
+            Shaders = new List<Shader>();
+            Batches = new List<Batch>();
+            GraphObjects = new List<GraphObject>();
+        }
 
         /// <summary>
         /// Reads BIN from a stream.
@@ -77,7 +109,6 @@ namespace Dolhouse.Models.Bin
         /// <param name="stream">The stream containing the BIN data.</param>
         public BIN(Stream stream)
         {
-
             // Define a binary reader to read with.
             DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
 
@@ -86,131 +117,182 @@ namespace Dolhouse.Models.Bin
 
             // Make sure the bin version is either 0x01 or 0x02.
             if (Version == 0x00 || Version > 0x02 )
-            { throw new Exception(string.Format("{0} is not a valid bin version!", Version.ToString())); }
+            { throw new Exception(string.Format("[BIN] {0} is not a valid version!", Version.ToString())); }
 
             // Read bin model name.
-            ModelName = br.ReadStr(11).Trim('\0');
+            ModelName = br.ReadFixedStr(11);
 
             // Define a new list to hold the bin's offsets.
-            Offsets = new List<uint>();
+            Offsets = br.ReadU32s(21);
 
-            // Loop through the bin's offsets.
-            for (int i = 0; i < 21; i++)
+
+            // Go to the bin graph object offset.
+            br.Goto(Offsets[12]);
+
+            // Get first graph object, then all of it's attached graph objects.
+            GraphObjects = GetGraphObjects(br, 0);
+
+
+            // Make sure bin batches has a offset.
+            if (Offsets[11] != 0)
             {
-                // Read offset and add it to the offsets list.
-                Offsets.Add(br.ReadU32());
-            }
 
+                // Go to the bin batches offset.
+                br.Goto(Offsets[11]);
 
-            // Go to the bin textures offset.
-            br.Goto(Offsets[0]);
+                // Define a new list to hold the bin's batches.
+                Batches = new List<Batch>();
 
-            // Define a new list to hold the bin's textures.
-            Textures = new List<BinTexture>();
-
-            // Loop through bin's textures. TODO: This is static for now, add automatic texture count.
-            for (int i = 0; i < 3; i++)
-            {
-                // Read texture and add it to the textures list.
-                Textures.Add(new BinTexture(br, Offsets[0]));
-            }
-
-
-            // Go to the bin materials offset.
-            br.Goto(Offsets[1]);
-
-            // Define a new list to hold the bin's materials.
-            Materials = new List<BinMaterial>();
-
-            // Loop through bin's materials. TODO: This is static for now, add automatic material count.
-            for (int i = 0; i < 3; i++)
-            {
-                // Read texture and add it to the materials list.
-                Materials.Add(new BinMaterial(br));
-            }
-
-
-            // Go to the bin positions offset.
-            br.Goto(Offsets[2]);
-
-            // Define a new list to hold the bin's positions.
-            Positions = new List<Vec3>();
-
-            // Loop through bin's positions. TODO: Fix this; This is a pretty shitty way to calculate amount of bin positions ...
-            for (int i = 0; i < ((Math.Floor((decimal)(Offsets[3] - Offsets[2])) / 6) - 1); i++)
-            {
-                // Skip 6 bytes to "simulate" reading a bin position.
-                br.Skip(6);
-
-                // Make sure the currenet position has not passed the normals offset.
-                if(!(br.Position() > Offsets[3]))
+                // Loop through batches.
+                for (int i = 0; i < GetBatchCount(); i++)
                 {
-                    // Go back 6 bytes as we just "simulated" to read a bin position.
-                    br.Goto(br.Position() - 6);
 
-                    // Read a position and add it to the positions list.
-                    Positions.Add(new Vec3(br.ReadF16(), br.ReadF16(), br.ReadF16()));
+                    // Read a batch and add it to the batch list.
+                    Batches.Add(new Batch(br, Offsets[11]));
                 }
             }
 
 
-            // Go to the bin normals offset.
-            br.Goto(Offsets[3]);
-
-            // Define a new list to hold the bin's normals.
-            Normals = new List<Vec3>();
-
-            // Loop through bin's normals. TODO: This is static for now, add automatic normal count.
-            for (int i = 0; i < 69; i++)
+            // Make sure bin shaders has a offset.
+            if (Offsets[10] != 0)
             {
 
-                // Read a normal and add it to the normals list.
-                Normals.Add(new Vec3(br.ReadF32(), br.ReadF32(), br.ReadF32()));
+                // Go to the bin shaders offset.
+                br.Goto(Offsets[10]);
+
+                // Define a new list to hold the bin's shaders.
+                Shaders = new List<Shader>();
+
+                // Loop through shaders.
+                for (int i = 0; i < GetShaderCount(); i++)
+                {
+
+                    // Read a shader and add it to the shader list.
+                    Shaders.Add(new Shader(br));
+                }
             }
 
 
-            // Go to the bin texture coordinates offset.
-            br.Goto(Offsets[6]);
-
-            // Define a new list to hold the bin's texture coordinates.
-            TextureCoordinates = new List<Vec2>();
-
-            // Loop through bin's texture coordinates. TODO: This is static for now, add automatic texture coordinates count.
-            for (int i = 0; i < 72; i++)
+            // Make sure bin texture coordinates 1 has a offset.
+            if (Offsets[7] != 0)
             {
 
-                // Read a bin texture coordinates and add it to the texture coordinates list.
-                TextureCoordinates.Add(new Vec2(br.ReadF32(), br.ReadF32()));
+                // Go to the bin texture coordinates 1 offset.
+                br.Goto(Offsets[7]);
+
+                // Define a new list to hold the bin's texture coordinates 1.
+                TextureCoordinates1 = new List<Vec2>();
+
+                // Loop through texture coordinates 1.
+                for (int i = 0; i < GetTexCoordinate1Count(); i++)
+                {
+
+                    // Read a bin texture coordinates and add it to the texture coordinates 1 list.
+                    TextureCoordinates1.Add(br.ReadVec2());
+                }
             }
 
 
-            // Go to the bin shaders offset.
-            br.Goto(Offsets[10]);
-
-            // Define a new list to hold the bin's shaders.
-            Shaders = new List<BinShader>();
-
-            // Loop through bin's shaders. TODO: This is static for now, add automatic shader count.
-            for (int i = 0; i < 3; i++)
+            // Make sure bin texture coordinates 0 has a offset.
+            if (Offsets[6] != 0)
             {
 
-                // Read a bin shader and add it to the shaders list.
-                Shaders.Add(new BinShader(br));
+                // Go to the bin texture coordinates 0 offset.
+                br.Goto(Offsets[6]);
+
+                // Define a new list to hold the bin's texture coordinates 0.
+                TextureCoordinates0 = new List<Vec2>();
+
+                // Loop through texture coordinates 0.
+                for (int i = 0; i < GetTexCoordinate0Count(); i++)
+                {
+
+                    // Read a bin texture coordinates 0 and add it to the texture coordinates 0 list.
+                    TextureCoordinates0.Add(br.ReadVec2());
+                }
             }
 
 
-            // Go to the bin batches offset.
-            br.Goto(Offsets[11]);
+            // WE'RE SKIPPING COLOR0 AND COLOR1! (Offset5 and Offset4)
 
-            // Define a new list to hold the bin's batches.
-            Batches = new List<BinBatch>();
 
-            // Loop through bin's batches. TODO: This is static for now, add automatic batch count.
-            for (int i = 0; i < 2; i++)
+            // Make sure bin normals has a offset.
+            if (Offsets[3] != 0)
             {
 
-                // Read a bin batch and add it to the batches list.
-                Batches.Add(new BinBatch(br, Offsets[11]));
+                // Go to the bin normals offset.
+                br.Goto(Offsets[3]);
+
+                // Define a new list to hold the bin's normals.
+                Normals = new List<Vec3>();
+
+                // Loop through normals.
+                for (int i = 0; i < GetNormalCount(); i++)
+                {
+
+                    // Read a bin normal and add it to the normals list.
+                    Normals.Add(br.ReadVec3());
+                }
+            }
+
+
+            // Make sure bin positions has a offset.
+            if (Offsets[2] != 0)
+            {
+
+                // Go to the bin positions offset.
+                br.Goto(Offsets[2]);
+
+                // Define a new list to hold the bin's positions.
+                Positions = new List<Vec3>();
+
+                // Loop through positions.
+                for (int i = 0; i < GetPositionCount(); i++)
+                {
+
+                    // Read a bin position and add it to the positions list.
+                    Positions.Add(new Vec3(br.ReadF16() / 256.0f, br.ReadF16() / 256.0f, br.ReadF16() / 256.0f));
+                }
+            }
+
+
+            // Make sure bin materials has a offset.
+            if (Offsets[1] != 0)
+            {
+
+                // Go to the bin materials offset.
+                br.Goto(Offsets[1]);
+                
+                // Define a new list to hold the bin's materials.
+                Materials = new List<Material>();
+
+                // Loop through materials.
+                for (int i = 0; i < GetMaterialCount(); i++)
+                {
+
+                    // Read a bin material and add it to the materials list.
+                    Materials.Add(new Material(br));
+                }
+            }
+
+
+            // Make sure bin textures has a offset.
+            if(Offsets[0] != 0)
+            {
+
+                // Go to the bin textures offset.
+                br.Goto(Offsets[0]);
+
+                // Define a new list to hold the bin's textures.
+                Textures = new List<BTI>();
+
+                // Loop through textures.
+                for (int i = 0; i < GetTextureCount(); i++)
+                {
+
+                    // Read a bin textures and add it to the textures list.
+                    Textures.Add(new BTI(br, Offsets[0]));
+                }
             }
         }
 
@@ -227,22 +309,548 @@ namespace Dolhouse.Models.Bin
             // Define a binary writer to write with.
             DhBinaryWriter bw = new DhBinaryWriter(stream, DhEndian.Big);
 
-            // Write BIN's Version.
+            // Define a buffer to store our offsets.
+            uint[] offsets = new uint[21];
+
+            // Write version.
             bw.Write(Version);
 
-            // Write BIN's Model Name.
-            bw.WriteStr(ModelName);
+            // Write model Name.
+            bw.WriteFixedStr(ModelName, 11);
 
-            // Loop through BIN's Offsets.
-            for (int i = 0; i < Offsets.Count; i++)
+            // Write offsets.
+            bw.WriteU32s(Offsets);
+
+            // Make sure bin has textures.
+            if (Textures.Count > 0)
             {
-                // Write BIN Offset.
-                bw.WriteU32(Offsets[i]);
+
+                // Set textures offset.
+                offsets[0] = (uint)bw.Position();
+
+                // Define a array to temporarily 
+                uint[] textureDataOffsets = new uint[Textures.Count];
+
+                // Write texture headers. (CALCULATED)
+                bw.Write(new byte[Textures.Count * 0x0C]);
+
+                // Pad to nearest whole 32.
+                bw.WritePadding32();
+
+                // Loop through textures to write texture data.
+                for (int i = 0; i < textureDataOffsets.Length; i++)
+                {
+
+                    // Get actual offset of texture data.
+                    textureDataOffsets[i] = (uint)bw.Position() - offsets[0];
+
+                    // Write texture data.
+                    bw.Write(Textures[i].Data);
+                }
+
+                // Store this so we can resume after writing the texture headers.
+                long currentOffset = (uint)bw.Position();
+
+                // Pad to nearest whole 32.
+                bw.WritePadding32();
+
+                // Goto textures offset.
+                bw.Goto(offsets[0]);
+
+                // Loop through textures to write texture headers.
+                for (int i = 0; i < Textures.Count; i++)
+                {
+
+                    // Write texture width.
+                    bw.WriteU16(Textures[i].Width);
+
+                    // Write texture height.
+                    bw.WriteU16(Textures[i].Height);
+
+                    // Write texture format.
+                    bw.Write((byte)Textures[i].Format);
+
+                    // Write texture alpha flag.
+                    bw.Write(Textures[i].AlphaFlag);
+
+                    // Write padding.
+                    bw.WriteU16(0);
+
+                    // Write texture dataoffset.
+                    bw.WriteU32(textureDataOffsets[i]);
+                }
+
+                // Goto resume point.
+                bw.Goto(currentOffset);
             }
 
-            // TODO: WRITE THE REST OF THE BIN.
+            // Make sure bin has materials.
+            if (Materials.Count > 0)
+            {
 
+                // Set materials offset.
+                offsets[1] = (uint)bw.Position();
+
+                // Loop through materials.
+                for (int i = 0; i < Materials.Count; i++)
+                {
+
+                    // Write material.
+                    Materials[i].Write(bw);
+                }
+
+                // Pad to nearest whole 32.
+                bw.WritePadding32();
+            }
+
+            // Make sure bin has positions.
+            if (Positions.Count > 0)
+            {
+                // Set positions offset.
+                offsets[2] = (uint)bw.Position();
+
+                // Loop through positions.
+                for (int i = 0; i < Positions.Count; i++)
+                {
+
+                    // Write position.
+                    bw.WriteS16s(new short[] { (short)(Positions[i].X * 256.0f), (short)(Positions[i].Y * 256.0f), (short)(Positions[i].Z * 256.0f) });
+                }
+
+                // Pad to nearest whole 32.
+                bw.WritePadding32();
+            }
+
+            // Pad to nearest whole 32.
+            bw.WritePadding32();
+
+            // Make sure bin has normals.
+            if (Normals.Count > 0)
+            {
+                // Set normals offset.
+                offsets[3] = (uint)bw.Position();
+
+                // Loop through normals.
+                for (int i = 0; i < Normals.Count; i++)
+                {
+
+                    // Write normal.
+                    bw.WriteVec3(Normals[i]);
+                }
+
+                // Pad to nearest whole 32.
+                bw.WritePadding32();
+            }
+
+            // SKIP COLOR0
+            offsets[4] = (uint)0;
+
+            // SKIP COLOR1
+            offsets[5] = (uint)0;
+
+            // Make sure bin has texture coordinates 0.
+            if (TextureCoordinates0.Count > 0)
+            {
+                // Set texture coordinates 0 offset.
+                offsets[6] = (uint)bw.Position();
+
+                // Loop through texture coordinates 0.
+                for (int i = 0; i < TextureCoordinates0.Count; i++)
+                {
+
+                    // Write texture coordinate 0.
+                    bw.WriteVec2(TextureCoordinates0[i]);
+                }
+
+                // Pad to nearest whole 32.
+                bw.WritePadding32();
+            }
+
+            // SKIP TEXTURE COORDINATES 1
+            offsets[7] = (uint)0;
+
+            // SKIP TEXTURE COORDINATES 2 (?)
+            offsets[8] = (uint)0;
+
+            // SKIP TEXTURE COORDINATES 3 (?)
+            offsets[9] = (uint)0;
+
+            // Make sure bin has shaders.
+            if (Shaders.Count > 0)
+            {
+                // Set shaders offset.
+                offsets[10] = (uint)bw.Position();
+
+                // Loop through shaders.
+                for (int i = 0; i < Shaders.Count; i++)
+                {
+
+                    // Write shader.
+                    Shaders[i].Write(bw);
+                }
+
+                // Pad to nearest whole 32.
+                bw.WritePadding32();
+            }
+
+            // Make sure bin has batches.
+            if (Batches.Count > 0)
+            {
+
+                // Set batches offset.
+                offsets[11] = (uint)bw.Position();
+
+                // Loop through batches.
+                for (int i = 0; i < Batches.Count; i++)
+                {
+
+                    // Write batch headers.
+                    Batches[i].Write(bw);
+                }
+
+                // Pad to nearest whole 32.
+                bw.WritePadding32();
+
+                // We need to store this stuff somewhere
+                long[] listStarts = new long[Batches.Count];
+                long[] listEnds = new long[Batches.Count];
+
+                // Loop through batches. (Write primitives)
+                for (int i = 0; i < Batches.Count; i++)
+                {
+
+                    // We'll store this offset for later.
+                    listStarts[i] = bw.Position();
+
+                    // Loop through primitives.
+                    for (int y = 0; y < Batches[i].Primitives.Count; y++)
+                    {
+
+                        // Write primitive.
+                        Batches[i].Primitives[y].Write(bw, Batches[i].VertexAttributes);
+                    }
+
+                    // We'll store this offset for later.
+                    listEnds[i] = bw.Position();
+                }
+
+                // This offset is where we'll continue writing from.
+                long currentOffset = bw.Position();
+
+                // Loop through batches. (Write offsets)
+                for (int i = 0; i < Batches.Count; i++)
+                {
+
+                    // Goto current batch's offset.
+                    bw.Goto(offsets[11] + i * 24);
+
+                    // Skip 2 bytes.
+                    bw.Sail(2);
+
+                    // Write list size represented as 32 byte blocks.
+                    bw.WriteS16((short)(Math.Ceiling((float)(listEnds[i] - listStarts[i]) / 32)));
+
+                    // Skip 8 bytes.
+                    bw.Sail(8);
+
+                    // Write primitive list offset.
+                    bw.WriteU32((uint)(listStarts[i] - offsets[11]));
+                }
+
+                // Goto continue point we saved earlier.
+                bw.Goto(currentOffset);
+
+                // Pad to nearest whole 64.
+                bw.WritePadding(64, '\0');
+            }
+
+            // Make sure bin has graphobjects.
+            if (GraphObjects.Count > 0)
+            {
+
+                // Set graphObjects offset.
+                offsets[12] = (uint)bw.Position();
+
+                // Loop through graphObjects.
+                for (int i = 0; i < GraphObjects.Count; i++)
+                {
+
+                    // Write graphObject headers.
+                    GraphObjects[i].Write(bw);
+                }
+
+                // Pad to nearest whole 32.
+                bw.WritePadding16();
+
+                // Array to hold graphobject's parts offset.
+                long[] graphObjectsPartsOffsets = new long[GraphObjects.Count];
+
+                // Loop through graphObjects. (Write parts)
+                for (int i = 0; i < GraphObjects.Count; i++)
+                {
+
+                    // Store this graphobject's part offset.
+                    graphObjectsPartsOffsets[i] = bw.Position();
+
+                    // Loop through graphobject's parts.
+                    for (int y = 0; y < GraphObjects[i].Parts.Count; y++)
+                    {
+
+                        // Write graphobject's parts.
+                        GraphObjects[i].Parts[y].Write(bw);
+                    }
+                }
+
+                // This offset is where we'll continue writing from.
+                long currentOffset = bw.Position();
+
+                // Loop through graphObjects. (Write offsets)
+                for (int i = 0; i < GraphObjects.Count; i++)
+                {
+
+                    // Goto current graphobject's offset.
+                    bw.Goto(offsets[12] + (i * 140));
+
+                    // Skip 80 bytes.
+                    bw.Sail(80);
+
+                    // Write graphobject's part offset.
+                    bw.WriteU32((uint)(graphObjectsPartsOffsets[i] - offsets[12]));
+                }
+
+                // Goto continue point we saved earlier.
+                bw.Goto(currentOffset);
+            }
+
+            // Pad to nearest whole 32.
+            bw.WritePadding32();
+
+            // Goto offsets section.
+            bw.Goto(12);
+
+            // Write offsets.
+            bw.WriteU32s(offsets);
+
+            // Return the bin as a stream.
             return stream;
+        }
+
+        public List<GraphObject> GetGraphObjects(DhBinaryReader br, int index)
+        {
+
+            // Save current offset.
+            long currentPosition = br.Position();
+
+            // Goto a specific graph object offset based on it's index.
+            br.Goto(Offsets[12] + (0x8C * index));
+
+            // Initialize the graph object at specific index.
+            GraphObject graphObject = new GraphObject(br, Offsets[12]);
+
+            // Goto previously saved offset.
+            br.Goto(currentPosition);
+
+            // Initialize a list to hold all graph objects.
+            List<GraphObject> graphObjects = new List<GraphObject>();
+
+            // Add first graph object to list of graph objects.
+            graphObjects.Add(graphObject);
+
+            // Check if graph object specifies a child graph object.
+            if (graphObject.ChildIndex >= 0)
+            {
+
+                // Add the child graph object (And it's child/next graph objects.)
+                graphObjects.AddRange(GetGraphObjects(br, graphObject.ChildIndex));
+            }
+
+            // Check if graph object specifies the next graph object.
+            if (graphObject.NextIndex >= 0)
+            {
+
+                // Add the next graph object (And it's child/next graph objects.)
+                graphObjects.AddRange(GetGraphObjects(br, graphObject.NextIndex));
+            }
+
+            // Return the list of graph objects.
+            return graphObjects;
+        }
+
+        /// <summary>
+        /// Calculates the amount of Textures in bin.
+        /// </summary>
+        /// <returns>Total amount of Textures in bin.</returns>
+        public int GetTextureCount()
+        {
+            short textureCount = 0;
+
+            for (int i = 0; i < Materials.Count; i++)
+            {
+                if (Materials[i].Index > textureCount)
+                {
+                    textureCount = Materials[i].Index;
+                }
+            }
+
+            return (textureCount + 1);
+        }
+
+        /// <summary>
+        /// Calculates the amount of Materials in bin.
+        /// </summary>
+        /// <returns>Total amount of Materials in bin.</returns>
+        public int GetMaterialCount()
+        {
+            short materialCount = -1;
+
+            for (int i = 0; i < Shaders.Count; i++)
+            {
+                for (int y = 0; y < Shaders[i].MaterialIndices.Length; y++)
+                {
+                    if (Shaders[i].MaterialIndices[y] > materialCount)
+                    {
+                        materialCount = Shaders[i].MaterialIndices[y];
+                    }
+                }
+            }
+            
+            return (materialCount + 1);
+        }
+
+        /// <summary>
+        /// Calculates the amount of Vertices in bin.
+        /// </summary>
+        /// <returns>Total amount of Vertices in bin.</returns>
+        public uint GetPositionCount()
+        {
+            uint positionCount = 0;
+
+            if (Offsets[2] != 0)
+            {
+                for (int i = 3; i < Offsets.Length; i++)
+                {
+                    if (Offsets[i] > 0)
+                    {
+                        positionCount = (Offsets[i] - Offsets[2]) / 6;
+                        break;
+                    }
+                }
+            }
+
+            return positionCount;
+        }
+
+        /// <summary>
+        /// Calculates the amount of Normals in bin.
+        /// </summary>
+        /// <returns>Total amount of Normals in bin.</returns>
+        public uint GetNormalCount()
+        {
+            uint normalCount = 0;
+
+            if(Offsets[3] != 0)
+            {
+                for(int i = 4; i < Offsets.Length; i++)
+                {
+                    if(Offsets[i] > 0)
+                    {
+                        normalCount = (Offsets[i] - Offsets[3]) / 12;
+                        break;
+                    }
+                }
+            }
+
+            return normalCount;
+        }
+
+        /// <summary>
+        /// Calculates the amount of TextureCoordinate0s in bin.
+        /// </summary>
+        /// <returns>Total amount of TextureCoordinate0s in bin.</returns>
+        public uint GetTexCoordinate0Count()
+        {
+            uint texCoord0Count = 0;
+
+            if (Offsets[6] != 0)
+            {
+                for (int i = 7; i < Offsets.Length; i++)
+                {
+                    if (Offsets[i] > 0)
+                    {
+                        texCoord0Count = (Offsets[i] - Offsets[6]) / 8;
+                        break;
+                    }
+                }
+            }
+
+            return texCoord0Count;
+        }
+
+        /// <summary>
+        /// Calculates the amount of TextureCoordinate1s in bin.
+        /// </summary>
+        /// <returns>Total amount of TextureCoordinate1s in bin.</returns>
+        public uint GetTexCoordinate1Count()
+        {
+            uint texCoord1Count = 0;
+
+            if (Offsets[7] != 0)
+            {
+                for (int i = 8; i < Offsets.Length; i++)
+                {
+                    if (Offsets[i] > 0)
+                    {
+                        texCoord1Count = (Offsets[i] - Offsets[7]) / 8;
+                        break;
+                    }
+                }
+            }
+
+            return texCoord1Count;
+        }
+
+        /// <summary>
+        /// Calculates the amount of Shaders in bin.
+        /// </summary>
+        /// <returns>Total amount of Shaders in bin.</returns>
+        public int GetShaderCount()
+        {
+            short shaderCount = -1;
+
+            for (int i = 0; i < GraphObjects.Count; i++)
+            {
+                for (int y = 0; y < GraphObjects[i].Parts.Count; y++)
+                {
+                    if (GraphObjects[i].Parts[y].ShaderIndex > shaderCount)
+                    {
+                        shaderCount = GraphObjects[i].Parts[y].ShaderIndex;
+                    }
+                }
+            }
+
+            return (shaderCount + 1);
+        }
+
+        /// <summary>
+        /// Calculates the amount of Batches in bin.
+        /// </summary>
+        /// <returns>Total amount of Batches in bin.</returns>
+        public int GetBatchCount()
+        {
+            short batchCount = -1;
+
+            for (int i = 0; i < GraphObjects.Count; i++)
+            {
+                for (int y = 0; y < GraphObjects[i].Parts.Count; y++)
+                {
+                    if (GraphObjects[i].Parts[y].BatchIndex > batchCount)
+                    {
+                        batchCount = GraphObjects[i].Parts[y].BatchIndex;
+                    }
+                }
+            }
+
+            return (batchCount + 1);
         }
 
         /// <summary>
@@ -250,11 +858,55 @@ namespace Dolhouse.Models.Bin
         /// TODO: Fix this. (It does not properly export BIN as OBJ)
         /// </summary>
         /// <returns>The BIN as a Wavefront Obj.</returns>
-        public string ToObj()
+        public void Export(string path, string folder)
         {
+            string ExportPath = path + @"\";
+            string FolderPath = ExportPath + folder + @"\";
+
+            if (!Directory.Exists(FolderPath))
+            {
+                Directory.CreateDirectory(FolderPath);
+            }
+
+            // Loop through textures.
+            for (int i = 0; i < Textures.Count; i++)
+            {
+
+                // Generate a BTI from texture.
+                // BTI bti = new BTI(Textures[i]);
+
+                // Dump BTI to disk.
+                // bti.ToDisk(FolderPath + i.ToString() + ".bti");
+
+                // Convert BTI to TGA.
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.FileName = ExportPath + @"\BtiConvert.exe";
+                startInfo.Arguments = FolderPath + i.ToString() + ".bti";
+                var process = Process.Start(startInfo);
+                process.WaitForExit();
+            }
+
+            foreach(string file in Directory.GetFiles(FolderPath))
+            {
+                if(Path.GetExtension(file) == ".bti")
+                {
+                    File.Delete(file);
+                }
+                if (Path.GetExtension(file) == ".bmp")
+                {
+                    File.Delete(file);
+                }
+            }
 
             // Define a string to hold output.
             string objString = "# This file was generated by Dolhouse.\r\n\r\n";
+            string mtlString = "# This file was generated by Dolhouse.\r\n\r\n";
+
+            // Model name.
+            objString += "# " + ModelName.ToUpper() + "\r\n";
+            objString += string.Format("o {0}\r\n", ModelName);
+            objString += string.Format("mtllib {0}.mtl\r\n\r\n", ModelName); // Material library name reference
+
 
             // Write Vertices.
             objString += "# Vertices\r\n";
@@ -268,9 +920,9 @@ namespace Dolhouse.Models.Bin
 
             // Write Texture Coordinates.
             objString += "# Texture Coordinates\r\n";
-            for (int i = 0; i < TextureCoordinates.Count; i++)
+            for (int i = 0; i < TextureCoordinates0.Count; i++)
             {
-                objString += "vt " + TextureCoordinates[i].X.ToString("n6") + " " + TextureCoordinates[i].Y.ToString("n6") + "\r\n";
+                objString += "vt " + TextureCoordinates0[i].X.ToString("n6") + " " + TextureCoordinates0[i].Y.ToString("n6") + "\r\n";
             }
 
             // Write some spacing.
@@ -286,13 +938,116 @@ namespace Dolhouse.Models.Bin
             // Write some spacing.
             objString += "\r\n";
 
-            // Write Faces.
-            objString += "# Faces\r\n";
+            for (int i = 0; i < GraphObjects.Count; i++)
+            {
+                string graphObjectName = ModelName + "_GO-" + i.ToString();
 
-            // TODO: Write faces.
+                for (int y = 0; y < GraphObjects[i].Parts.Count; y++)
+                {
+                    Random random = new Random();
+                    string partName = graphObjectName + "_PA-" + y;
 
-            // Return the BIN as a WaveFront Obj.
-            return objString;
+                    string matName = partName + "_MAT-" + random.Next(10000, 99999);
+
+                    // Write Materials.
+                    objString += "\r\n# Materials\r\n";
+
+                    objString += string.Format("g {0}\r\n", partName);
+                    objString += string.Format("usemtl {0}\r\n\r\n", matName);
+
+                    Batch curBatch = Batches[GraphObjects[i].Parts[y].BatchIndex];
+                    Shader curShader = Shaders[GraphObjects[i].Parts[y].ShaderIndex];
+
+                    string clamp = "";
+
+                    /*
+                    if (Materials[curShader.MaterialIndices[0]].WrapU == 0)
+                    {
+                        clamp = "-clamp on";
+                    }
+                    */
+
+                    mtlString += string.Format("newmtl {0}\r\n", matName); // New material for part
+                    mtlString += "Kd 0.500000 0.500000 0.500000\r\n";
+                    mtlString += string.Format("map_Kd {0} " + "{1}" + ".bti_rgba.tga\r\n\r\n", clamp, curShader.MaterialIndices[0]); // Set diffuse texture to the texture we just dumped
+
+                    /*
+                    for (int x = 0; x < curShader.MaterialIndices.Length; x++)
+                    {
+                        // Output textures
+                        if (Materials[x] != null)
+                        {
+                            BTI texture = new BTI(Textures[Materials[0].Index]);
+
+                            texture.ToDisk();
+
+                            //texture.ToDisk(ModelName + @"\textures\" + Materials[0].Index); WE'LL PRETEND TO DO THIS FOR NOW.. TODO - ACTUALLY DO THIS!!!
+
+                            mtlString += string.Format("newmtl {0}_{1}\r\n", partName, y); // New material for part
+                            mtlString += string.Format("map_kd textures/{0}.bti_color.bmp\r\n", y); // Set diffuse texture to the texture we just dumped
+
+                        }
+                    }
+                    */
+
+                    // Write Faces.
+                    objString += "# Faces\r\n";
+
+                    for (int x = 0; x < curBatch.Primitives.Count; x++)
+                    {
+                        string[] verts = new string[3];
+
+                        // primitive type is triangles
+                        if(curBatch.Primitives[x].Type == PrimitiveType.Triangles)
+                        {
+                            for (int w = 0; w < curBatch.Primitives[x].FaceCount; w++)
+                            {
+                                objString += "f";
+                                for (int z = 0; z < 3; z++)
+                                {
+                                    string position = "", textureCoordinate0 = "", normal = "";
+
+                                    if (curBatch.VertexAttributes.HasFlag(Attributes.Position))
+                                    {
+                                        position = string.Format("{0}/", curBatch.Primitives[x].Vertices[w + z].Indices[9] + 1);
+                                    }
+
+                                    if (curBatch.VertexAttributes.HasFlag(Attributes.TexCoord0))
+                                    {
+                                        textureCoordinate0 = string.Format("{0}", curBatch.Primitives[x].Vertices[w + z].Indices[13] + 1);
+                                    }
+
+                                    if (curBatch.VertexAttributes.HasFlag(Attributes.Normal))
+                                    {
+                                        normal = string.Format("/{0}", curBatch.Primitives[x].Vertices[w + z].Indices[10] + 1);
+                                    }
+
+                                    verts[z] = string.Format("{0}{1}{2}", position, textureCoordinate0, normal);
+                                }
+
+                                objString += string.Format(" {0} {1} {2}\r\n", verts[0], verts[1], verts[2]);
+                            }
+                        }
+                        /* primitive type is triangles
+                        else if(curBatch.Primitives[x].Type == 0x98)
+                        {
+
+                        }
+                        else
+                        {
+                            throw new NotImplementedException(string.Format("{0} is a unknown primitive type!", x, curBatch.Primitives[x].Type.ToString("X2")));
+                        }*/
+
+
+                    }
+                }
+            }
+
+            // Write OBJ to disk.
+            File.WriteAllText(FolderPath + ModelName + ".obj", objString);
+
+            // Write MTL to disk.
+            File.WriteAllText(FolderPath + ModelName + ".mtl", mtlString);
         }
     }
 }

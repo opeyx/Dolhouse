@@ -1,4 +1,6 @@
 ﻿using Dolhouse.Binary;
+using Dolhouse.Models.GX;
+using System;
 using System.Collections.Generic;
 
 namespace Dolhouse.Models.Bin
@@ -7,7 +9,7 @@ namespace Dolhouse.Models.Bin
     /// <summary>
     /// Bin Batch
     /// </summary>
-    public class BinBatch
+    public class Batch
     {
 
         #region Properties
@@ -20,12 +22,12 @@ namespace Dolhouse.Models.Bin
         /// <summary>
         /// Size of the primitive list. (32-byte blocks)
         /// </summary>
-        public ushort ListSize { get; set; }
+        public short ListSize { get; set; }
 
         /// <summary>
         /// Primitive vertice attributes. (GX.pdf, LSB -> MSB)
         /// </summary>
-        public BinBatchAttributes VertexAttributes { get; set; }
+        public Attributes VertexAttributes { get; set; }
         
         /// <summary>
         /// Use Normals flag.
@@ -67,26 +69,62 @@ namespace Dolhouse.Models.Bin
         /// <summary>
         /// List of primitives.
         /// </summary>
-        public List<BinPrimitive> Primitives { get; set; }
+        public List<Primitive> Primitives { get; set; }
 
         #endregion
 
 
         /// <summary>
+        /// Initialize a new batch.
+        /// </summary>
+        public Batch()
+        {
+            // Set face count.
+            FaceCount = 0;
+
+            // Set primitive list size.
+            ListSize = 0;
+
+            // Set vertex attributes.
+            VertexAttributes = 0;
+
+            // Set UseNormals flag.
+            UseNormals = 0;
+
+            // Set Position Winding.
+            Positions = 0;
+
+            // Set UV Count.
+            UvCount = 0;
+
+            // Set UseNBT flag.
+            UseNBT = 0;
+
+            // Set Primitive offset.
+            PrimitiveOffset = 0;
+
+            // Set Unknown 1. (Padding?)
+            Unknown1 = new int[2];
+
+            // Define list to hold batch's primitives.
+            Primitives = new List<Primitive>();
+        }
+
+        /// <summary>
         /// Read a single batch from BIN.
         /// </summary>
-        /// <param name="br">Binary Reader to use.</param>
+        /// <param name="br">The binaryreader to write with.</param>
         /// <param name="batchesOffset">Offset to batches.</param>
-        public BinBatch(DhBinaryReader br, long batchesOffset)
+        public Batch(DhBinaryReader br, long batchesOffset)
         {
             // Read face count.
             FaceCount = br.ReadU16();
 
             // Read primitive list size.
-            ListSize = (ushort)(br.ReadS16() << 5);
+            ListSize = br.ReadS16();
 
             // Read vertex attributes.
-            VertexAttributes = (BinBatchAttributes)br.ReadU32();
+            VertexAttributes = (Attributes)br.ReadU32();
 
             // Read UseNormals flag.
             UseNormals = br.Read();
@@ -103,37 +141,27 @@ namespace Dolhouse.Models.Bin
             // Read Primitive offset.
             PrimitiveOffset = br.ReadU32();
 
-            // Define array to hold Unknown 1 values.
-            Unknown1 = new int[2];
-
-            // Loop through Unknown 1 values.
-            for (int i = 0; i < 2; i++)
-            {
-                // Read current Unknown 1 value.
-                Unknown1[i] = br.ReadS32();
-            }
+            // Read Unknown 1. (Padding?)
+            Unknown1 = br.ReadS32s(2);
 
             // Save the current position.
             long currentPosition = br.Position();
 
-            // Go to the bin batches offset.
-            br.Goto(batchesOffset);
-
-            // Sail to the batches's primitive offset.
-            br.Sail(PrimitiveOffset);
+            // Go to the batch's primitive offset offset.
+            br.Goto(batchesOffset + PrimitiveOffset);
 
             // Define list to hold batch's primitives.
-            Primitives = new List<BinPrimitive>();
+            Primitives = new List<Primitive>();
 
-            // Define int to hold amount of faces read.
+            // Define int to keep track of the amount of faces read.
             int readFaces = 0;
 
             // Read primitives until batch's face count has been reached.
-            while (readFaces < FaceCount && br.Position() < (batchesOffset + PrimitiveOffset + ListSize))
+            while ((readFaces < FaceCount) && (br.Position() < (batchesOffset + PrimitiveOffset + (ListSize << 5))))
             {
 
                 // Read primitive.
-                BinPrimitive binPrimitive = new BinPrimitive(br, UseNBT, UvCount, VertexAttributes);
+                Primitive binPrimitive = new Primitive(br, VertexAttributes);
 
                 // Add the primitive to the batch's primitives.
                 Primitives.Add(binPrimitive);
@@ -147,13 +175,38 @@ namespace Dolhouse.Models.Bin
         }
 
         /// <summary>
-        /// Write a single batch with specified Binary Writer.
+        /// Write a single batch.
         /// </summary>
-        /// <param name="bw">Binary Writer to use.</param>
+        /// <param name="bw">The binarywriter to write with.</param>
         public void Write(DhBinaryWriter bw)
         {
-            // TODO: Implement this.
-        }
 
+            // Write face count.
+            bw.WriteU16(FaceCount);
+
+            // Write list size. (CALCULATED)
+            bw.WriteS16(0);
+
+            // Write vertex attributes.
+            bw.WriteU32((uint)VertexAttributes);
+
+            // Write normals flag.
+            bw.Write(UseNormals);
+
+            // Write position winding flag.
+            bw.Write(Positions);
+
+            // Write uv count.
+            bw.Write(UvCount);
+
+            // Write NBT flag.
+            bw.Write(UseNBT);
+
+            // Write primitive offset. (CALCULATED)
+            bw.WriteU32(0);
+
+            // Write unknown 1.
+            bw.WriteS32s(Unknown1); // 8 bytes
+        }
     }
 }

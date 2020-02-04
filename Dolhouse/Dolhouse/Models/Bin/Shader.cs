@@ -6,7 +6,7 @@ namespace Dolhouse.Models.Bin
     /// <summary>
     /// Bin Shader
     /// </summary>
-    public class BinShader
+    public class Shader
     {
 
         #region Properties
@@ -37,8 +37,8 @@ namespace Dolhouse.Models.Bin
         public byte Unknown4 { get; set; }
 
         /// <summary>
-        /// Index of Material for a texUnit[0-7]
-        /// -1 if that texUnit is unused.
+        /// Material Index for texUnits[0-7].
+        /// (-1 == unused)
         /// </summary>
         public short[] MaterialIndices { get; set; }
 
@@ -51,10 +51,38 @@ namespace Dolhouse.Models.Bin
 
 
         /// <summary>
+        /// Initialize a new shader.
+        /// </summary>
+        public Shader()
+        {
+
+            // Read Unknown 1.
+            Unknown1 = 0;
+
+            // Read Unknown 2.
+            Unknown2 = 0;
+
+            // Read Unknown 3.
+            Unknown3 = 0;
+
+            // Read Tint.
+            Tint = 0;
+
+            // Read Unknown 4. (Padding)
+            Unknown4 = 0;
+
+            // Read Material Indices array.
+            MaterialIndices = new short[8] { -1, -1, -1, -1, -1, -1, -1, -1 };
+
+            // Read Unknown 5 array. (Indices?)
+            Unknown5 = new short[8];
+        }
+
+        /// <summary>
         /// Read a single shader from BIN.
         /// </summary>
         /// <param name="br">Binary Reader to use.</param>
-        public BinShader(DhBinaryReader br)
+        public Shader(DhBinaryReader br)
         {
 
             // Read Unknown 1.
@@ -72,26 +100,11 @@ namespace Dolhouse.Models.Bin
             // Read Unknown 4. (Padding)
             Unknown4 = br.Read();
 
-            // Define a new array to hold the Material Indices.
-            MaterialIndices = new short[8];
+            // Read Material Indices array.
+            MaterialIndices = br.ReadS16s(8);
 
-            // Loop through Material Indices.
-            for (int i = 0; i < 8; i++)
-            {
-                // Read a material index and store it in Material Indices array.
-                MaterialIndices[i] = br.ReadS16();
-            }
-
-            // Define a new array to hold Unknown 5. (Indices?)
-            Unknown5 = new short[8];
-
-            // Loop through Unknown 5.
-            for (int i = 0; i < 8; i++)
-            {
-
-                // Read a Unknown 5 value and store it in Unknown5 array.
-                Unknown5[i] = br.ReadS16();
-            }
+            // Read Unknown 5 array. (Indices?)
+            Unknown5 = br.ReadS16s(8);
         }
 
         /// <summary>
@@ -116,19 +129,11 @@ namespace Dolhouse.Models.Bin
             // Write Unknown 4. (Padding)
             bw.Write(Unknown4);
 
-            // Loop through Material Indices.
-            for (int i = 0; i < 8; i++)
-            {
-                // Write a material index.
-                bw.WriteS16(MaterialIndices[i]);
-            }
+            // Write Material Indices.
+            bw.WriteS16s(MaterialIndices);
 
-            // Loop through Unknown 5. (Indices?)
-            for (int i = 0; i < 8; i++)
-            {
-                // Write a Unknown 5 value.
-                bw.WriteS16(Unknown5[i]);
-            }
+            // Write Unknown 5. (Indices?)
+            bw.WriteS16s(Unknown5);
         }
     }
 }

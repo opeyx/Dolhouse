@@ -1,12 +1,15 @@
 ﻿using Dolhouse.Binary;
+using Dolhouse.Image.BTI;
 
 namespace Dolhouse.Models.Bin
 {
 
     /// <summary>
     /// Bin Texture
+    /// (THIS CLASS CURRENTLY NOT IN USE, FOR TEXTURES,
+    /// THE BTI CLASS IS USED DIRECTLY INSTEAD)
     /// </summary>
-    public class BinTexture
+    public class UnusedTexture
     {
         #region Properties
 
@@ -23,17 +26,17 @@ namespace Dolhouse.Models.Bin
         /// <summary>
         /// Texture Format. Same as BTI/TPL; usually S3TC1.
         /// </summary>
-        public byte Format { get; set; }
+        public TextureFormat Format { get; set; }
 
         /// <summary>
-        /// Unknown 1. Always either 0x20 or 0x10, rarely 0x08 (Flags?)
+        /// Texture Alpha Flag (Unsure.)
         /// </summary>
-        public byte Unknown1 { get; set; }
+        public byte AlphaFlag { get; set; }
 
         /// <summary>
-        /// Unknown 2. Always 0, padding?
+        /// Unknown 1. (Padding?)
         /// </summary>
-        public ushort Unknown2 { get; set; }
+        public ushort Unknown1 { get; set; }
 
         /// <summary>
         /// Texture Data Offset. Offset to texture padding. (Relative to texture header list)
@@ -41,7 +44,7 @@ namespace Dolhouse.Models.Bin
         public uint DataOffset { get; set; }
 
         /// <summary>
-        /// Texture Data. Raw BTI data will be stored here.
+        /// Texture Data.
         /// </summary>
         public byte[] Data { get; set; }
 
@@ -51,9 +54,8 @@ namespace Dolhouse.Models.Bin
         /// <summary>
         /// Read a single texture from BIN.
         /// </summary>
-        /// <param name="br">Binary Reader to use.</param>
-        /// <param name="texturesOffset">Offset to textures.</param>
-        public BinTexture(DhBinaryReader br, long texturesOffset)
+        /// <param name="br">The BinaryReader to read with..</param>
+        public UnusedTexture(DhBinaryReader br, uint textureOffset)
         {
             // Read texture width.
             Width = br.ReadU16();
@@ -62,35 +64,45 @@ namespace Dolhouse.Models.Bin
             Height = br.ReadU16();
 
             // Read texture format.
-            Format = br.ReadU8();
+            Format = (TextureFormat)br.Read();
 
-            // Read texture unknown 1. (Flags?)
-            Unknown1 = br.ReadU8();
+            // Read texture alpha flag (Unsure, but seems logical)
+            AlphaFlag = br.Read();
 
-            // Read texture unknown 2. (Padding)
-            Unknown2 = br.ReadU16();
+            // Read texture unknown 1. (Padding?)
+            Unknown1 = 0;
 
             // Read texture data offset.
             DataOffset = br.ReadU32();
-
-            // Save the current position.
-            long currentPosition = br.Position();
-
-            // Go to the bin textures offset.
-            br.Goto(texturesOffset);
-
-            // Sail to the texture's data offset.
-            br.Sail(DataOffset);
-
-            // Read the texture's raw data.
-            Data = br.Read((Width * Height) / 2);
-
-            // Go to the previously saved offset.
-            br.Goto(currentPosition);
         }
 
         /// <summary>
-        /// Write a single texture with specified Binary Writer. TODO: Fix this.
+        /// Generate a BinTexture from a BTI.
+        /// </summary>
+        /// <param name="bti">BTI to load as a BinTexture.</param>
+        public UnusedTexture(BTI bti)
+        {
+            // Set texture width.
+            Width = bti.Width;
+
+            // Set texture height.
+            Height = bti.Height;
+
+            // Set texture format.
+            Format = bti.Format;
+
+            // Set texture alpha flag (Unsure, but seems logical)
+            AlphaFlag = bti.AlphaFlag;
+
+            // Set texture unknown 1. (Padding?)
+            Unknown1 = 0;
+
+            // Set texture data offset.
+            DataOffset = bti.DataOffset;
+        }
+
+        /// <summary>
+        /// Write a single texture with specified Binary Writer.
         /// </summary>
         /// <param name="bw">Binary Writer to use.</param>
         public void Write(DhBinaryWriter bw)
@@ -103,13 +115,13 @@ namespace Dolhouse.Models.Bin
             bw.WriteU16(Height);
 
             // Write texture format.
-            bw.WriteU8(Format);
+            bw.WriteU8((byte)Format);
 
             // Write texture unknown 1. (Flags?)
-            bw.WriteU8(Unknown1);
+            bw.WriteU8(AlphaFlag);
 
             // Write texture unknown 2. (Padding)
-            bw.WriteU16(Unknown2);
+            bw.WriteU16(Unknown1);
 
             // Write texture data offset.
             bw.WriteU32(DataOffset);

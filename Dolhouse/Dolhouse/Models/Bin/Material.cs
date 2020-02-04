@@ -4,9 +4,9 @@ namespace Dolhouse.Models.Bin
 {
     
     /// <summary>
-    /// Bin Material
+    /// Material
     /// </summary>
-    public class BinMaterial
+    public class Material
     {
 
         #region Properties
@@ -45,10 +45,35 @@ namespace Dolhouse.Models.Bin
 
 
         /// <summary>
+        /// Initialize a new material.
+        /// </summary>
+        public Material()
+        {
+
+            // Set Index.
+            Index = 0;
+
+            // Set Unknown 1. (Unused index?)
+            Unknown1 = -1;
+
+            // Set U-Wrapping.
+            WrapU = 0;
+
+            // Set V-Wrapping.
+            WrapV = 0;
+
+            // Set Unknown 2. (Flags?)
+            Unknown2 = 0;
+
+            // Set Unknown 3.
+            Unknown3 = new int[3];
+        }
+
+        /// <summary>
         /// Read a single material from BIN.
         /// </summary>
         /// <param name="br">Binary Reader to use.</param>
-        public BinMaterial(DhBinaryReader br)
+        public Material(DhBinaryReader br)
         {
 
             // Read Index.
@@ -66,15 +91,8 @@ namespace Dolhouse.Models.Bin
             // Read Unknown 2. (Flags?)
             Unknown2 = br.ReadS16();
 
-            // Define a array to hold the unknown 3 values.
-            Unknown3 = new int[3];
-
-            // Loop through the unknown 3 values.
-            for (int i = 0; i < Unknown3.Length; i++)
-            {
-                // Write the current unknown value.
-                Unknown3[i] = br.ReadS32();
-            }
+            // Read Unknown 3.
+            Unknown3 = br.ReadS32s(3);
         }
 
         /// <summary>
@@ -99,12 +117,8 @@ namespace Dolhouse.Models.Bin
             // Write Unknown 2. (Flags?)
             bw.WriteS16(Unknown2);
 
-            // Loop through the Unknown 3 values.
-            for (int i = 0; i < Unknown3.Length; i++)
-            {
-                // Write the current Unknown 3 value.
-                bw.WriteS32(Unknown3[i]);
-            }
+            // Write Unknown 3.
+            bw.WriteS32s(Unknown3);
         }
 
     }

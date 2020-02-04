@@ -1,21 +1,22 @@
 ﻿using Dolhouse.Binary;
+using Dolhouse.Models.GX;
 using System.Collections.Generic;
 
 namespace Dolhouse.Models.Bin
 {
 
     /// <summary>
-    /// Bin Primitive
+    /// Primitive
     /// </summary>
-    public class BinPrimitive
+    public class Primitive
     {
 
         #region Properties
 
         /// <summary>
-        /// Primitive Type. (Same as BMD)
+        /// Primitive Type.
         /// </summary>
-        public byte Type { get; set; }
+        public PrimitiveType Type { get; set; }
 
         /// <summary>
         /// Number of vertices.
@@ -25,12 +26,12 @@ namespace Dolhouse.Models.Bin
         /// <summary>
         /// Number of faces total. (Calculated)
         /// </summary>
-        public int FaceCount { get { return (VerticeCount - 2); } }
+        public int FaceCount { get { return (Vertices.Count - 2); } }
 
         /// <summary>
         /// List of vertices.
         /// </summary>
-        public List<BinPrimitiveVertex> Vertices { get; set; }
+        public List<GX.Vertex> Vertices { get; set; }
 
         #endregion
 
@@ -39,23 +40,23 @@ namespace Dolhouse.Models.Bin
         /// Read a single primitive from BIN.
         /// </summary>
         /// <param name="br">Binary Reader to use.</param>
-        public BinPrimitive(DhBinaryReader br, byte useNBT, int uvCount, BinBatchAttributes attributes)
+        public Primitive(DhBinaryReader br, Attributes attributes)
         {
 
             // Read Primitive Type.
-            Type = br.Read();
+            Type = (PrimitiveType)br.ReadU8();
 
             // Read number of vertices.
             VerticeCount = br.ReadS16();
 
-            // Define ColorIndex array to hold primitive vertices.
-            Vertices = new List<BinPrimitiveVertex>();
+            // Define new list to hold primitive vertices.
+            Vertices = new List<Vertex>();
 
             // Loop through primitive vertices.
             for(int i = 0; i < VerticeCount; i++)
             {
                 // Read a primitive vertex and add it to the list.
-                Vertices.Add(new BinPrimitiveVertex(br, useNBT, uvCount, attributes));
+                Vertices.Add(new Vertex(br, attributes));
             }
         }
 
@@ -63,10 +64,10 @@ namespace Dolhouse.Models.Bin
         /// Write a single primitive vertex with specified Binary Writer.
         /// </summary>
         /// <param name="bw">Binary Writer to use.</param>
-        public void Write(DhBinaryWriter bw)
+        public void Write(DhBinaryWriter bw, Attributes attributes)
         {
             // Write Primitive type.
-            bw.Write(Type);
+            bw.Write((byte)Type);
 
             // Write number of primitive vertices.
             bw.WriteS16((short)Vertices.Count);
@@ -75,7 +76,7 @@ namespace Dolhouse.Models.Bin
             for(int i = 0; i < Vertices.Count; i++)
             {
                 // Write primitive vertex.
-                Vertices[i].Write(bw);
+                Vertices[i].Write(bw, attributes);
             }
         }
     }
