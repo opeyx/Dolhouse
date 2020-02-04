@@ -609,7 +609,7 @@ namespace Dolhouse.Models.Bin
                 for (int i = 0; i < GraphObjects.Count; i++)
                 {
 
-                    // Goto current graphobject's offset.
+                    // Goto current graphobject's part offset.
                     bw.Goto(offsets[12] + (i * 140));
 
                     // Skip 80 bytes.
@@ -632,8 +632,8 @@ namespace Dolhouse.Models.Bin
             // Goto end of file.
             bw.Back(0);
 
-            // Pad to nearest whole 32.
-            bw.WritePadding32();
+            // Pad to nearest whole 16.
+            bw.WritePadding16();
 
             // Return the bin as a stream.
             return stream;
