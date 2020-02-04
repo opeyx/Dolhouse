@@ -41,7 +41,7 @@ namespace Dolhouse.Binary
         #region Constructors
 
         /// <summary>
-        /// Init Binary Writer
+        /// Init Binary Writer (UTF-8 Encoding)
         /// </summary>
         /// <param name="stream">The stream to write data to.</param>
         public DhBinaryWriter(Stream stream, DhEndian endian)
@@ -89,7 +89,6 @@ namespace Dolhouse.Binary
         /// </summary>
         public void Write(byte[] value)
         {
-            if (Endian == DhEndian.Big) { Array.Reverse(value); } // TODO: Fix this.
             Writer.Write(value);
         }
 
@@ -100,6 +99,19 @@ namespace Dolhouse.Binary
         public Stream GetStream()
         {
             return Writer.BaseStream;
+        }
+
+        /// <summary>
+        /// Bool to determine if the system endian is
+        /// the same as the current endian.
+        /// </summary>
+        /// <returns>Bool determining if they are the same endian.</returns>
+        public bool SameEndian
+        {
+            get
+            {
+                return (BitConverter.IsLittleEndian && Endian == DhEndian.Little || !BitConverter.IsLittleEndian && Endian == DhEndian.Big);
+            }
         }
 
         #endregion
@@ -157,7 +169,11 @@ namespace Dolhouse.Binary
         /// </summary>
         public void WriteU16(ushort value)
         {
-            Write(BitConverter.GetBytes(value));
+            if (!SameEndian)
+            {
+                value = value.Swap();
+            }
+            Writer.Write(BitConverter.GetBytes(value));
         }
 
         /// <summary>
@@ -168,7 +184,11 @@ namespace Dolhouse.Binary
         {
             for (int i = 0; i < value.Length; i++)
             {
-                Write(BitConverter.GetBytes(value[i]));
+                if (!SameEndian)
+                {
+                    value[i] = value[i].Swap();
+                }
+                Writer.Write(BitConverter.GetBytes(value[i]));
             }
         }
 
@@ -177,7 +197,11 @@ namespace Dolhouse.Binary
         /// </summary>
         public void WriteS16(short value)
         {
-            Write(BitConverter.GetBytes(value));
+            if (!SameEndian)
+            {
+                value = value.Swap();
+            }
+            Writer.Write(BitConverter.GetBytes(value));
         }
 
         /// <summary>
@@ -188,7 +212,11 @@ namespace Dolhouse.Binary
         {
             for (int i = 0; i < value.Length; i++)
             {
-                Write(BitConverter.GetBytes(value[i]));
+                if (!SameEndian)
+                {
+                    value[i] = value[i].Swap();
+                }
+                Writer.Write(BitConverter.GetBytes(value[i]));
             }
         }
 
@@ -202,7 +230,11 @@ namespace Dolhouse.Binary
         /// </summary>
         public void WriteU32(uint value)
         {
-            Write(BitConverter.GetBytes(value));
+            if (!SameEndian)
+            {
+                value = value.Swap();
+            }
+            Writer.Write(BitConverter.GetBytes(value));
         }
 
         /// <summary>
@@ -213,7 +245,11 @@ namespace Dolhouse.Binary
         {
             for (int i = 0; i < value.Length; i++)
             {
-                Write(BitConverter.GetBytes(value[i]));
+                if (!SameEndian)
+                {
+                    value[i] = value[i].Swap();
+                }
+                Writer.Write(BitConverter.GetBytes(value[i]));
             }
         }
 
@@ -223,7 +259,11 @@ namespace Dolhouse.Binary
         /// <param name="value">The array of signed integers to write.</param>
         public void WriteS32(int value)
         {
-            Write(BitConverter.GetBytes(value));
+            if (!SameEndian)
+            {
+                value = value.Swap();
+            }
+            Writer.Write(BitConverter.GetBytes(value));
         }
 
         /// <summary>
@@ -233,7 +273,11 @@ namespace Dolhouse.Binary
         {
             for (int i = 0; i < value.Length; i++)
             {
-                Write(BitConverter.GetBytes(value[i]));
+                if (!SameEndian)
+                {
+                    value[i] = value[i].Swap();
+                }
+                Writer.Write(BitConverter.GetBytes(value[i]));
             }
         }
 
@@ -247,7 +291,11 @@ namespace Dolhouse.Binary
         /// </summary>
         public void WriteU64(ulong value)
         {
-            Write(BitConverter.GetBytes(value));
+            if (!SameEndian)
+            {
+                value = value.Swap();
+            }
+            Writer.Write(BitConverter.GetBytes(value));
         }
 
         /// <summary>
@@ -258,7 +306,11 @@ namespace Dolhouse.Binary
         {
             for (int i = 0; i < value.Length; i++)
             {
-                Write(BitConverter.GetBytes(value[i]));
+                if (!SameEndian)
+                {
+                    value[i] = value[i].Swap();
+                }
+                Writer.Write(BitConverter.GetBytes(value[i]));
             }
         }
 
@@ -267,7 +319,11 @@ namespace Dolhouse.Binary
         /// </summary>
         public void WriteS64(long value)
         {
-            Write(BitConverter.GetBytes(value));
+            if (!SameEndian)
+            {
+                value = value.Swap();
+            }
+            Writer.Write(BitConverter.GetBytes(value));
         }
 
         /// <summary>
@@ -278,7 +334,11 @@ namespace Dolhouse.Binary
         {
             for (int i = 0; i < value.Length; i++)
             {
-                Write(BitConverter.GetBytes(value[i]));
+                if (!SameEndian)
+                {
+                    value[i] = value[i].Swap();
+                }
+                Writer.Write(BitConverter.GetBytes(value[i]));
             }
         }
 
@@ -292,7 +352,11 @@ namespace Dolhouse.Binary
         /// </summary>
         public void WriteF16(short value)
         {
-            Write(BitConverter.GetBytes(value));
+            if (!SameEndian)
+            {
+                value = value.Swap();
+            }
+            Writer.Write(BitConverter.GetBytes(value));
         }
 
         /// <summary>
@@ -303,7 +367,11 @@ namespace Dolhouse.Binary
         {
             for (int i = 0; i < value.Length; i++)
             {
-                Write(BitConverter.GetBytes(value[i]));
+                if (!SameEndian)
+                {
+                    value[i] = value[i].Swap();
+                }
+                Writer.Write(BitConverter.GetBytes(value[i]));
             }
         }
 
@@ -312,7 +380,13 @@ namespace Dolhouse.Binary
         /// </summary>
         public void WriteF32(float value)
         {
-            Write(BitConverter.GetBytes(value));
+            if (!SameEndian)
+            {
+                byte[] floatBytes = BitConverter.GetBytes(value);
+                Array.Reverse(floatBytes);
+                value = BitConverter.ToSingle(floatBytes, 0);
+            }
+            Writer.Write(BitConverter.GetBytes(value));
         }
 
         /// <summary>
@@ -323,7 +397,13 @@ namespace Dolhouse.Binary
         {
             for (int i = 0; i < value.Length; i++)
             {
-                Write(BitConverter.GetBytes(value[i]));
+                if (!SameEndian)
+                {
+                    byte[] floatBytes = BitConverter.GetBytes(value[i]);
+                    Array.Reverse(floatBytes);
+                    value[i] = BitConverter.ToSingle(floatBytes, 0);
+                }
+                Writer.Write(BitConverter.GetBytes(value[i]));
             }
         }
 
@@ -332,7 +412,13 @@ namespace Dolhouse.Binary
         /// </summary>
         public void WriteF64(double value)
         {
-            Write(BitConverter.GetBytes(value));
+            if (!SameEndian)
+            {
+                byte[] doubleBytes = BitConverter.GetBytes(value);
+                Array.Reverse(doubleBytes);
+                value = BitConverter.ToDouble(doubleBytes, 0);
+            }
+            Writer.Write(BitConverter.GetBytes(value));
         }
 
         /// <summary>
@@ -343,7 +429,13 @@ namespace Dolhouse.Binary
         {
             for (int i = 0; i < value.Length; i++)
             {
-                Write(BitConverter.GetBytes(value[i]));
+                if (!SameEndian)
+                {
+                    byte[] doubleBytes = BitConverter.GetBytes(value[i]);
+                    Array.Reverse(doubleBytes);
+                    value[i] = BitConverter.ToDouble(doubleBytes, 0);
+                }
+                Writer.Write(BitConverter.GetBytes(value[i]));
             }
         }
 
@@ -367,8 +459,11 @@ namespace Dolhouse.Binary
         /// <param name="value">The array of chars to write.</param>
         public void WriteChars(char[] value)
         {
-            if(Endian == DhEndian.Big) { Array.Reverse(value); }
-            Write(Encoding.GetBytes(value));
+            if (!SameEndian)
+            {
+                Array.Reverse(value);
+            }
+            Writer.Write(Encoding.GetBytes(value));
         }
 
         #endregion
@@ -383,8 +478,7 @@ namespace Dolhouse.Binary
         public void WriteStr(string value)
         {
             byte[] data = Encoding.GetBytes(value);
-            Array.Reverse(data);
-            Write(data);
+            Writer.Write(data);
         }
 
         /// <summary>
@@ -398,9 +492,8 @@ namespace Dolhouse.Binary
             if (data.Length > count)
                 throw new FormatException();
             byte[] padding = new byte[count - data.Length];
-            Array.Reverse(data);
-            Write(data);
-            Write(padding);
+            Writer.Write(data);
+            Writer.Write(padding);
         }
 
         #endregion

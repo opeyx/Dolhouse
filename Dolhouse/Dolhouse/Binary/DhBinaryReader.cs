@@ -41,7 +41,7 @@ namespace Dolhouse.Binary
         #region Constructors
 
         /// <summary>
-        /// Init Binary Reader.
+        /// Init Binary Reader. (UTF-8 Encoding)
         /// </summary>
         /// <param name="stream">The stream to read data from.</param>
         public DhBinaryReader(Stream stream, DhEndian endian)
@@ -107,7 +107,6 @@ namespace Dolhouse.Binary
         public byte[] Read(int count)
         {
             byte[] data = Reader.ReadBytes(count);
-            if (Endian == DhEndian.Big) { Array.Reverse(data); } // TODO: Fix this.
             return data;
         }
 
@@ -135,6 +134,18 @@ namespace Dolhouse.Binary
             return Reader.BaseStream;
         }
 
+        /// <summary>
+        /// Bool to determine if the system endian is
+        /// the same as the current endian.
+        /// </summary>
+        /// <returns>Bool determining if they are the same endian.</returns>
+        public bool SameEndian
+        {
+            get
+            {
+                return (BitConverter.IsLittleEndian && Endian == DhEndian.Little || !BitConverter.IsLittleEndian && Endian == DhEndian.Big);
+            }
+        }
         #endregion
 
 
@@ -265,7 +276,14 @@ namespace Dolhouse.Binary
         /// <returns>The read unsigned short.</returns>
         public ushort ReadU16()
         {
-            return BitConverter.ToUInt16(Read(2), 0);
+            ushort data = Reader.ReadUInt16();
+
+            if (!SameEndian)
+            {
+                data = data.Swap();
+            }
+
+            return data;
         }
 
         /// <summary>
@@ -322,7 +340,14 @@ namespace Dolhouse.Binary
         /// <returns>The read signed short.</returns>
         public short ReadS16()
         {
-            return BitConverter.ToInt16(Read(2), 0);
+            short data = Reader.ReadInt16();
+
+            if (!SameEndian)
+            {
+                data = data.Swap();
+            }
+
+            return data;
         }
 
         /// <summary>
@@ -384,7 +409,14 @@ namespace Dolhouse.Binary
         /// <returns>The read unsigned integer.</returns>
         public uint ReadU32()
         {
-            return BitConverter.ToUInt32(Read(4), 0);
+            uint data = Reader.ReadUInt32();
+
+            if (!SameEndian)
+            {
+                data = data.Swap();
+            }
+
+            return data;
         }
 
         /// <summary>
@@ -441,7 +473,14 @@ namespace Dolhouse.Binary
         /// <returns>The read signed integer.</returns>
         public int ReadS32()
         {
-            return BitConverter.ToInt32(Read(4), 0);
+            int data = Reader.ReadInt32();
+
+            if (!SameEndian)
+            {
+                data = data.Swap();
+            }
+
+            return data;
         }
 
         /// <summary>
@@ -503,7 +542,14 @@ namespace Dolhouse.Binary
         /// <returns>The read unsigned long.</returns>
         public ulong ReadU64()
         {
-            return BitConverter.ToUInt64(Read(8), 0);
+            ulong data = Reader.ReadUInt64();
+
+            if (!SameEndian)
+            {
+                data = data.Swap();
+            }
+
+            return data;
         }
 
         /// <summary>
@@ -560,7 +606,14 @@ namespace Dolhouse.Binary
         /// <returns>The read signed long.</returns>
         public long ReadS64()
         {
-            return BitConverter.ToInt64(Read(8), 0);
+            long data = Reader.ReadInt64();
+
+            if (!SameEndian)
+            {
+                data = data.Swap();
+            }
+
+            return data;
         }
 
         /// <summary>
@@ -679,7 +732,16 @@ namespace Dolhouse.Binary
         /// <returns>The read 32-bit float.</returns>
         public float ReadF32()
         {
-            return BitConverter.ToSingle(Read(4), 0);
+            float data = Reader.ReadSingle();
+
+            if (!SameEndian)
+            {
+                byte[] floatBytes = BitConverter.GetBytes(data);
+                Array.Reverse(floatBytes);
+                data = BitConverter.ToSingle(floatBytes, 0);
+            }
+
+            return data;
         }
 
         /// <summary>
@@ -736,7 +798,16 @@ namespace Dolhouse.Binary
         /// <returns>The read 64-bit float.</returns>
         public double ReadF64()
         {
-            return BitConverter.ToDouble(Read(8), 0);
+            double data = Reader.ReadDouble();
+
+            if (!SameEndian)
+            {
+                byte[] doubleBytes = BitConverter.GetBytes(data);
+                Array.Reverse(doubleBytes);
+                data = BitConverter.ToDouble(doubleBytes, 0);
+            }
+
+            return data;
         }
 
         /// <summary>
@@ -918,7 +989,9 @@ namespace Dolhouse.Binary
                 pos++;
             }
             if (chars.Count > count)
+            {
                 throw new FormatException();
+            }
             Skip(count - pos);
             return new string(chars.ToArray());
         }
