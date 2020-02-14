@@ -38,6 +38,25 @@ namespace Dolhouse.Engine
 
 
         /// <summary>
+        /// Initialize a new empty BAS.
+        /// </summary>
+        public BAS()
+        {
+
+            // Set entry count.
+            EntryCount = 0;
+
+            // Set unknown 1.
+            Unknown1 = 0;
+
+            // Set padding.
+            Padding = new byte[5];
+
+            // Define a new list to hold the BAS entries.
+            Entries = new List<BasEntry>();
+        }
+
+        /// <summary>
         /// Reads BAS from a data stream.
         /// </summary>
         /// <param name="stream">The stream containing the BAS data.</param>
@@ -169,7 +188,44 @@ namespace Dolhouse.Engine
 
 
         /// <summary>
-        /// Read a single entry from JMP.
+        /// Initialize a new empty entry.
+        /// </summary>
+        public BasEntry()
+        {
+
+            // Set Id.
+            Id = 0;
+
+            // Set Gain.
+            Gain = 0;
+
+            // Set Delay / Length.
+            Delay = 0;
+
+            // Set Pitch.
+            Pitch = 1;
+
+            // Set Unknown 1.
+            Unknown1 = 0;
+
+            // Set Balance.
+            Balance = 127;
+
+            // Set Unknown 2.
+            Unknown2 = 0;
+
+            // Set Unknown 3.
+            Unknown3 = 0;
+
+            // Set Unknown 4.
+            Unknown4 = 64;
+
+            // Set Padding.
+            Padding = new uint[2];
+        }
+
+        /// <summary>
+        /// Read a single entry from BAS.
         /// </summary>
         /// <param name="br">Binary Reader to use.</param>
         public BasEntry(DhBinaryReader br)
