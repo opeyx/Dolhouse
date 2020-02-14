@@ -55,6 +55,34 @@ namespace Dolhouse.Engine
 
 
         /// <summary>
+        /// Initialize a new empty TMB.
+        /// </summary>
+        public TMB()
+        {
+
+            // Set version.
+            Version = 1;
+
+            // Set hash.
+            Hash = 0;
+
+            // Set info offset.
+            InfoOffset = 8;
+
+            // Set name.
+            Name = "";
+
+            // Set entry count.
+            EntryCount = 0;
+
+            // Set float count.
+            FloatCount = 3;
+
+            // Define a new list to hold the entries.
+            Entries = new List<Vec3>();
+        }
+
+        /// <summary>
         /// Reads TMB from a data stream.
         /// </summary>
         /// <param name="stream">The stream containing the TMB data.</param>
@@ -115,7 +143,7 @@ namespace Dolhouse.Engine
             bw.WriteFixedStr(Name, 28);
 
             // Write entry count.
-            bw.WriteU32(EntryCount);
+            bw.WriteU32((uint)Entries.Count);
 
             // Write float count.
             bw.WriteU32(FloatCount);
