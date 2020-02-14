@@ -16,6 +16,7 @@ Again, please keep in mind that the project is still in **early development**. B
 - GEB Reading / Writing
 - MP Reading / Writing
 - BAS Reading / Writing
+- TMB Reading / Writing
 - TXP Reading / Writing *(Credits to @opeyx, @SpaceCats64)*
 - Yay0 Compression / Decompression *(Credits to @Cuyler36, @Daniel-McCarthy)*
 
