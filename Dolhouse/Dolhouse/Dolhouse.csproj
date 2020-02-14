@@ -48,6 +48,7 @@
     <Compile Include="Binary\DhBinaryReader.cs" />
     <Compile Include="Binary\DhEndian.cs" />
     <Compile Include="Engine\ANM.cs" />
+    <Compile Include="Engine\BAS.cs" />
     <Compile Include="Engine\PRM.cs" />
     <Compile Include="Image\BTI\BTI.cs" />
     <Compile Include="Dolhouse.cs" />
