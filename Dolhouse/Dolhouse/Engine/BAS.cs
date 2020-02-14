@@ -19,7 +19,8 @@ namespace Dolhouse.Engine
         public ushort EntryCount { get; set; }
 
         /// <summary>
-        /// Unknown 1. (Soundbank?)
+        /// Unknown 1. (Soundgroup?)
+        /// (Thanks to @XAYRGA)
         /// </summary>
         public byte Unknown1 { get; set; }
 
@@ -117,15 +118,16 @@ namespace Dolhouse.Engine
         public uint Id { get; set; }
 
         /// <summary>
-        /// Unknown 1. (Duration?)
-        /// This seems to increase with each entry.
+        /// Gain.
+        /// (Thanks to @XAYRGA)
         /// </summary>
-        public float Unknown1 { get; set; }
+        public float Gain { get; set; }
 
         /// <summary>
-        /// Padding 1. (4 bytes)
+        /// Delay / Length.
+        /// (Thanks to @XAYRGA)
         /// </summary>
-        public uint Padding1 { get; set; }
+        public float Delay { get; set; }
 
         /// <summary>
         /// Pitch.
@@ -133,9 +135,9 @@ namespace Dolhouse.Engine
         public float Pitch { get; set; }
 
         /// <summary>
-        /// Unknown 2. (Interval?)
+        /// Unknown 1. (Interval?)
         /// </summary>
-        public int Unknown2 { get; set; }
+        public int Unknown1 { get; set; }
 
 
         /// <summary>
@@ -144,24 +146,24 @@ namespace Dolhouse.Engine
         public byte Balance { get; set; }
 
         /// <summary>
-        /// Unknown 3. (Always 0x00/0x0A)
+        /// Unknown 2. (Always 0x00/0x0A)
+        /// </summary>
+        public byte Unknown2 { get; set; }
+
+        /// <summary>
+        /// Unknown 3.
         /// </summary>
         public byte Unknown3 { get; set; }
 
         /// <summary>
-        /// Unknown 4.
+        /// Unknown 4. (Always 0x40)
         /// </summary>
         public byte Unknown4 { get; set; }
 
         /// <summary>
-        /// Unknown 5. (Always 0x40)
+        /// Padding. (8 bytes)
         /// </summary>
-        public byte Unknown5 { get; set; }
-
-        /// <summary>
-        /// Padding 2. (8 bytes)
-        /// </summary>
-        public uint[] Padding2 { get; set; }
+        public uint[] Padding { get; set; }
 
         #endregion
 
@@ -176,20 +178,23 @@ namespace Dolhouse.Engine
             // Read Id.
             Id = br.ReadU32();
 
-            // Read Unknown1.
-            Unknown1 = br.ReadF32();
+            // Read Gain.
+            Gain = br.ReadF32();
 
-            // Read Padding 1.
-            Padding1 = br.ReadU32();
+            // Read Delay / Length.
+            Delay = br.ReadU32();
 
             // Read Pitch.
             Pitch = br.ReadF32();
 
-            // Read Unknown 2.
-            Unknown2 = br.ReadS32();
+            // Read Unknown 1.
+            Unknown1 = br.ReadS32();
 
             // Read Balance.
             Balance = br.Read();
+
+            // Read Unknown 2.
+            Unknown2 = br.Read();
 
             // Read Unknown 3.
             Unknown3 = br.Read();
@@ -197,11 +202,8 @@ namespace Dolhouse.Engine
             // Read Unknown 4.
             Unknown4 = br.Read();
 
-            // Read Unknown 5.
-            Unknown5 = br.Read();
-
-            // Read Padding 2.
-            Padding2 = br.ReadU32s(2);
+            // Read Padding.
+            Padding = br.ReadU32s(2);
         }
 
         /// <summary>
@@ -214,32 +216,32 @@ namespace Dolhouse.Engine
             // Write Id.
             bw.WriteU32(Id);
 
-            // Write Unknown 1.
-            bw.WriteF32(Unknown1);
+            // Write Gain.
+            bw.WriteF32(Gain);
 
-            // Write Padding 1.
-            bw.WriteU32(Padding1);
+            // Write Delay / Length.
+            bw.WriteF32(Delay);
 
             // Write Pitch.
             bw.WriteF32(Pitch);
 
-            // Write Unknown 2.
-            bw.WriteS32(Unknown2);
+            // Write Unknown 1.
+            bw.WriteS32(Unknown1);
 
             // Write Balance.
             bw.Write(Balance);
 
             // Write Unknown 3.
-            bw.Write(Unknown3);
+            bw.Write(Unknown2);
 
             // Write Unknown 4.
-            bw.Write(Unknown4);
+            bw.Write(Unknown3);
 
             // Write Unknown 5.
-            bw.Write(Unknown5);
+            bw.Write(Unknown4);
 
             // Write Padding 2.
-            bw.WriteU32s(Padding2);
+            bw.WriteU32s(Padding);
         }
     }
 }
