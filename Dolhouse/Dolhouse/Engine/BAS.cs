@@ -238,7 +238,7 @@ namespace Dolhouse.Engine
             Gain = br.ReadF32();
 
             // Read Delay / Length.
-            Delay = br.ReadU32();
+            Delay = br.ReadF32();
 
             // Read Pitch.
             Pitch = br.ReadF32();
