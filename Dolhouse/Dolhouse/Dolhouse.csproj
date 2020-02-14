@@ -50,6 +50,7 @@
     <Compile Include="Engine\ANM.cs" />
     <Compile Include="Engine\BAS.cs" />
     <Compile Include="Engine\PRM.cs" />
+    <Compile Include="Engine\TMB.cs" />
     <Compile Include="Image\BTI\BTI.cs" />
     <Compile Include="Dolhouse.cs" />
     <Compile Include="Engine\GEB.cs" />
