@@ -149,7 +149,7 @@ namespace Dolhouse.Engine
             bw.WriteU32(FloatCount);
 
             // Write padding.
-            bw.WritePadding32();
+            bw.WritePadding16();
 
             // Returns the TMB as a stream.
             return stream;
