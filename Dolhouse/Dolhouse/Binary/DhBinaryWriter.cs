@@ -220,6 +220,11 @@ namespace Dolhouse.Binary
             }
         }
 
+        internal void Write(object unknown2)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
 
@@ -482,7 +487,7 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
-        /// Write string + pad it to 32 bytes.
+        /// Write string + pad it to 'count' bytes.
         /// </summary>
         /// <param name="value">The string to write.</param>
         /// <param name="value">The fixed length to write.</param>
