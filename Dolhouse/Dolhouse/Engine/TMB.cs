@@ -133,11 +133,14 @@ namespace Dolhouse.Engine
             // Write hash.
             bw.WriteU16(Hash);
 
-            // Write info offset.
-            bw.WriteU32(InfoOffset);
+            // Write info offset. (CALCULATED)
+            bw.WriteU32(0);
 
             // Write entries.
             bw.WriteVec3(Entries.ToArray());
+
+            // Set actual info offset.
+            uint actualInfoOffset = (uint)bw.Position();
 
             // Write name.
             bw.WriteFixedStr(Name, 28);
@@ -150,6 +153,15 @@ namespace Dolhouse.Engine
 
             // Write padding.
             bw.WritePadding16();
+
+            // Goto info offset offset.
+            bw.Goto(4);
+
+            // Write the actual info offset
+            bw.WriteU32(actualInfoOffset);
+
+            // Back to end of file.
+            bw.Back(0);
 
             // Returns the TMB as a stream.
             return stream;
