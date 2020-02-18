@@ -1,6 +1,7 @@
 using Dolhouse.Binary;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Dolhouse.Engine
 {
@@ -59,16 +60,19 @@ namespace Dolhouse.Engine
             Unknown2 = 0;
 
             // Set Entry Count.
-            EntryCount = 0;
+            EntryCount = 1;
 
             // Set Keyframe Count.
-            KeyFrameCount = 0;
+            KeyFrameCount = 1;
 
             // Read Keyframe Offset.
-            KeyFrameOffset = 12;
+            KeyFrameOffset = 24;
 
             // Define a new list to hold the TXP's entries.
             Entries = new List<TxpEntry>();
+
+            // Add a TXP entry.
+            Entries.Add(new TxpEntry());
         }
 
         /// <summary>
@@ -129,11 +133,20 @@ namespace Dolhouse.Engine
             // Write Entry Count.
             bw.WriteU16((ushort)Entries.Count);
 
-            // Write Keyframe Count.
-            bw.WriteU16(KeyFrameCount);
+            // Check if Entry Count is greater than 0.
+            if (Entries.Count > 0)
+            {
+                // Write Keyframe Count.
+                bw.WriteU16((ushort)Entries[0].Indices.Count);
+            }
+            else
+            {
+                // Write 0.
+                bw.WriteU16(0);
+            }
 
             // Write Keyframe Offset.
-            bw.WriteU32(KeyFrameOffset);
+            bw.WriteU32((uint)(12 + (Entries.Count * 12)));
 
             // Loop through entries.
             for(int i = 0; i < Entries.Count; i++)
@@ -195,7 +208,7 @@ namespace Dolhouse.Engine
         /// <summary>
         /// Material Index.
         /// </summary>
-        public short MaterialIndex { get; set; }
+        public ushort MaterialIndex { get; set; }
 
         /// <summary>
         /// Unknown 2.
@@ -210,7 +223,7 @@ namespace Dolhouse.Engine
         /// <summary>
         /// MDL Texture Objects Indices.
         /// </summary>
-        public short[] Indices { get; set; }
+        public List<ushort> Indices { get; set; }
 
         #endregion
 
@@ -231,10 +244,13 @@ namespace Dolhouse.Engine
             Unknown2 = 0;
 
             // Set Indices Offset.
-            IndicesOffset = 0;
+            IndicesOffset = 24;
 
             // Set Indices.
-            Indices = new short[0];
+            Indices = new List<ushort>();
+
+            // Add index.
+            Indices.Add(0);
         }
 
         /// <summary>
@@ -249,7 +265,7 @@ namespace Dolhouse.Engine
             Unknown1 = br.ReadS16();
             
             //Read Material Index.
-            MaterialIndex = br.ReadS16();
+            MaterialIndex = br.ReadU16();
 
             // Read Unknown 2.
             Unknown2 = br.ReadS32();
@@ -258,7 +274,7 @@ namespace Dolhouse.Engine
             IndicesOffset  = br.ReadU32();
 
             // Read Indices.
-            Indices = br.ReadS16sAt(IndicesOffset, keyFrameCount);
+            Indices = br.ReadU16sAt(IndicesOffset, keyFrameCount).ToList();
         }
 
         /// <summary>
@@ -272,7 +288,7 @@ namespace Dolhouse.Engine
             bw.WriteS16(Unknown1);
 
             // Write Material Index.
-            bw.WriteS16(MaterialIndex);
+            bw.WriteU16(MaterialIndex);
 
             // Write Unknown 2.
             bw.WriteS32(Unknown2);
@@ -289,11 +305,11 @@ namespace Dolhouse.Engine
         {
 
             // Loop through indices.
-            for (int i = 0; i < Indices.Length; i++)
+            for (int i = 0; i < Indices.Count; i++)
             {
 
                 // Write index.
-                bw.WriteS16(Indices[i]);
+                bw.WriteU16(Indices[i]);
             }
         }
     }
