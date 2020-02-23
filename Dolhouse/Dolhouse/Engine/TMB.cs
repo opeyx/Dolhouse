@@ -8,7 +8,7 @@ namespace Dolhouse.Engine
 {
 
     /// <summary>
-    /// (T)i(M)ing (B)inary
+    /// (T)i(M)ing (B)ank
     /// </summary>
     public class TMB
     {
@@ -16,155 +16,259 @@ namespace Dolhouse.Engine
         #region Properties
 
         /// <summary>
-        /// Version. (Assumption!)
+        /// Amount of sequences within this bank.
         /// </summary>
-        public ushort Version { get; set; }
+        public ushort SequenceCount;
 
         /// <summary>
-        /// Hash. (Assumption!)
+        /// Total duration of this timing.
         /// </summary>
-        public ushort Hash { get; set; }
+        public ushort Duration;
 
         /// <summary>
-        /// Offset to info data.
+        /// Offset to the sequence data.
         /// </summary>
-        public uint InfoOffset { get; set; }
+        public uint SequenceDataOffset;
 
         /// <summary>
-        /// List of entries.
+        /// List of sequences within this bank.
         /// </summary>
-        public List<Vec3> Entries { get; set; }
-
-        /// <summary>
-        /// Name. (For internal use?)
-        /// </summary>
-        public string Name { get; set; }
-
-
-        /// <summary>
-        /// Entry count.
-        /// </summary>
-        public uint EntryCount;
-
-        /// <summary>
-        /// Float count. (Assumption!)
-        /// </summary>
-        public uint FloatCount { get; set; }
+        public List<TMBSequence> Sequences;
 
         #endregion
 
 
         /// <summary>
-        /// Initialize a new empty TMB.
+        /// Reads TMB from a byte array.
         /// </summary>
-        public TMB()
+        /// <param name="data">The byte array containing the TMB data.</param>
+        public TMB(byte[] data)
         {
+            // Define a new
+            DhBinaryReader br = new DhBinaryReader(data, DhEndian.Big);
 
-            // Set version.
-            Version = 1;
+            // Read sequence count.
+            SequenceCount = br.ReadU16();
 
-            // Set hash.
-            Hash = 0;
+            // Read timing duration.
+            Duration = br.ReadU16();
 
-            // Set info offset.
-            InfoOffset = 8;
+            // Read sequence data offset.
+            SequenceDataOffset = br.ReadU32();
 
-            // Set name.
-            Name = "";
+            // Define a new list to hold our sequences.
+            Sequences = new List<TMBSequence>();
 
-            // Set entry count.
-            EntryCount = 0;
+            // Goto sequence data offset.
+            br.Goto(SequenceDataOffset);
 
-            // Set float count.
-            FloatCount = 3;
+            // Loop through sequences within this bank.
+            for (int i = 0; i < SequenceCount; i++)
+            {
 
-            // Define a new list to hold the entries.
-            Entries = new List<Vec3>();
+                // Read a sequence and add it to the list of sequences.
+                Sequences.Add(new TMBSequence(br));
+            }
+
+            // Loop through sequences within this bank.
+            for (int i = 0; i < SequenceCount; i++)
+            {
+
+                // Go to this sequence's keyframe data.
+                br.Goto(8 + ((Sequences[i].StartIndex * 4)));
+
+                // Loop through keyframe's within this sequence.
+                for (int y = 0; y < Sequences[i].KeyFrameCount; y++)
+                {
+
+                    // Read this keyframe and add it to the sequence's list of the keyframes.
+                    Sequences[i].KeyFrames.Add(new TIMKeyFrame(br, Sequences[i].KeyFrameSize));
+                }
+            }
         }
 
         /// <summary>
-        /// Reads TMB from a data stream.
+        /// Creates a byte array from this TMB.
         /// </summary>
-        /// <param name="stream">The stream containing the TMB data.</param>
-        public TMB(Stream stream)
+        /// <returns>The TMB as a byte array.</returns>
+        public byte[] Write()
         {
 
-            // Define a binary reader to read with.
-            DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
-
-            // Read version.
-            Version = br.ReadU16();
-
-            // Read hash.
-            Hash = br.ReadU16();
-
-            // Read info offset.
-            InfoOffset = br.ReadU32();
-
-            // Read name.
-            Name = br.ReadFixedStrAt(InfoOffset, 28);
-
-            // Read entry count.
-            EntryCount = br.ReadU32At(InfoOffset + 28);
-
-            // Read float count.
-            FloatCount = br.ReadU32At(InfoOffset + 32);
-
-            // Read entries.
-            Entries = br.ReadVec3s((int)EntryCount).ToList();
-        }
-
-        /// <summary>
-        /// Creates a stream from this TMB.
-        /// </summary>
-        /// <returns>The TMB as a stream.</returns>
-        public Stream Write()
-        {
-
-            // Define a stream to hold our PRM data.
-            Stream stream = new MemoryStream();
+            // Define a stream to hold our TMB data.
+            MemoryStream stream = new MemoryStream();
 
             // Define a binary writer to write with.
             DhBinaryWriter bw = new DhBinaryWriter(stream, DhEndian.Big);
 
-            // Write version.
-            bw.WriteU16(Version);
+            // Write the amount of sequences.
+            bw.WriteU16((ushort)Sequences.Count);
 
-            // Write hash.
-            bw.WriteU16(Hash);
+            // Find the largest duration value in each keyframe in each sequence.
+            float longestDuration = Sequences.Max(s => s.KeyFrames.Max(k => k.Time));
 
-            // Write info offset. (CALCULATED)
+            // Write the largest duration. (This is the duration of the timing)
+            bw.WriteU16((ushort)longestDuration);
+
+            // Write placeholder for sequence data offset.
             bw.WriteU32(0);
 
-            // Write entries.
-            bw.WriteVec3(Entries.ToArray());
+            // Loop through sequences within this bank.
+            foreach (TMBSequence sequence in Sequences)
+            {
 
-            // Set actual info offset.
-            uint actualInfoOffset = (uint)bw.Position();
+                // Loop through keyframe's within this sequence.
+                foreach (TIMKeyFrame keyframe in sequence.KeyFrames)
+                {
 
+                    // Write this keyframe.
+                    keyframe.Write(bw);
+                }
+            }
+
+            // Save the sequence data offset.
+            uint sequenceDataOffset = (uint)bw.Position();
+            // Goto sequence data offset value.
+            bw.Goto(4);
+            // Write sequence data offset.
+            bw.WriteU32(sequenceDataOffset);
+            // Go back to end of stream.
+            bw.Back(0);
+
+            // Loop through sequences within this bank.
+            foreach (TMBSequence sequence in Sequences)
+            {
+
+                // Write this sequence.
+                sequence.Write(bw);
+            }
+
+            // Pad to nearest whole 32.
+            bw.WritePadding32();
+
+            // Return the data as byte array.
+            return stream.ToArray();
+        }
+    }
+
+    /// <summary>
+    /// (T)i(M)ing (B)ank (Sequence)
+    /// </summary>
+    public class TMBSequence
+    {
+
+        #region Properties
+
+        /// <summary>
+        /// Sequence Name.
+        /// </summary>
+        public string Name;
+
+        /// <summary>
+        /// Keyframe count.
+        /// </summary>
+        public uint KeyFrameCount;
+
+        /// <summary>
+        /// Float data start index.
+        /// </summary>
+        public ushort StartIndex;
+
+        /// <summary>
+        /// The amount of floats in each Keyframe.
+        /// </summary>
+        public ushort KeyFrameSize;
+
+        /// <summary>
+        /// List of keyframes within this sequence.
+        /// </summary>
+        public List<TIMKeyFrame> KeyFrames;
+
+        #endregion
+
+
+        /// <summary>
+        /// Read a single sequence from TMB.
+        /// </summary>
+        /// <param name="br">The binary reader to read with.</param>
+        public TMBSequence(DhBinaryReader br)
+        {
+
+            // Read name.
+            Name = br.ReadFixedStr(28);
+
+            // Read keyframe count.
+            KeyFrameCount = br.ReadU32();
+
+            // Read start index.
+            StartIndex = br.ReadU16();
+
+            // Read keyframe size.
+            KeyFrameSize = br.ReadU16();
+
+            // Define a new list to hold our keyframes.
+            KeyFrames = new List<TIMKeyFrame>();
+        }
+
+        public void Write(DhBinaryWriter bw)
+        {
             // Write name.
             bw.WriteFixedStr(Name, 28);
 
-            // Write entry count.
-            bw.WriteU32((uint)Entries.Count);
+            // Write keyframe count.
+            bw.WriteU32(KeyFrameCount);
 
-            // Write float count.
-            bw.WriteU32(FloatCount);
+            // Write start index.
+            bw.WriteU16(StartIndex);
 
-            // Write padding.
-            bw.WritePadding16();
+            // Write keyframe size.
+            bw.WriteU16(KeyFrameSize);
+        }
+    }
 
-            // Goto info offset offset.
-            bw.Goto(4);
+    /// <summary>
+    /// (T)i(M)ing (B)ank (Key) (Frame)
+    /// </summary>
+    public class TIMKeyFrame
+    {
 
-            // Write the actual info offset
-            bw.WriteU32(actualInfoOffset);
+        #region Properties
 
-            // Back to end of file.
-            bw.Back(0);
+        // The time at this keyframe is played.
+        public float Time;
 
-            // Returns the TMB as a stream.
-            return stream;
+        // List of float values for this keyframe.
+        public List<float> Data;
+
+        #endregion
+
+
+        /// <summary>
+        /// Read a single keyframe from TMB.
+        /// </summary>
+        /// <param name="br">The binary reader to read with.</param>
+        /// <param name="dataCount">The amount of floats in this keyframe.</param>
+        public TIMKeyFrame(DhBinaryReader br, ushort dataCount)
+        {
+
+            // Read time.
+            Time = br.ReadF32();
+
+            // Read keyframe data.
+            Data = br.ReadF32s(dataCount - 1).ToList();
+        }
+
+        /// <summary>
+        /// Read a single keyframe.
+        /// </summary>
+        /// <param name="bw">The binary writer to write with.</param>
+        public void Write(DhBinaryWriter bw)
+        {
+
+            // Write time.
+            bw.WriteF32(Time);
+
+            // Write keyframe data.
+            bw.WriteF32s(Data.ToArray());
         }
     }
 }

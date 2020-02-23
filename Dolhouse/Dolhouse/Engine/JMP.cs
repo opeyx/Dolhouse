@@ -44,6 +44,7 @@ namespace Dolhouse.Engine
         /// </summary>
         public JMP()
         {
+
             // Set JMP's Header
             EntryOffset = 0;
             EntrySize = 0;
@@ -90,13 +91,13 @@ namespace Dolhouse.Engine
             }
         }
 
-
         /// <summary>
         /// Creates a stream from this JMP.
         /// </summary>
         /// <returns>The JMP as a stream.</returns>
         public Stream Write()
         {
+
             // Define a stream to hold our JMP data.
             Stream stream = new MemoryStream();
 

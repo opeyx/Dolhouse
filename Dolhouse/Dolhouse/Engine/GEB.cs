@@ -52,6 +52,7 @@ namespace Dolhouse.Engine
             // Loop through the sprite entries.
             for (int i = 0; i < spriteCount; i++)
             {
+
                 // Add the read sprite to the Sprites list.
                 Sprites.Add(new GSprite(br));
             }
@@ -75,6 +76,7 @@ namespace Dolhouse.Engine
             // Loop through the sprite entries.
             for (int i = 0; i < Sprites.Count; i++)
             {
+
                 // Write sprite.
                 Sprites[i].Write(bw);
             }

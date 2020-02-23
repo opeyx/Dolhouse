@@ -40,6 +40,7 @@ namespace Dolhouse.Engine
         /// <param name="stream">The stream containing the PRM data.</param>
         public PRM(Stream stream)
         {
+
             // Define a binary reader to read with.
             DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
 
@@ -64,6 +65,7 @@ namespace Dolhouse.Engine
         /// <returns>The PRM as a stream.</returns>
         public Stream Write()
         {
+
             // Define a stream to hold our PRM data.
             Stream stream = new MemoryStream();
 
