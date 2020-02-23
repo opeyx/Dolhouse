@@ -464,10 +464,6 @@ namespace Dolhouse.Binary
         /// <param name="value">The array of chars to write.</param>
         public void WriteChars(char[] value)
         {
-            if (!SameEndian)
-            {
-                Array.Reverse(value);
-            }
             Writer.Write(Encoding.GetBytes(value));
         }
 
@@ -487,18 +483,27 @@ namespace Dolhouse.Binary
         }
 
         /// <summary>
-        /// Write string + pad it to 'count' bytes.
+        /// Write string of fixed length. (Will be truncated/padded)
         /// </summary>
         /// <param name="value">The string to write.</param>
-        /// <param name="value">The fixed length to write.</param>
-        public void WriteFixedStr(string value, int count)
+        /// <param name="count">The fixed length to write.</param>
+        /// <param name="padChar">The char you wish to pad with.</param>
+        public void WriteFixedStr(string value, int count, char padChar = '\0')
         {
             byte[] data = Encoding.GetBytes(value);
             if (data.Length > count)
-                throw new FormatException();
-            byte[] padding = new byte[count - data.Length];
-            Writer.Write(data);
-            Writer.Write(padding);
+            {
+                Writer.Write(data, 0, count);
+            }
+            else
+            {
+                byte[] padding = new byte[count - data.Length];
+                Writer.Write(data);
+                for(int i = 0; i < count-data.Length; i++)
+                {
+                    Writer.Write(padChar);
+                }
+            }
         }
 
         #endregion

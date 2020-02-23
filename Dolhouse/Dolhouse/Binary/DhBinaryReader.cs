@@ -43,6 +43,17 @@ namespace Dolhouse.Binary
         /// <summary>
         /// Init Binary Reader. (UTF-8 Encoding)
         /// </summary>
+        /// <param name="data">The data to read from.</param>
+        public DhBinaryReader(byte[] data, DhEndian endian)
+        {
+            Reader = new BinaryReader(new MemoryStream(data), Encoding.UTF8);
+            Endian = endian;
+            Encoding = Encoding.UTF8;
+        }
+
+        /// <summary>
+        /// Init Binary Reader. (UTF-8 Encoding)
+        /// </summary>
         /// <param name="stream">The stream to read data from.</param>
         public DhBinaryReader(Stream stream, DhEndian endian)
         {
