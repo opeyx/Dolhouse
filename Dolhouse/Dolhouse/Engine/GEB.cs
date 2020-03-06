@@ -34,14 +34,14 @@ namespace Dolhouse.Engine
         }
 
         /// <summary>
-        /// Reads GEB from a data stream.
+        /// Reads GEB from a byte array.
         /// </summary>
-        /// <param name="stream">The stream containing the GEB data.</param>
-        public GEB(Stream stream)
+        /// <param name="data">The byte array containing the GEB data.</param>
+        public GEB(byte[] data)
         {
 
             // Define a binary reader to read with.
-            DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
+            DhBinaryReader br = new DhBinaryReader(data, DhEndian.Big);
 
             // Read GEB's sprite count.
             uint spriteCount = br.ReadU32();
@@ -59,13 +59,13 @@ namespace Dolhouse.Engine
         }
 
         /// <summary>
-        /// Creates a stream from this GEB.
+        /// Creates a byte array from this GEB.
         /// </summary>
-        /// <returns>The GEB as a stream.</returns>
-        public Stream Write()
+        /// <returns>The GEB as a byte array.</returns>
+        public byte[] Write()
         {
             // Define a stream to hold our GEB data.
-            Stream stream = new MemoryStream();
+            MemoryStream stream = new MemoryStream();
 
             // Define a binary writer to write with.
             DhBinaryWriter bw = new DhBinaryWriter(stream, DhEndian.Big);
@@ -81,8 +81,8 @@ namespace Dolhouse.Engine
                 Sprites[i].Write(bw);
             }
 
-            // Returns the GEB as a stream.
-            return stream;
+            // Returns the GEB as a byte array.
+            return stream.ToArray();
         }
     }
 

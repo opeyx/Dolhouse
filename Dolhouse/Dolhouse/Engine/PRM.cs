@@ -35,14 +35,14 @@ namespace Dolhouse.Engine
         }
 
         /// <summary>
-        /// Reads PRM from a data stream.
+        /// Reads PRM from a byte array.
         /// </summary>
-        /// <param name="stream">The stream containing the PRM data.</param>
-        public PRM(Stream stream)
+        /// <param name="data">The byte array containing the PRM data.</param>
+        public PRM(byte[] data)
         {
 
             // Define a binary reader to read with.
-            DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
+            DhBinaryReader br = new DhBinaryReader(data, DhEndian.Big);
 
             // Read PRM's parameter entry count.
             uint entryCount = br.ReadU32();
@@ -60,14 +60,14 @@ namespace Dolhouse.Engine
         }
 
         /// <summary>
-        /// Creates a stream from this PRM.
+        /// Creates a byte array from this PRM.
         /// </summary>
-        /// <returns>The PRM as a stream.</returns>
-        public Stream Write()
+        /// <returns>The PRM as a byte array.</returns>
+        public byte[] Write()
         {
 
             // Define a stream to hold our PRM data.
-            Stream stream = new MemoryStream();
+            MemoryStream stream = new MemoryStream();
 
             // Define a binary writer to write with.
             DhBinaryWriter bw = new DhBinaryWriter(stream, DhEndian.Big);
@@ -82,8 +82,8 @@ namespace Dolhouse.Engine
                 Entries[i].Write(bw);
             }
 
-            // Returns the PRM as a stream.
-            return stream;
+            // Returns the PRM as a byte array.
+            return stream.ToArray();
         }
     }
 

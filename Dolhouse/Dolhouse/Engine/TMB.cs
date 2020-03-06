@@ -44,7 +44,7 @@ namespace Dolhouse.Engine
         /// <param name="data">The byte array containing the TMB data.</param>
         public TMB(byte[] data)
         {
-            // Define a new
+            // Define a new binary reader to read with.
             DhBinaryReader br = new DhBinaryReader(data, DhEndian.Big);
 
             // Read sequence count.
@@ -145,7 +145,7 @@ namespace Dolhouse.Engine
             // Pad to nearest whole 32.
             bw.WritePadding32();
 
-            // Return the data as byte array.
+            // Return the TMB as byte array.
             return stream.ToArray();
         }
     }

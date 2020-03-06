@@ -57,14 +57,14 @@ namespace Dolhouse.Engine
         }
 
         /// <summary>
-        /// Reads JMP from a data stream.
+        /// Reads JMP from a byte array.
         /// </summary>
-        /// <param name="stream">The stream containing the JMP data.</param>
-        public JMP(Stream stream)
+        /// <param name="stream">The byte array containing the JMP data.</param>
+        public JMP(byte[] data)
         {
 
             // Define a binary reader to read with.
-            DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
+            DhBinaryReader br = new DhBinaryReader(data, DhEndian.Big);
             
             // Read JMP's Header
             uint entryCount = br.ReadU32();
@@ -92,14 +92,14 @@ namespace Dolhouse.Engine
         }
 
         /// <summary>
-        /// Creates a stream from this JMP.
+        /// Creates a byte array from this JMP.
         /// </summary>
-        /// <returns>The JMP as a stream.</returns>
-        public Stream Write()
+        /// <returns>The JMP as a byte array.</returns>
+        public byte[] Write()
         {
 
             // Define a stream to hold our JMP data.
-            Stream stream = new MemoryStream();
+            MemoryStream stream = new MemoryStream();
 
             // Define a binary writer to write with.
             DhBinaryWriter bw = new DhBinaryWriter(stream, DhEndian.Big);
@@ -132,8 +132,8 @@ namespace Dolhouse.Engine
             // Pad file with @'s to nearest whole 32 bytes.
             bw.WritePadding32('@');
 
-            // Returns the JMP as a stream.
-            return stream;
+            // Returns the JMP as a byte array.
+            return stream.ToArray();
         }
     }
 

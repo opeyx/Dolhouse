@@ -59,12 +59,12 @@ namespace Dolhouse.Engine
         /// <summary>
         /// Reads BAS from a data stream.
         /// </summary>
-        /// <param name="stream">The stream containing the BAS data.</param>
-        public BAS(Stream stream)
+        /// <param name="data">The byte array containing the BAS data.</param>
+        public BAS(byte[] data)
         {
 
             // Define a binary reader to read with.
-            DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
+            DhBinaryReader br = new DhBinaryReader(data, DhEndian.Big);
 
             // Read entry count.
             EntryCount = br.ReadU16();
@@ -88,14 +88,14 @@ namespace Dolhouse.Engine
         }
 
         /// <summary>
-        /// Creates a stream from this BAS.
+        /// Creates a byte array from this BAS.
         /// </summary>
-        /// <returns>The BAS as a stream.</returns>
-        public Stream Write()
+        /// <returns>The BAS as a byte array.</returns>
+        public byte[] Write()
         {
 
             // Define a stream to hold our JMP data.
-            Stream stream = new MemoryStream();
+            MemoryStream stream = new MemoryStream();
 
             // Define a binary writer to write with.
             DhBinaryWriter bw = new DhBinaryWriter(stream, DhEndian.Big);
@@ -117,8 +117,8 @@ namespace Dolhouse.Engine
                 Entries[i].Write(bw);
             }
 
-            // Returns the BAS as a stream.
-            return stream;
+            // Returns the BAS as a byte array.
+            return stream.ToArray();
         }
     }
 

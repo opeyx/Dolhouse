@@ -104,13 +104,13 @@ namespace Dolhouse.Models.Bin
         }
 
         /// <summary>
-        /// Reads BIN from a stream.
+        /// Reads BIN from a byte array.
         /// </summary>
-        /// <param name="stream">The stream containing the BIN data.</param>
-        public BIN(Stream stream)
+        /// <param name="data">The byte array containing the BIN data.</param>
+        public BIN(byte[] data)
         {
             // Define a binary reader to read with.
-            DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
+            DhBinaryReader br = new DhBinaryReader(data, DhEndian.Big);
 
             // Read bin version.
             Version = br.Read();
@@ -297,14 +297,14 @@ namespace Dolhouse.Models.Bin
         }
 
         /// <summary>
-        /// Creates a stream from this BIN.
+        /// Creates a byte array from this BIN.
         /// </summary>
-        /// <returns>The BIN as a stream.</returns>
-        public Stream Write()
+        /// <returns>The BIN as a byte array.</returns>
+        public byte[] Write()
         {
 
             // Define a stream to hold our BIN data.
-            Stream stream = new MemoryStream();
+            MemoryStream stream = new MemoryStream();
 
             // Define a binary writer to write with.
             DhBinaryWriter bw = new DhBinaryWriter(stream, DhEndian.Big);
@@ -635,8 +635,8 @@ namespace Dolhouse.Models.Bin
             // Pad to nearest whole 16.
             bw.WritePadding16();
 
-            // Return the bin as a stream.
-            return stream;
+            // Return the BIN as a byte array.
+            return stream.ToArray();
         }
 
         public List<GraphObject> GetGraphObjects(DhBinaryReader br, int index)
@@ -686,7 +686,7 @@ namespace Dolhouse.Models.Bin
         /// <returns>Total amount of Textures in bin.</returns>
         public int GetTextureCount()
         {
-            short textureCount = 0;
+            short textureCount = -1;
 
             for (int i = 0; i < Materials.Count; i++)
             {

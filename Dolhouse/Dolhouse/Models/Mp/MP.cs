@@ -106,14 +106,14 @@ namespace Dolhouse.Models.Mp
         }
 
         /// <summary>
-        /// Reads MP from a stream.
+        /// Reads MP from a byte array.
         /// </summary>
-        /// <param name="stream">The stream containing the MP data.</param>
-        public MP(Stream stream)
+        /// <param name="data">The byte array containing the MP data.</param>
+        public MP(byte[] data)
         {
 
             // Define a binary reader to read with.
-            DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
+            DhBinaryReader br = new DhBinaryReader(data, DhEndian.Big);
 
             // Read Grid Scale.
             GridScale = br.ReadVec3();
@@ -258,14 +258,14 @@ namespace Dolhouse.Models.Mp
         }
 
         /// <summary>
-        /// Creates a stream from this MP. TODO: Complete writing.
+        /// Creates a byte array from this MP. TODO: Complete writing.
         /// </summary>
-        /// <returns>The MP as a stream.</returns>
-        public Stream Write()
+        /// <returns>The MP as a byte array.</returns>
+        public byte[] Write()
         {
 
             // Define a stream to hold our MP data.
-            Stream stream = new MemoryStream();
+            MemoryStream stream = new MemoryStream();
 
             // Define a binary writer to write with.
             DhBinaryWriter bw = new DhBinaryWriter(stream, DhEndian.Big);
@@ -369,8 +369,8 @@ namespace Dolhouse.Models.Mp
             // Write offsets.
             bw.WriteU32s(offsets);
 
-            // Return the mp as a stream.
-            return stream;
+            // Return the MP as a byte array.
+            return stream.ToArray();
         }
     }
 }
