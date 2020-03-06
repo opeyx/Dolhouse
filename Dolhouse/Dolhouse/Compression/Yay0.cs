@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Dolhouse.Compression
 {
@@ -14,62 +15,21 @@ namespace Dolhouse.Compression
     {
 
         /// <summary>
-        /// Check whether or not data is compressed using Yay0.
+        /// Check whether or not data is compressed using Yay0. Full credits for this snippet goes to Cuyler36:
+        /// https://github.com/Cuyler36/GCNToolKit/blob/master/GCNToolKit/Formats/Compression/Yay0.cs
         /// </summary>
-        /// <param name="stream">Stream containing the data to check.</param>
-        /// <returns>Boolean determining whether or not the stream is Yay0 compressed.</returns>
-        public static bool IsCompressed(Stream stream)
-        {
-
-            // Define a binary reader to read with.
-            DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
-
-            // Boolean that determines if data is compressed using Yay0.
-            bool compressedData;
-
-            // Check if the magic is "Yay0".
-            if (br.ReadU32() == 1499560240)
-            {
-
-                // The data seems to be Yay0 compressed.
-                compressedData = true;
-            }
-            else
-            {
-
-                // The data doesn't seem to be Yay0 compressed.
-                compressedData = false;
-            }
-
-            // Goto start of stream.
-            br.Goto(0);
-
-            // Return the result.
-            return compressedData;
-        }
+        /// <param name="data">The data to check.</param>
+        /// <returns>Boolean determining whether or not the data is Yay0 compressed.</returns>
+        public static bool IsCompressed(in byte[] data) => data?.Length > 0x10 && Encoding.ASCII.GetString(data, 0, 4) == "Yay0";
 
         /// <summary>
         /// Compressing data with Yay0. Full credits for this snippet goes to Cuyler36:
         /// https://github.com/Cuyler36/GCNToolKit/blob/master/GCNToolKit/Formats/Compression/Yay0.cs
         /// </summary>
-        /// <param name="stream">Stream containing the data to Yay0 compress.</param>
+        /// <param name="data">The data to Yay0 compress.</param>
         /// <returns>Compressed data as a stream.</returns>
-        public static Stream Compress(Stream stream)
+        public static byte[] Compress(byte[] data)
         {
-
-            // Define byte array to hold our data.
-            byte[] data;
-
-            // Temporary create a memory stream, dispose it after.
-            using (MemoryStream ms = new MemoryStream())
-            {
-
-                // Copy the contents of the stream into the memory stream.
-                stream.CopyTo(ms);
-
-                // Set the byte array to the content of the memory stream.
-                data = ms.ToArray();
-            }
 
             const int OFSBITS = 12;
             int decPtr = 0;
@@ -205,7 +165,7 @@ namespace Dolhouse.Compression
             Buffer.BlockCopy(chunkBuffer, 0, buffer, (int)hdrChunkOffset, (int)chunkSize);
 
             // Return the compressed data.
-            return new MemoryStream(buffer);
+            return buffer;
         }
 
         /// <summary>
@@ -214,18 +174,25 @@ namespace Dolhouse.Compression
         /// </summary>
         /// <param name="stream">Stream containing the Yay0 compressed data.</param>
         /// <returns>Decompressed data as a stream.</returns>
-        public static Stream Decompress(Stream stream)
+        public static byte[] Decompress(byte[] data)
         {
 
+            // Check if data is missing Yay0 signature.
+            if (!IsCompressed(data))
+            {
+
+                // No valid 'Yay0' signature was found.
+                throw new InvalidDataException("No valid 'Yay0' signature was found!");
+            }
+
             // Define a binary reader to read with.
-            DhBinaryReader br = new DhBinaryReader(stream, DhEndian.Big);
+            DhBinaryReader br = new DhBinaryReader(data, DhEndian.Big);
 
             // Define a list of bytes to hold the decompressed data.
             List<byte> output = new List<byte>();
 
-            // Make sure the magic is "Yay0".
-            if (br.ReadU32() != 1499560240)
-            { throw new InvalidDataException("No valid Yay0 signature was found!"); }
+            // Skip the magic. (Checked earlier)
+            br.Skip(4);
 
             // Read the length of the decompressed data.
             int decompressedLength = br.ReadS32();
@@ -259,10 +226,10 @@ namespace Dolhouse.Compression
                         // Add one byte from decompressedOffset to decompressedData.
 
                         // Set variable to the current layout bits' offset.
-                        layoutBitsOffset = (int)stream.Position;
+                        layoutBitsOffset = (int)br.Position();
 
                         // Seek to the compressed data offset.
-                        stream.Seek(decompressedOffset, SeekOrigin.Begin);
+                        br.Goto(decompressedOffset);
 
                         // Read a byte and add it to the list of output bytes.
                         output.Add(br.Read());
@@ -271,7 +238,7 @@ namespace Dolhouse.Compression
                         decompressedOffset++;
 
                         // Return to the current layout bits offset.
-                        stream.Seek(layoutBitsOffset, SeekOrigin.Begin);
+                        br.Goto(layoutBitsOffset);
 
                     }
                     // The next layout bit is 0. (Compressed data)
@@ -283,10 +250,10 @@ namespace Dolhouse.Compression
                         // 12 bits = Offset
 
                         // Define variable to hold the current offset.
-                        layoutBitsOffset = (int)stream.Position;
+                        layoutBitsOffset = (int)br.Position();
 
                         // Seek to the compressed data offset.
-                        stream.Seek(compressedOffset, SeekOrigin.Begin);
+                        br.Goto(compressedOffset);
 
                         // Read the first byte of the compressed data.
                         byte byte1 = br.Read();
@@ -309,7 +276,7 @@ namespace Dolhouse.Compression
                         // Compressed chunk length is larger than 17.
                         if (byte1Lower == 0)
                         {
-                            stream.Seek(decompressedOffset, SeekOrigin.Begin);
+                            br.Goto(decompressedOffset);
                             finalLength = br.Read() + 0x12;
 
                             // Advance the decompressed offset by one byte.
@@ -330,13 +297,13 @@ namespace Dolhouse.Compression
                         }
 
                         // Return to the current layout bits offset.
-                        stream.Seek(layoutBitsOffset, SeekOrigin.Begin);
+                        br.Goto(layoutBitsOffset);
                     }
                 }
             }
 
             // Return decompressed data.
-            return new MemoryStream(output.ToArray());
+            return output.ToArray();
         }
     }
 }
