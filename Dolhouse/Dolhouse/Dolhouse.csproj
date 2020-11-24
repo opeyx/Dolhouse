@@ -90,6 +90,7 @@
     <Compile Include="Type\Vec4.cs" />
     <Compile Include="Type\Vec3.cs" />
     <Compile Include="Type\Vec2.cs" />
+    <Compile Include="Archive\VirtFS.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
