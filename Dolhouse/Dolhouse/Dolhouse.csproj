@@ -72,6 +72,7 @@
     <Compile Include="Models\Bin\UnusedVertex.cs" />
     <Compile Include="Models\Bin\Shader.cs" />
     <Compile Include="Models\Bin\UnusedTexture.cs" />
+    <Compile Include="Models\Mdl\MDL.cs" />
     <Compile Include="Models\Mp\MP.cs" />
     <Compile Include="Models\Mp\GridIndex.cs" />
     <Compile Include="Models\Mp\TriangleData.cs" />
