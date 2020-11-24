@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Dolhouse.Engine
 {
@@ -11,20 +12,11 @@ namespace Dolhouse.Engine
     /// <summary>
     /// (J)System (M)ap (P)roperties
     /// </summary>
+    [Serializable]
     public class JMP
     {
 
         #region Properties
-
-        /// <summary>
-        /// Offset to where the entries are listed in JMP.
-        /// </summary>
-        public uint EntryOffset { get; set; }
-
-        /// <summary>
-        /// The size of each entry in JMP.
-        /// </summary>
-        public uint EntrySize { get; set; }
 
         /// <summary>
         /// List of fields stored in JMP.
@@ -45,15 +37,24 @@ namespace Dolhouse.Engine
         public JMP()
         {
 
-            // Set JMP's Header
-            EntryOffset = 0;
-            EntrySize = 0;
-
-            // Define a new list to hold the JMP's Fields.
             Fields = new List<JField>();
-
-            // Define a new list to hold the JMP's Entries.
             Entries = new List<JEntry>();
+        }
+
+
+        /// <summary>
+        /// Initialize a new JMP with fields.
+        /// </summary>
+        public JMP(List<JField> fields)
+        {
+
+            Fields = new List<JField>();
+            Entries = new List<JEntry>();
+
+            foreach (JField field in fields)
+            {
+                Fields.Add(field.Clone());
+            }
         }
 
         /// <summary>
@@ -63,30 +64,25 @@ namespace Dolhouse.Engine
         public JMP(byte[] data)
         {
 
-            // Define a binary reader to read with.
             DhBinaryReader br = new DhBinaryReader(data, DhEndian.Big);
             
-            // Read JMP's Header
             uint entryCount = br.ReadU32();
             uint fieldCount = br.ReadU32();
-            EntryOffset = br.ReadU32();
-            EntrySize = br.ReadU32();
+            uint entryOffset = br.ReadU32();
+            uint entrySize = br.ReadU32();
 
-            // Read JMP's Fields
             Fields = new List<JField>();
             for (int i = 0; i < fieldCount; i++)
             {
                 Fields.Add(new JField(br));
             }
 
-            // Seek to beginning of file.
             br.Goto(0);
 
-            // Read JMP's Entries
             Entries = new List<JEntry>();
             for (int i = 0; i < entryCount; i++)
             {
-                br.Goto(EntryOffset + (i * EntrySize));
+                br.Goto(entryOffset + (i * entrySize));
                 Entries.Add(new JEntry(br, Fields));
             }
         }
@@ -98,48 +94,98 @@ namespace Dolhouse.Engine
         public byte[] Write()
         {
 
-            // Define a stream to hold our JMP data.
             MemoryStream stream = new MemoryStream();
-
-            // Define a binary writer to write with.
             DhBinaryWriter bw = new DhBinaryWriter(stream, DhEndian.Big);
 
-            // Write JMP's Header
+            uint entryOffset = CalculateEntryOffset();
+            uint entrySize = CalculateEntrySize();
             bw.WriteU32((uint)Entries.Count);
             bw.WriteU32((uint)Fields.Count);
-            bw.WriteU32(EntryOffset);
-            bw.WriteU32(EntrySize);
+            bw.WriteU32(entryOffset);
+            bw.WriteU32(entrySize);
 
-            // Write JMP's Fields
             for (int i = 0; i < Fields.Count; i++)
             {
                 Fields[i].Write(bw);
             }
 
-            // Seek to beginning of file.
-            bw.Goto(0);
-
-            // Write JMP's Entries
             for (int i = 0; i < Entries.Count; i++)
             {
-                bw.Goto(EntryOffset + (i * EntrySize));
+                bw.Goto(entryOffset + (i * entrySize));
                 Entries[i].Write(bw, Fields);
             }
 
-            // Back up from the end of the file.
             bw.Back(0);
 
-            // Pad file with @'s to nearest whole 32 bytes.
             bw.WritePadding32('@');
 
-            // Returns the JMP as a byte array.
             return stream.ToArray();
         }
+
+        /// <summary>
+        /// Helper method for getting byte count of entry.
+        /// </summary>
+        /// <returns>The offset to entries.</returns>
+        public uint CalculateEntryOffset()
+        {
+
+            if (Fields == null || Fields.Count == 0)
+            {
+                return 16;
+            }
+
+            return (uint)(16 + (12 * Fields.Count));
+        }
+
+        /// <summary>
+        /// Helper method for getting byte count of entry.
+        /// </summary>
+        /// <returns>The entry's byte count.</returns>
+        public uint CalculateEntrySize()
+        {
+            if (Fields == null || Fields.Count == 0)
+            {
+                return 0;
+            }
+
+            uint size = 0;
+            foreach (JField field in Fields)
+            {
+                uint current = (uint)(field.Offset + GetFieldSize(field));
+                if (current > size)
+                {
+                    size = current;
+                }
+            }
+
+            return size;
+        }
+
+        /// <summary>
+        /// Helper method for getting byte count of field.
+        /// </summary>
+        /// <param name="field">The field to get the size of.</param>
+        /// <returns>The field's byte count.</returns>
+        public int GetFieldSize(JField field)
+        {
+            switch (field.Type)
+            {
+                case JFieldType.INTEGER:
+                    return 4;
+                case JFieldType.FLOAT:
+                    return 4;
+                case JFieldType.STRING:
+                    return 32;
+            }
+            return 0;
+        }
+
     }
 
     /// <summary>
     /// JMP Field
     /// </summary>
+    [Serializable]
     public class JField
     {
 
@@ -184,22 +230,11 @@ namespace Dolhouse.Engine
         public JField()
         {
 
-            // Set field's hash.
             Hash = 0;
-
-            // Set field's bitmask.
             Bitmask = 0;
-
-            // Set field's offset.
             Offset = 0;
-
-            // Set field's shift.
             Shift = 0;
-
-            // Set field's type.
             Type = JFieldType.INTEGER;
-
-            // Set field's name.
             Name = "";
         }
 
@@ -210,25 +245,13 @@ namespace Dolhouse.Engine
         public JField(DhBinaryReader br)
         {
 
-            // Read field's hash.
             Hash = br.ReadU32();
-
-            // Read field's bitmask.
             Bitmask = br.ReadU32();
-
-            // Read field's offset.
             Offset = br.ReadU16();
-
-            // Read field's shift.
             Shift = br.ReadS8();
-
-            // Read field's type.
             Type = (JFieldType)br.ReadU8();
-
-            // Resolve field's hash to get field name.
             Name = JMPUtils.HashToName(Hash);
         }
-
 
         /// <summary>
         /// Write a single field to stream.
@@ -237,26 +260,34 @@ namespace Dolhouse.Engine
         public void Write(DhBinaryWriter bw)
         {
 
-            // Write the field's hash.
             bw.WriteU32(Hash);
-
-            // Write the field's bitmask.
             bw.WriteU32(Bitmask);
-
-            // Write the field's offset.
             bw.WriteU16(Offset);
-            
-            // Write the field's shift.
             bw.WriteS8(Shift);
-
-            // Write the field's type.
             bw.WriteU8((byte)Type);
+        }
+
+        /// <summary>
+        /// Make deep clone the current field.
+        /// </summary>
+        /// <returns>A deep clone of the current field.</returns>
+        public JField Clone()
+        {
+
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, this);
+                ms.Position = 0;
+                return (JField)formatter.Deserialize(ms);
+            }
         }
     }
 
     /// <summary>
     /// JMP Entry
     /// </summary>
+    [Serializable]
     public class JEntry
     {
 
@@ -265,7 +296,7 @@ namespace Dolhouse.Engine
         /// <summary>
         /// The values stored within this entry.
         /// </summary>
-        public object[] Values { get; set; }
+        public Dictionary<string, object> Values { get; set; }
 
         #endregion
 
@@ -277,37 +308,29 @@ namespace Dolhouse.Engine
         public JEntry(List<JField> fields)
         {
 
-            // Define a new object array to hold entry's values.
-            Values = new object[fields.Count];
+            Values = new Dictionary<string, object>();
 
-            // Loop through each field in the JMP.
             for (int i = 0; i < fields.Count; i++)
             {
 
-                // Define a new object to hold our data.
                 object value;
 
-                // Check which type the current value is.
                 switch (fields[i].Type)
                 {
                     case JFieldType.INTEGER:
-                        // Set the data as a integer.
                         value = 0;
                         break;
                     case JFieldType.STRING:
-                        // Set the data as a 32-byte long string.
                         value = "";
                         break;
                     case JFieldType.FLOAT:
-                        // Set the data as a float32.
                         value = 0.0f;
                         break;
                     default:
-                        // Something went horribly wrong.
-                        throw new InvalidDataException();
+                        throw new InvalidDataException($"{fields[i].Type} is not a valid jmp entry type!");
                 }
-                // Set the value of this entry's value's data to the value we just looped through.
-                Values[i] = value;
+
+                Values.Add(fields[i].Name, value);
             }
         }
 
@@ -319,48 +342,35 @@ namespace Dolhouse.Engine
         public JEntry(DhBinaryReader br, List<JField> fields)
         {
 
-            // Save the current position.
             long currentPosition = br.Position();
 
-            // Define a new object array to hold entry's values.
-            Values = new object[fields.Count];
-
-            // Loop through each field in the JMP.
+            Values = new Dictionary<string, object>();
             for (int i = 0; i < fields.Count; i++)
             {
-                // Seek from the current position to value's offset in the entry.
+
                 br.Sail(fields[i].Offset);
 
-                // Define a new object to hold our data.
                 object value;
-
-                // Check which type the current value is.
                 switch (fields[i].Type)
                 {
                     case JFieldType.INTEGER:
-                        // Read the data as a integer.
                         value = ((br.ReadS32() & fields[i].Bitmask) >> fields[i].Shift);
                         break;
                     case JFieldType.STRING:
-                        // Read the data as a 32-byte long string.
                         value = br.ReadFixedStr(32);
                         break;
                     case JFieldType.FLOAT:
-                        // Read the data as a float32.
                         value = br.ReadF32();
                         break;
                     default:
-                        // Something went horribly wrong.
-                        throw new InvalidDataException();
+                        throw new InvalidDataException($"{fields[i].Type} is not a valid jmp entry type!");
                 }
-                // Set the value of this entry's value's data to the value we just read.
-                Values[i] = value;
 
-                // Seek back to the position we saved earlier.
+                Values.Add(fields[i].Name, value);
+
                 br.Goto(currentPosition);
             }
         }
-
 
         /// <summary>
         /// Write a single entry to stream.
@@ -371,68 +381,71 @@ namespace Dolhouse.Engine
         public void Write(DhBinaryWriter bw, List<JField> fields)
         {
 
-            // Save the current position.
             long currentPosition = bw.Position();
 
-            // Define a buffer to hold packed int values.
             Dictionary<ushort, uint> buffer = new Dictionary<ushort, uint>(fields.Count);
-
-            // Loop through each value in the entry.
             for (int i = 0; i < fields.Count; i++)
             {
 
-                // Seek from the current position to value's offset in the entry.
                 bw.Sail(fields[i].Offset);
 
-                // Check which type the current value is.
                 switch (fields[i].Type)
                 {
                     case JFieldType.INTEGER:
-                        // Write the value as a integer. TODO: Add pack values.
-                        int value = int.Parse(Values[i].ToString());
+                        int value = Convert.ToInt32(Values.Values.ElementAt(i));
 
-                        // Check if current field has a bitmask.
-                        if(fields[i].Bitmask == 0xFFFFFFFF)
+                        if (fields[i].Bitmask == 0xFFFFFFFF)
                         {
-                            // Value is not packed, write data directly.
+
+                            // not packed, write data directly.
                             bw.WriteS32((value));
                         }
                         else
                         {
-                            // Value is packed, data will be added to the buffer.
+
                             if (!buffer.ContainsKey(fields[i].Offset))
                             {
-                                // Since no key exists yet, create one.
                                 buffer[fields[i].Offset] = 0u;
                             }
-                            // Add the packet int value to the buffer.
+
+                            // packed, add data to buffer.
                             buffer[fields[i].Offset] |= ((uint)(value << fields[i].Shift) & fields[i].Bitmask);
                         }
                         break;
                     case JFieldType.STRING:
-                        // Write the value as a string.
-                        bw.WriteFixedStr(Values[i].ToString(), 32);
+                        bw.WriteFixedStr(Convert.ToString(Values.Values.ElementAt(i)), 32);
                         break;
                     case JFieldType.FLOAT:
-                        // Write the value as a float32.
-                        bw.WriteF32(float.Parse(Values[i].ToString()));
+                        bw.WriteF32(Convert.ToSingle(Values.Values.ElementAt(i)));
                         break;
                     default:
-                        // Something went horribly wrong.
-                        throw new InvalidDataException();
+                        throw new InvalidDataException($"{fields[i].Type} is not a valid jmp entry type!");
                 }
 
-                // Write out the packed int's buffer.
                 foreach (var data in buffer)
                 {
-                    // 
+
                     bw.Goto(currentPosition + data.Key);
-                    // Write the packed int value.
                     bw.WriteU32(data.Value);
                 }
 
-                // Seek back to the position we saved earlier.
                 bw.Goto(currentPosition);
+            }
+        }
+
+        /// <summary>
+        /// Make deep clone the current entry.
+        /// </summary>
+        /// <returns>A deep clone of the current entry.</returns>
+        public JEntry Clone()
+        {
+
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, this);
+                ms.Position = 0;
+                return (JEntry)formatter.Deserialize(ms);
             }
         }
     }
@@ -472,17 +485,12 @@ namespace Dolhouse.Engine
         public static string HashToName(uint hash)
         {
 
-            // Attempt to resolve the hash into a known name.
             if (FieldDictionary.TryGetValue(hash, out string fieldName))
             {
-
-                // Name was resolved, return correct field name.
                 return fieldName;
             }
             else
             {
-
-                // Name could not be resolved, return hash as string.
                 return hash.ToString();
             }
         }
@@ -495,33 +503,21 @@ namespace Dolhouse.Engine
         private static Dictionary<uint, string> FieldHashes()
         {
 
-            // Read the internal names file, split it by default delimiters.
             string[] lines = Resources.jmp.Split(
                 new[] { "\r\n", "\r", "\n" },
                 StringSplitOptions.None
             );
 
-            // Define a temporary dictionary to hold our field hashes and names.
             Dictionary<uint, string> fieldHashes = new Dictionary<uint, string>();
-
-            // Define a temporary list to hold our jmp file lines, aswell as removing duplicates.
             List<string> fieldNames = lines.Distinct().ToList();
-
-            // Loop through each of the lines.
             for (int i = 0; i < fieldNames.Count; i++)
             {
-                // Check if the current line is empty or starts with a # (comment)
                 if (string.IsNullOrWhiteSpace(fieldNames[i]) || fieldNames[i].StartsWith("#"))
-                {
-                    // Skip hashing the current line.
                     continue;
-                }
 
-                // Hash the current line and add it plus the field name to the fieldhashes dictionary.
                 fieldHashes.Add(Calculate(fieldNames[i]), fieldNames[i]);
             }
 
-            // Return the fieldHashes dictionary.
             return fieldHashes;
         }
 
@@ -536,15 +532,9 @@ namespace Dolhouse.Engine
         private static uint Calculate(string data)
         {
 
-            // Check if data is equals to null.
             if (data == null)
-            {
-
-                // Cannot hash null data, throw exception.
                 throw new ArgumentNullException("data");
-            }
 
-            // Return the calculated hash from the input data.
             return Calculate(System.Text.Encoding.ASCII.GetBytes(data));
         }
 
@@ -558,18 +548,10 @@ namespace Dolhouse.Engine
         private static uint Calculate(byte[] data)
         {
 
-            // Check if data is equals to null.
             if (data == null)
-            {
-
-                // Cannot hash null data, throw exception.
                 throw new ArgumentNullException("data");
-            }
 
-            // Define variable to temporary hold our hash.
             var hash = 0u;
-
-            // Loop through our input data.
             for (var i = 0; i < data.Length; ++i)
             {
                 hash <<= 8;
@@ -579,7 +561,6 @@ namespace Dolhouse.Engine
                 hash -= r0 * 33554393u;
             }
 
-            // Return the calculated hash.
             return hash;
         }
     }
