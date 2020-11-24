@@ -1025,6 +1025,68 @@ namespace Dolhouse.Binary
         #endregion
 
 
+        #region Booleans
+
+        /// <summary>
+        /// Read boolean byte.
+        /// </summary>
+        /// <returns>The read boolean byte.</returns>
+        public bool ReadBool8()
+        {
+            return Read() != 0;
+        }
+
+        /// <summary>
+        /// Read boolean byte at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the boolean byte at.</param>
+        /// <returns>The read boolean byte.</returns>
+        public bool ReadBool8At(long offset)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            byte data = ReadU8();
+            Goto(currentPosition);
+            return data != 0;
+        }
+
+        /// <summary>
+        /// Read array of boolean bytes.
+        /// </summary>
+        /// <param name="count">Amount of boolean bytes to read.</param>
+        /// <returns>The read array of boolean bytes.</returns>
+        public bool[] ReadBool8s(int count)
+        {
+            bool[] data = new bool[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = ReadU8() != 0;
+            }
+            return data;
+        }
+
+        /// <summary>
+        /// Read array of boolean bytes at absolute offset.
+        /// </summary>
+        /// <param name="offset">The absolute offset to read the boolean bytes at.</param>
+        /// <param name="count">Amount of boolean bytes to read.</param>
+        /// <returns>The read array of boolean bytes.</returns>
+        public bool[] ReadBool8sAt(long offset, int count)
+        {
+            long currentPosition = Position();
+            Goto(offset);
+            bool[] data = new bool[count];
+            for (int i = 0; i < count; i++)
+            {
+                data[i] = ReadU8() != 0;
+            }
+            Goto(currentPosition);
+            return data;
+        }
+
+        #endregion
+
+
         #region Vectors
 
         /// <summary>
