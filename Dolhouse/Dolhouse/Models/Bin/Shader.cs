@@ -1,4 +1,5 @@
 ﻿using Dolhouse.Binary;
+using Dolhouse.Type;
 
 namespace Dolhouse.Models.Bin
 {
@@ -12,9 +13,9 @@ namespace Dolhouse.Models.Bin
         #region Properties
 
         /// <summary>
-        /// Unknown 1.
+        /// Use Dynamic Lighting Flag.
         /// </summary>
-        public byte Unknown1 { get; set; }
+        public bool UseDynamicLighting { get; set; }
 
         /// <summary>
         /// Unknown 2.
@@ -29,7 +30,7 @@ namespace Dolhouse.Models.Bin
         /// <summary>
         /// RGBA Tint.
         /// </summary>
-        public int Tint { get; set; }
+        public Clr4 Tint { get; set; }
 
         /// <summary>
         /// Unknown 4. (Padding)
@@ -56,25 +57,25 @@ namespace Dolhouse.Models.Bin
         public Shader()
         {
 
-            // Read Unknown 1.
-            Unknown1 = 0;
+            // Set UseDynamicLighting.
+            UseDynamicLighting = false;
 
-            // Read Unknown 2.
+            // Set Unknown 2.
             Unknown2 = 0;
 
-            // Read Unknown 3.
+            // Set Unknown 3.
             Unknown3 = 0;
 
-            // Read Tint.
-            Tint = 0;
+            // Set Tint.
+            Tint = new Clr4();
 
-            // Read Unknown 4. (Padding)
+            // Set Unknown 4. (Padding)
             Unknown4 = 0;
 
-            // Read Material Indices array.
+            // Set Material Indices array.
             MaterialIndices = new short[8] { -1, -1, -1, -1, -1, -1, -1, -1 };
 
-            // Read Unknown 5 array. (Indices?)
+            // Set Unknown 5 array. (Indices?)
             Unknown5 = new short[8];
         }
 
@@ -85,8 +86,8 @@ namespace Dolhouse.Models.Bin
         public Shader(DhBinaryReader br)
         {
 
-            // Read Unknown 1.
-            Unknown1 = br.Read();
+            // Read Dynamic Lighting Flag.
+            UseDynamicLighting = br.ReadBool8();
 
             // Read Unknown 2.
             Unknown2 = br.Read();
@@ -95,7 +96,7 @@ namespace Dolhouse.Models.Bin
             Unknown3 = br.Read();
 
             // Read Tint.
-            Tint = br.ReadS32();
+            Tint = br.ReadClr4();
 
             // Read Unknown 4. (Padding)
             Unknown4 = br.Read();
@@ -114,8 +115,8 @@ namespace Dolhouse.Models.Bin
         public void Write(DhBinaryWriter bw)
         {
 
-            // Write Unknown 1.
-            bw.Write(Unknown1);
+            // Write Dynamic Lighting Flag.
+            bw.Write(UseDynamicLighting ? 1 : 0);
 
             // Write Unknown 2.
             bw.Write(Unknown2);
@@ -124,7 +125,7 @@ namespace Dolhouse.Models.Bin
             bw.Write(Unknown3);
 
             // Write Tint.
-            bw.WriteS32(Tint);
+            bw.WriteClr4(Tint);
 
             // Write Unknown 4. (Padding)
             bw.Write(Unknown4);

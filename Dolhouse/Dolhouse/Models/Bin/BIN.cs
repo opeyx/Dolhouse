@@ -4,8 +4,8 @@ using Dolhouse.Models.GX;
 using Dolhouse.Type;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Dolhouse.Models.Bin
 {
@@ -117,14 +117,13 @@ namespace Dolhouse.Models.Bin
 
             // Make sure the bin version is either 0x01 or 0x02.
             if (Version == 0x00 || Version > 0x02 )
-            { throw new Exception(string.Format("[BIN] {0} is not a valid version!", Version.ToString())); }
+            { throw new Exception($"[BIN] {Version} is not a valid version!"); }
 
             // Read bin model name.
             ModelName = br.ReadFixedStr(11);
 
             // Define a new list to hold the bin's offsets.
             Offsets = br.ReadU32s(21);
-
 
             // Go to the bin graph object offset.
             br.Goto(Offsets[12]);
@@ -146,7 +145,6 @@ namespace Dolhouse.Models.Bin
                 // Loop through batches.
                 for (int i = 0; i < GetBatchCount(); i++)
                 {
-
                     // Read a batch and add it to the batch list.
                     Batches.Add(new Batch(br, Offsets[11]));
                 }
@@ -686,7 +684,7 @@ namespace Dolhouse.Models.Bin
         /// <returns>Total amount of Textures in bin.</returns>
         public int GetTextureCount()
         {
-            short textureCount = -1;
+            short textureCount = 0;
 
             for (int i = 0; i < Materials.Count; i++)
             {

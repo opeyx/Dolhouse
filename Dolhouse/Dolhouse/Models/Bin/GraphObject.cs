@@ -1,5 +1,6 @@
 ﻿using Dolhouse.Binary;
 using Dolhouse.Type;
+using System;
 using System.Collections.Generic;
 
 namespace Dolhouse.Models.Bin
@@ -40,7 +41,7 @@ namespace Dolhouse.Models.Bin
         /// <summary>
         /// Render Flags.
         /// </summary>
-        public RenderFlags RenderFlags { get; set; }
+        public GraphObjectRenderFlags RenderFlags { get; set; }
 
         /// <summary>
         /// Unknown 1. (Padding?)
@@ -127,7 +128,7 @@ namespace Dolhouse.Models.Bin
             PreviousIndex = br.ReadS16();
 
             // Read Render Flags.
-            RenderFlags = (RenderFlags)br.ReadU16();
+            RenderFlags = (GraphObjectRenderFlags)br.ReadU16();
 
             // Unknown 1. (Padding?)
             Unknown1 = br.ReadU16();
@@ -240,6 +241,15 @@ namespace Dolhouse.Models.Bin
 
             // Write unknown 4. TODO - Why does demolisher only read file if padding is written twice??
             bw.WriteU32s(Unknown4);
+        }
+
+        [Flags]
+        public enum GraphObjectRenderFlags : ushort
+        {
+            FourthWall = 0x0004,              // invisible (except in GBH view)
+            Transparent = 0x0008,             // transparent (when luigi is behind it)?
+            FullBright = 0x0040,              // fullbright (ignore lighting)
+            Ceiling = 0x0080,                 // transparent/ceiling (will fade out when luigi vaccuums the floor)
         }
     }
 

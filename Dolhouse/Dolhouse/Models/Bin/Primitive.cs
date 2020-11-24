@@ -40,9 +40,8 @@ namespace Dolhouse.Models.Bin
         /// Read a single primitive from BIN.
         /// </summary>
         /// <param name="br">Binary Reader to use.</param>
-        public Primitive(DhBinaryReader br, Attributes attributes)
+        public Primitive(DhBinaryReader br, Attributes attributes, bool useNbt)
         {
-
             // Read Primitive Type.
             Type = (PrimitiveType)br.ReadU8();
 
@@ -56,7 +55,7 @@ namespace Dolhouse.Models.Bin
             for(int i = 0; i < VerticeCount; i++)
             {
                 // Read a primitive vertex and add it to the list.
-                Vertices.Add(new Vertex(br, attributes));
+                Vertices.Add(new Vertex(br, attributes, useNbt));
             }
         }
 

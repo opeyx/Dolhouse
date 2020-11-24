@@ -34,7 +34,7 @@ namespace Dolhouse.Models.Bin
         /// 0x00000001 = enabled
         /// 0x00000000 = disabled
         /// </summary>
-        public byte UseNormals { get; set; }
+        public bool UseNormals { get; set; }
 
         /// <summary>
         /// Positions Winding.
@@ -53,7 +53,7 @@ namespace Dolhouse.Models.Bin
         /// Use NTB flag.
         /// GX_NBT = 1, GX_NRM = 0
         /// </summary>
-        public byte UseNBT { get; set; }
+        public bool UseNBT { get; set; }
 
         /// <summary>
         /// Primitive list offset.
@@ -89,7 +89,7 @@ namespace Dolhouse.Models.Bin
             VertexAttributes = 0;
 
             // Set UseNormals flag.
-            UseNormals = 0;
+            UseNormals = false;
 
             // Set Position Winding.
             Positions = 0;
@@ -98,7 +98,7 @@ namespace Dolhouse.Models.Bin
             UvCount = 0;
 
             // Set UseNBT flag.
-            UseNBT = 0;
+            UseNBT = false;
 
             // Set Primitive offset.
             PrimitiveOffset = 0;
@@ -127,7 +127,7 @@ namespace Dolhouse.Models.Bin
             VertexAttributes = (Attributes)br.ReadU32();
 
             // Read UseNormals flag.
-            UseNormals = br.Read();
+            UseNormals = br.ReadBool8();
 
             // Read Position Winding.
             Positions = br.Read();
@@ -136,7 +136,7 @@ namespace Dolhouse.Models.Bin
             UvCount = br.Read();
 
             // Read UseNBT flag.
-            UseNBT = br.Read();
+            UseNBT = br.ReadBool8();
 
             // Read Primitive offset.
             PrimitiveOffset = br.ReadU32();
@@ -161,7 +161,7 @@ namespace Dolhouse.Models.Bin
             {
 
                 // Read primitive.
-                Primitive binPrimitive = new Primitive(br, VertexAttributes);
+                Primitive binPrimitive = new Primitive(br, VertexAttributes, UseNBT);
 
                 // Add the primitive to the batch's primitives.
                 Primitives.Add(binPrimitive);
@@ -191,7 +191,7 @@ namespace Dolhouse.Models.Bin
             bw.WriteU32((uint)VertexAttributes);
 
             // Write normals flag.
-            bw.Write(UseNormals);
+            bw.Write(UseNormals ? 1 : 0);
 
             // Write position winding flag.
             bw.Write(Positions);
@@ -200,7 +200,7 @@ namespace Dolhouse.Models.Bin
             bw.Write(UvCount);
 
             // Write NBT flag.
-            bw.Write(UseNBT);
+            bw.Write(UseNBT ? 1 : 0);
 
             // Write primitive offset. (CALCULATED)
             bw.WriteU32(0);

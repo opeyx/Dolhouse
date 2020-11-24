@@ -65,7 +65,6 @@
     <Compile Include="Models\Bin\Batch.cs" />
     <Compile Include="Models\GX\Vertex.cs" />
     <Compile Include="Models\GX\PrimitiveType.cs" />
-    <Compile Include="Models\Bin\RenderFlags.cs" />
     <Compile Include="Models\GX\Attributes.cs" />
     <Compile Include="Models\Bin\GraphObject.cs" />
     <Compile Include="Models\Bin\Material.cs" />

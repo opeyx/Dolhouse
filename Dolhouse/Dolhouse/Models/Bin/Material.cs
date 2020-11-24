@@ -1,4 +1,5 @@
 ﻿using Dolhouse.Binary;
+using Dolhouse.Image.BTI;
 
 namespace Dolhouse.Models.Bin
 {
@@ -24,12 +25,12 @@ namespace Dolhouse.Models.Bin
         /// <summary>
         /// U-Wrapping. 0 = Clamp, 1 = Repeat, 2 = Mirror.
         /// </summary>
-        public byte WrapU { get; set; }
+        public WrapMode WrapU { get; set; }
 
         /// <summary>
         /// V-Wrapping. 0 = Clamp, 1 = Repeat, 2 = Mirror.
         /// </summary>
-        public byte WrapV { get; set; }
+        public WrapMode WrapV { get; set; }
 
         /// <summary>
         /// Unknown 2. (Flags?)
@@ -57,10 +58,10 @@ namespace Dolhouse.Models.Bin
             Unknown1 = -1;
 
             // Set U-Wrapping.
-            WrapU = 0;
+            WrapU = WrapMode.ClampToEdge;
 
             // Set V-Wrapping.
-            WrapV = 0;
+            WrapV = WrapMode.ClampToEdge;
 
             // Set Unknown 2. (Flags?)
             Unknown2 = 0;
@@ -83,10 +84,10 @@ namespace Dolhouse.Models.Bin
             Unknown1 = br.ReadS16();
 
             // Read U-Wrapping.
-            WrapU = br.Read();
+            WrapU = (WrapMode)br.Read();
 
             // Read V-Wrapping.
-            WrapV = br.Read();
+            WrapV = (WrapMode)br.Read();
 
             // Read Unknown 2. (Flags?)
             Unknown2 = br.ReadS16();
