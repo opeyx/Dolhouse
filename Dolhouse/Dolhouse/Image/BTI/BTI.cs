@@ -1,5 +1,6 @@
 ﻿using Dolhouse.Binary;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -10,6 +11,9 @@ namespace Dolhouse.Image.BTI
 
     /// <summary>
     /// (B)inary (T)exture (I)mage
+    /// Many thanks to Sage-Of-Mirrors/LordNed for code reference:
+    /// https://github.com/LordNed/JStudio/
+    /// https://github.com/Sage-of-Mirrors/BooldozerCore/
     /// </summary>
     public class BTI
     {
@@ -180,7 +184,84 @@ namespace Dolhouse.Image.BTI
             DataOffset = br.ReadU32();
 
             // Read data.
-            Data = br.ReadAt(textureHeader + DataOffset, (Width * Height) / 2);
+            int length = 0;
+            switch (Format)
+            {
+                case TextureFormat.C4:
+                    length = Width * Height * 8;
+                    break;
+                case TextureFormat.C8:
+                    length = Width * Height * 8;
+                    break;
+                default:
+                    length = Width * Height * 4;
+                    break;
+            }
+            Data = br.ReadAt((textureHeader ) + DataOffset, length);
+        }
+
+        /// <summary>
+        /// Reads BTI using a BinaryReader. (BinTexture Format)
+        /// </summary>
+        /// <param name="br">The BinaryReader to use.</param>
+        public BTI(DhBinaryReader br, uint textureOffset, uint textureLocationOffset)
+        {
+
+            // Set Texture Format.
+            byte format = br.Read();
+
+            // Texture Formats IDs are different in MDL's for some reason.
+            switch (format)
+            {
+                case 3:
+                    Format = TextureFormat.I4;
+                    break;
+                case 4:
+                    Format = TextureFormat.I8;
+                    break;
+                case 6:
+                    Format = TextureFormat.IA8;
+                    break;
+                case 7:
+                    Format = TextureFormat.RGB565;
+                    break;
+                case 8:
+                    Format = TextureFormat.RGB5A3;
+                    break;
+                case 10:
+                    Format = TextureFormat.CMPR;
+                    break;
+                default:
+                    throw new Exception($"Texture format {format} is not supported yet!");
+            }
+
+            // Set Alpha Flag.
+            AlphaFlag = br.Read();
+
+            // Set Width.
+            Width = br.ReadU16();
+
+            // Set Height.
+            Height = br.ReadU16();
+
+            // Skip 26 bytes of padding.
+            br.Skip(26);
+
+            // Read data.
+            int length = 0;
+            switch (Format)
+            {
+                case TextureFormat.C4:
+                    length = Width * Height * 8;
+                    break;
+                case TextureFormat.C8:
+                    length = Width * Height * 8;
+                    break;
+                default:
+                    length = Width * Height * 4;
+                    break;
+            }
+            Data = br.Read(length);
         }
 
         /// <summary>
@@ -255,12 +336,17 @@ namespace Dolhouse.Image.BTI
         /// Method for converting the BTI into a Bitmap.
         /// </summary>
         /// <returns>The BTI as a Bitmap.</returns>
-        public Bitmap ToBitmap(DhBinaryReader br)
+        public Bitmap ToBitmap()
         {
-
-            // This is not implemented yet.
-            throw new NotImplementedException();
-
+            DhBinaryReader br = new DhBinaryReader(Data, DhEndian.Big);
+            byte[] data = BTIUtils.DecodeData(br, Width, Height, Format);
+            Bitmap bmp = new Bitmap(Width, Height);
+            Rectangle rect = new Rectangle(0, 0, Width, Height);
+            BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+            IntPtr ptr = bmpData.Scan0;
+            Marshal.Copy(data, 0, ptr, data.Length);
+            bmp.UnlockBits(bmpData);
+            return bmp;
         }
 
         /// <summary>
