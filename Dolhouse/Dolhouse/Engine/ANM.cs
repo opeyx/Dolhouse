@@ -22,7 +22,7 @@ namespace Dolhouse.Engine
         /// Flag to determine if
         /// animation should loop.
         /// </summary>
-        public byte Loop { get; set; }
+        public bool Loop { get; set; }
 
         /// <summary>
         /// Unknown 1 (Padding?)
@@ -64,7 +64,7 @@ namespace Dolhouse.Engine
         {
             // Set ANM's Header.
             Version = 2;
-            Loop = 0;
+            Loop = false;
             Unknown1 = 0;
             KeyFrameCount = 0;
             KeyFrameOffset = 0;
@@ -89,7 +89,7 @@ namespace Dolhouse.Engine
             
             // Reader ANM's Header.
             Version = br.ReadU8();
-            Loop = br.ReadU8();
+            Loop = br.ReadBool8();
             Unknown1 = br.ReadS16();
             KeyFrameCount = br.ReadU32();
             KeyFrameOffset = br.ReadU32();
