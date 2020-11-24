@@ -73,6 +73,21 @@
         }
 
         /// <summary>
+        /// Defines a unit-length Vec3 that points towards the X-axis.
+        /// </summary>
+        public static Vec3 UnitX = new Vec3(1, 0, 0);
+
+        /// <summary>
+        /// Defines a unit-length Vec3 that points towards the Y-axis.
+        /// </summary>
+        public static Vec3 UnitY = new Vec3(0, 1, 0);
+
+        /// <summary>
+        /// Defines a unit-length Vec3 that points towards the Z-axis.
+        /// </summary>
+        public static Vec3 UnitZ = new Vec3(0, 0, 1);
+
+        /// <summary>
         /// Return the Vec3 as a string.
         /// </summary>
         /// <returns>The Vec3 formatted as a string.</returns>

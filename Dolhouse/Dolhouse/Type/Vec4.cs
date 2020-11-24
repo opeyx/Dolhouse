@@ -84,6 +84,26 @@
         }
 
         /// <summary>
+        /// Defines a unit-length Vec4 that points towards the X-axis.
+        /// </summary>
+        public static Vec4 UnitX = new Vec4(1, 0, 0, 0);
+
+        /// <summary>
+        /// Defines a unit-length Vec4 that points towards the Y-axis.
+        /// </summary>
+        public static Vec4 UnitY = new Vec4(0, 1, 0, 0);
+
+        /// <summary>
+        /// Defines a unit-length Vec4 that points towards the Z-axis.
+        /// </summary>
+        public static Vec4 UnitZ = new Vec4(0, 0, 1, 0);
+
+        /// <summary>
+        /// Defines a unit-length Vec4 that points towards the W-axis.
+        /// </summary>
+        public static Vec4 UnitW = new Vec4(0, 0, 0, 1);
+
+        /// <summary>
         /// Return the Vec4 as a string.
         /// </summary>
         /// <returns>The Vec4 formatted as a string.</returns>

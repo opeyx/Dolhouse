@@ -53,6 +53,16 @@
         }
 
         /// <summary>
+        /// Defines a unit-length Vec2 that points towards the X-axis.
+        /// </summary>
+        public static Vec2 UnitX = new Vec2(1, 0);
+
+        /// <summary>
+        /// Defines a unit-length Vec2 that points towards the X-axis.
+        /// </summary>
+        public static Vec2 UnitY = new Vec2(0, 1);
+
+        /// <summary>
         /// Return the Vec2 as a string.
         /// </summary>
         /// <returns>The Vec2 formatted as a string.</returns>

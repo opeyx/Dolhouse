@@ -30,6 +30,11 @@
         /// </summary>
         public Vec4 Row4 { get; set; }
 
+        /// <summary>
+        /// The identity matrix.
+        /// </summary>
+        public static Mat4 Identity = new Mat4(Vec4.UnitX, Vec4.UnitY, Vec4.UnitZ, Vec4.UnitW);
+
         #endregion
 
 
