@@ -26,7 +26,7 @@ namespace Dolhouse.Models.Mp
         {
 
             // Read unknown 1. (3 bytes)
-            Unknown1 = new byte[0];
+            Unknown1 = new byte[3];
         }
 
         /// <summary>
